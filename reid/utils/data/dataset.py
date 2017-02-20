@@ -1,0 +1,2 @@
+class Dataset(object):
+    pass
