@@ -7,8 +7,8 @@ class TestVIPeR(TestCase):
         from reid.datasets.viper import VIPeR
         from reid.utils.serialization import read_json
 
-        root, split_id = '/tmp/open-reid/viper', 0
-        dataset = VIPeR(root, split_id=split_id, download=True)
+        root, split_id, num_val = '/tmp/open-reid/viper', 0, 100
+        dataset = VIPeR(root, split_id=split_id, num_val=num_val, download=True)
 
         self.assertTrue(osp.isfile(osp.join(root, 'meta.json')))
         self.assertTrue(osp.isfile(osp.join(root, 'splits.json')))

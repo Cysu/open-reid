@@ -5,14 +5,14 @@ import numpy as np
 
 from reid.utils.data import Dataset
 from reid.utils.osutils import mkdir_if_missing
-from reid.utils.serialization import read_json, write_json
+from reid.utils.serialization import write_json
 
 
 class VIPeR(Dataset):
     url = 'http://users.soe.ucsc.edu/~manduchi/VIPeR.v1.0.zip'
     md5 = '1c2d9fc1cc800332567a0da25a1ce68c'
 
-    def __init__(self, root, split_id=0, download=False):
+    def __init__(self, root, split_id=0, num_val=0.3, download=False):
         super(VIPeR, self).__init__()
         self.root = root
         self.split_id = split_id
@@ -24,7 +24,7 @@ class VIPeR(Dataset):
             raise RuntimeError("Dataset not found or corrupted. " +
                                "You can use download=True to download it.")
 
-        self.load()
+        self.load(num_val)
 
     def download(self):
         if self._check_integrity():
@@ -66,11 +66,11 @@ class VIPeR(Dataset):
         for pid, (cam1, cam2) in enumerate(zip(*cameras)):
             images = []
             # view-0
-            fname = '{:08d}_{:02d}_{:04d}.jpg'.format(pid + 1, 0, 0)
+            fname = '{:08d}_{:02d}_{:04d}.jpg'.format(pid, 0, 0)
             imsave(osp.join(images_dir, fname), imread(cam1))
             images.append([fname])
             # view-1
-            fname = '{:08d}_{:02d}_{:04d}.jpg'.format(pid + 1, 1, 0)
+            fname = '{:08d}_{:02d}_{:04d}.jpg'.format(pid, 1, 0)
             imsave(osp.join(images_dir, fname), imread(cam2))
             images.append([fname])
             identities.append(images)
