@@ -12,13 +12,19 @@ class VIPeR(Dataset):
     url = 'http://users.soe.ucsc.edu/~manduchi/VIPeR.v1.0.zip'
     md5 = '1c2d9fc1cc800332567a0da25a1ce68c'
 
-    def __init__(self, root, split=0, download=False):
+    def __init__(self, root, split_id=0, download=False):
         super(VIPeR, self).__init__()
         self.root = root
-        self.split = split
+        self.split_id = split_id
 
         if download:
             self.download()
+
+        if not self._check_integrity():
+            raise RuntimeError("Dataset not found or corrupted. " +
+                               "You can use download=True to download it.")
+
+        self.load()
 
     def download(self):
         if self._check_integrity():
@@ -68,10 +74,12 @@ class VIPeR(Dataset):
             imsave(osp.join(images_dir, fname), imread(cam2))
             images.append([fname])
             identities.append(images)
+
         # Save meta information into a json file
         meta = {'name': 'VIPeR', 'shot': 'single', 'num_cameras': 2,
                 'identities': identities}
         write_json(meta, osp.join(self.root, 'meta.json'))
+
         # Randomly create ten training and test split
         num = len(identities)
         splits = []
@@ -84,9 +92,3 @@ class VIPeR(Dataset):
                      'test_gallery': test_pids}
             splits.append(split)
         write_json(splits, osp.join(self.root, 'splits.json'))
-
-    def _check_integrity(self):
-        return osp.isdir(osp.join(self.root, 'images')) and \
-               osp.isfile(osp.join(self.root, 'meta.json')) and \
-               osp.isfile(osp.join(self.root, 'splits.json'))
-
