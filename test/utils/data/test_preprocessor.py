@@ -21,4 +21,3 @@ class TestPreprocessor(TestCase):
         self.assertEquals(len(preproc), len(dataset.train))
         img, pid, camid = preproc[0]
         self.assertEquals(img.size(), (3, 224, 224))
-        print(img.size())
