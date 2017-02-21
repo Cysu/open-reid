@@ -27,6 +27,10 @@ class Dataset(object):
         self.training, self.validation = [], []
         self.test_query, self.test_gallery = [], []
 
+    @property
+    def images_dir(self):
+        return osp.join(self.root, 'images')
+
     def load(self, num_val=0.3):
         splits = read_json(osp.join(self.root, 'splits.json'))
         if self.split_id >= len(splits):
