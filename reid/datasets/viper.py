@@ -88,7 +88,7 @@ class VIPeR(Dataset):
             trainval_pids = sorted(pids[:num // 2])
             test_pids = sorted(pids[num // 2:])
             split = {'trainval': trainval_pids,
-                     'test_query': test_pids,
-                     'test_gallery': test_pids}
+                     'query': test_pids,
+                     'gallery': test_pids}
             splits.append(split)
         write_json(splits, osp.join(self.root, 'splits.json'))
