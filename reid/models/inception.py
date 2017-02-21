@@ -41,10 +41,11 @@ class Block(nn.Module):
 
 
 class Inception(nn.Module):
-    def __init__(self, num_classes=0, num_features=256, dropout=0):
+    def __init__(self, num_classes=0, num_features=256, norm=False, dropout=0):
         super(Inception, self).__init__()
         self.num_classes = num_classes
         self.num_features = num_features
+        self.norm = norm
         self.dropout = dropout
 
         self.conv1 = _make_conv(3, 32)
@@ -81,7 +82,10 @@ class Inception(nn.Module):
         x = self.global_pool(x)
         x = x.view(x.size(0), -1)
         x = self.feat(x)
-        x = F.relu(x)
+        if self.norm:
+            x = x / x.norm(2, 1).expand_as(x)
+        else:
+            x = F.relu(x)
         if self.dropout > 0:
             x = self.drop(x)
         if self.num_classes > 0:
