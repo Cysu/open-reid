@@ -36,6 +36,9 @@ class Block(nn.Module):
             self.branches.append(
                 nn.MaxPool2d(kernel_size=3, stride=stride, padding=1))
 
+        for i, branch in enumerate(self.branches):
+            self.add_module(str(i), branch)
+
     def forward(self, x):
         return torch.cat([b(x) for b in self.branches], 1)
 
