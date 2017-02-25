@@ -10,6 +10,7 @@ from reid.models import Inception
 from reid.train import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
+from reid.utils.serialization import load_model_, save_model
 
 
 def get_data(dataset_name, data_dir, batch_size, workers):
@@ -56,34 +57,69 @@ def get_data(dataset_name, data_dir, batch_size, workers):
 
 def main(args):
     torch.manual_seed(args.seed)
+    torch.cuda.manual_seed_all(args.seed)
 
+    # Create data loaders
     dataset, train_loader, val_loader, test_loader = \
         get_data(args.dataset, args.data_dir, args.batch_size, args.workers)
 
+    # Create model
     model = Inception(num_classes=dataset.num_train_ids,
                       num_features=256, dropout=0.5)
     model = torch.nn.DataParallel(model).cuda()
+
+    # Load from checkpoint
+    if args.resume:
+        checkpoint = load_model_(args.resume, model)
+        args.start_epoch = checkpoint['epoch']
+        best_top1 = checkpoint['best_top1']
+        print("=> start epoch {}  best top1 {:.2%}"
+              .format(args.start_epoch, best_top1))
+    else:
+        best_top1 = 0
+
     cudnn.benchmark = True
 
+    # Evaluator
+    evaluator = Evaluator(model, args)
+    if args.evaluate:
+        print("Validation:")
+        evaluator.evaluate(val_loader, dataset.val, dataset.val)
+        print("Test:")
+        evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
+        return
+
+    # Criterion and optimizer
     criterion = torch.nn.CrossEntropyLoss().cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
                                 weight_decay=args.weight_decay)
 
+    # Trainer
     trainer = Trainer(model, criterion, args)
-    evaluator = Evaluator(model, args)
 
+    # Schedule learning rate
     def adjust_lr(epoch):
         lr = args.lr * (0.1 ** (epoch // 50))
         for g in optimizer.param_groups:
             g['lr'] = lr
 
+    # Start training
     for epoch in range(args.start_epoch, args.epochs):
         adjust_lr(epoch)
         trainer.train(epoch, train_loader, optimizer)
-        evaluator.evaluate(val_loader, dataset.val, dataset.val)
+        top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val)
 
+        is_best = top1 > best_top1
+        best_top1 = max(top1, best_top1)
+        save_model({
+            'state_dict': model.state_dict(),
+            'epoch': epoch + 1,
+            'best_top1': best_top1,
+        }, is_best)
+
+    # Final test
     print('Test:')
     evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
 
