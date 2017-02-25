@@ -16,31 +16,32 @@ def _make_conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1,
 class Block(nn.Module):
     def __init__(self, in_planes, out_planes, pool_method, stride):
         super(Block, self).__init__()
-        self.branches = []
-        self.branches.append(nn.Sequential(
+        self.pool_method = pool_method
+
+        self.b3x3 = nn.Sequential(
             _make_conv(in_planes, out_planes, kernel_size=1, padding=0),
-            _make_conv(out_planes, out_planes, stride=stride)))
-        self.branches.append(nn.Sequential(
+            _make_conv(out_planes, out_planes, stride=stride))
+        self.b3x3x2 = nn.Sequential(
             _make_conv(in_planes, out_planes, kernel_size=1, padding=0),
             _make_conv(out_planes, out_planes),
-            _make_conv(out_planes, out_planes, stride=stride)))
+            _make_conv(out_planes, out_planes, stride=stride))
 
         if pool_method == 'Avg':
             assert stride == 1
-            self.branches.append(
-                _make_conv(in_planes, out_planes, kernel_size=1, padding=0))
-            self.branches.append(nn.Sequential(
+            self.b1x1 = _make_conv(in_planes, out_planes, kernel_size=1, padding=0)
+            self.bPoolProj = nn.Sequential(
                 nn.AvgPool2d(kernel_size=3, stride=1, padding=1),
-                _make_conv(in_planes, out_planes, kernel_size=1, padding=0)))
+                _make_conv(in_planes, out_planes, kernel_size=1, padding=0))
         else:
-            self.branches.append(
-                nn.MaxPool2d(kernel_size=3, stride=stride, padding=1))
-
-        for i, branch in enumerate(self.branches):
-            self.add_module(str(i), branch)
+            self.bPool = nn.MaxPool2d(kernel_size=3, stride=stride, padding=1)
 
     def forward(self, x):
-        return torch.cat([b(x) for b in self.branches], 1)
+        branches = [self.b3x3(x), self.b3x3x2(x)]
+        if self.pool_method == 'Avg':
+            branches.extend([self.b1x1(x), self.bPoolProj(x)])
+        else:
+            branches.append(self.bPool(x))
+        return torch.cat(branches, 1)
 
 
 class Inception(nn.Module):
