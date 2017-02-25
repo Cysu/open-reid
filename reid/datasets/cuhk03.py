@@ -63,7 +63,7 @@ class CUHK03(Dataset):
         def deref(ref):
             return matdata[ref][:].T
 
-        def dump(refs, pid, cam, fnames):
+        def dump_(refs, pid, cam, fnames):
             for ref in refs:
                 img = deref(ref)
                 if img.size == 0 or img.ndim < 2: break
@@ -79,10 +79,10 @@ class CUHK03(Dataset):
             for i in range(labeled.shape[0]):
                 pid = len(identities)
                 images = [[], []]
-                dump(labeled[i, :5], pid, 0, images[0])
-                dump(detected[i, :5], pid, 0, images[0])
-                dump(labeled[i, 5:], pid, 1, images[1])
-                dump(detected[i, 5:], pid, 1, images[1])
+                dump_(labeled[i, :5], pid, 0, images[0])
+                dump_(detected[i, :5], pid, 0, images[0])
+                dump_(labeled[i, 5:], pid, 1, images[1])
+                dump_(detected[i, 5:], pid, 1, images[1])
                 identities.append(images)
 
         # Save meta information into a json file
