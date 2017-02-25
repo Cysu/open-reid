@@ -5,16 +5,17 @@ import torch
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 
-from reid.datasets.viper import VIPeR
+from reid.datasets import get_dataset
 from reid.models import Inception
 from reid.train import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
 
 
-def get_data(data_dir, batch_size, workers):
-    root = osp.join(data_dir, 'viper')
-    dataset = VIPeR(root, split_id=0, num_val=0.3, download=True)
+def get_data(dataset_name, data_dir, batch_size, workers):
+    root = osp.join(data_dir, dataset_name)
+    dataset = get_dataset(dataset_name, root,
+                          split_id=0, num_val=100, download=True)
 
     normalizer = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])
@@ -57,7 +58,7 @@ def main(args):
     torch.manual_seed(args.seed)
 
     dataset, train_loader, val_loader, test_loader = \
-        get_data(args.data_dir, args.batch_size, args.workers)
+        get_data(args.dataset, args.data_dir, args.batch_size, args.workers)
 
     model = Inception(num_classes=dataset.num_train_ids,
                       num_features=256, dropout=0.5)
@@ -89,6 +90,8 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="ID Training Inception Model")
+    parser.add_argument('-d', '--dataset', type=str, default='cuhk03',
+                        choices=['cuhk03', 'viper'])
     parser.add_argument('-j', '--workers', type=int, default=4)
     parser.add_argument('-b', '--batch-size', type=int, default=64)
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
