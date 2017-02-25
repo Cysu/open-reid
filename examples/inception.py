@@ -1,6 +1,7 @@
 import argparse
 import os.path as osp
 
+import numpy as np
 import torch
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
@@ -56,6 +57,7 @@ def get_data(dataset_name, data_dir, batch_size, workers):
 
 
 def main(args):
+    np.random.seed(args.seed)
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
 
@@ -73,7 +75,7 @@ def main(args):
         checkpoint = load_model_(args.resume, model)
         args.start_epoch = checkpoint['epoch']
         best_top1 = checkpoint['best_top1']
-        print("=> start epoch {}  best top1 {:.2%}"
+        print("=> start epoch {}  best top1 {:.1%}"
               .format(args.start_epoch, best_top1))
     else:
         best_top1 = 0
