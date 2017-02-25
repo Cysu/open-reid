@@ -9,39 +9,37 @@ def _make_conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1,
     conv = nn.Conv2d(in_planes, out_planes, kernel_size=kernel_size,
                      stride=stride, padding=padding, bias=bias)
     bn = nn.BatchNorm2d(out_planes)
-    relu = nn.ReLU()
+    relu = nn.ReLU(inplace=True)
     return nn.Sequential(conv, bn, relu)
 
 
 class Block(nn.Module):
     def __init__(self, in_planes, out_planes, pool_method, stride):
         super(Block, self).__init__()
-        self.pool_method = pool_method
-
-        self.b3x3 = nn.Sequential(
-            _make_conv(in_planes, out_planes, kernel_size=1, padding=0),
-            _make_conv(out_planes, out_planes, stride=stride))
-        self.b3x3x2 = nn.Sequential(
-            _make_conv(in_planes, out_planes, kernel_size=1, padding=0),
-            _make_conv(out_planes, out_planes),
-            _make_conv(out_planes, out_planes, stride=stride))
+        self.branches = nn.ModuleList([
+            nn.Sequential(
+                _make_conv(in_planes, out_planes, kernel_size=1, padding=0),
+                _make_conv(out_planes, out_planes, stride=stride)
+            ),
+            nn.Sequential(
+                _make_conv(in_planes, out_planes, kernel_size=1, padding=0),
+                _make_conv(out_planes, out_planes),
+                _make_conv(out_planes, out_planes, stride=stride))
+        ])
 
         if pool_method == 'Avg':
             assert stride == 1
-            self.b1x1 = _make_conv(in_planes, out_planes, kernel_size=1, padding=0)
-            self.bPoolProj = nn.Sequential(
-                nn.AvgPool2d(kernel_size=3, stride=1, padding=1),
+            self.branches.append(
                 _make_conv(in_planes, out_planes, kernel_size=1, padding=0))
+            self.branches.append(nn.Sequential(
+                nn.AvgPool2d(kernel_size=3, stride=1, padding=1),
+                _make_conv(in_planes, out_planes, kernel_size=1, padding=0)))
         else:
-            self.bPool = nn.MaxPool2d(kernel_size=3, stride=stride, padding=1)
+            self.branches.append(
+                nn.MaxPool2d(kernel_size=3, stride=stride, padding=1))
 
     def forward(self, x):
-        branches = [self.b3x3(x), self.b3x3x2(x)]
-        if self.pool_method == 'Avg':
-            branches.extend([self.b1x1(x), self.bPoolProj(x)])
-        else:
-            branches.append(self.bPool(x))
-        return torch.cat(branches, 1)
+        return torch.cat([b(x) for b in self.branches], 1)
 
 
 class Inception(nn.Module):
@@ -65,7 +63,6 @@ class Inception(nn.Module):
         self.inception6b = self._make_inception(256, 'Max', 2)
         self.global_pool = nn.AvgPool2d(kernel_size=(9, 4))
         self.feat = nn.Linear(self.in_planes, self.num_features)
-        self.feat_bn = nn.BatchNorm1d(self.num_features)
         if self.dropout > 0:
             self.drop = nn.Dropout(self.dropout)
         if self.num_classes > 0:
@@ -87,7 +84,6 @@ class Inception(nn.Module):
         x = self.global_pool(x)
         x = x.view(x.size(0), -1)
         x = self.feat(x)
-        x = self.feat_bn(x)
         if self.norm:
             x = x / x.norm(2, 1).expand_as(x)
         else:
