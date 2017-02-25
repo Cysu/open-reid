@@ -37,11 +37,13 @@ def cmc(distmat, query_ids=None, gallery_ids=None,
     ret = np.zeros(topk)
     num_valid_queries = 0
     for i in range(m):
-        valid = (gallery_ids != query_ids[i]) | (gallery_cams != query_cams[i])
+        valid = ((gallery_ids[indices[i]] != query_ids[i]) |
+                 (gallery_cams[indices[i]] != query_cams[i]))
         index = np.nonzero(matches[i, valid])[0]
         if len(index) == 0: continue
         delta = 1. / len(index)
         for j, k in enumerate(index):
+            if k - j >= topk: break
             ret[k - j] += delta
         num_valid_queries += 1
     if num_valid_queries == 0:
