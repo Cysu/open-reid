@@ -32,7 +32,10 @@ class Trainer(object):
             targets = Variable(pids)
 
             outputs = self.model(inputs)
-            loss = self.criterion(outputs, targets)
+            if self.args.criterion == 'xentropy':
+                loss = self.criterion(outputs, targets)
+            else:
+                loss, outputs = self.criterion(outputs, targets)
             prec1, = accuracy(outputs.data, pids)
             losses.update(loss.data[0], imgs.size(0))
             top1.update(prec1[0], imgs.size(0))

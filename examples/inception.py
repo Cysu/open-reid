@@ -8,6 +8,7 @@ import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
+from reid.loss.oim import OIMLoss
 from reid.models import Inception
 from reid.train import Trainer, Evaluator
 from reid.utils.data import transforms
@@ -67,8 +68,11 @@ def main(args):
         get_data(args.dataset, args.data_dir, args.batch_size, args.workers)
 
     # Create model
-    model = Inception(num_classes=dataset.num_train_ids,
-                      num_features=256, dropout=0.5)
+    if args.loss == 'xentropy':
+        model = Inception(num_classes=dataset.num_train_ids,
+                          num_features=256, dropout=0.5)
+    else:
+        model = Inception(num_features=256, norm=True, dropout=0.5)
     model = torch.nn.DataParallel(model).cuda()
 
     # Load from checkpoint
@@ -93,7 +97,10 @@ def main(args):
         return
 
     # Criterion and optimizer
-    criterion = torch.nn.CrossEntropyLoss().cuda()
+    if args.loss == 'xentropy':
+        criterion = torch.nn.CrossEntropyLoss().cuda()
+    else:
+        criterion = OIMLoss(256, dataset.num_train_ids, scalar=10.0).cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -139,6 +146,8 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=40)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
+    parser.add_argument('--loss', type=str, default='xentropy',
+                        choices=['xentropy', 'oim'])
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
