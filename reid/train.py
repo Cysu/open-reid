@@ -70,7 +70,8 @@ class Evaluator(object):
         query_cams = [cam for _, _, cam in query]
         gallery_cams = [cam for _, _, cam in gallery]
         cmc_scores = cmc(distmat, query_ids, gallery_ids,
-                         query_cams, gallery_cams)
+                         query_cams, gallery_cams,
+                         separate_camera_set=False, single_gallery_shot=False)
         print('CMC Scores:')
         for k in [1, 5, 10]:
             print('  top-{:<3}{:6.1%}'.format(k, cmc_scores[k-1]))

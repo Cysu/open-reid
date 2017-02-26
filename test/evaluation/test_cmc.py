@@ -18,7 +18,8 @@ class TestCmc(TestCase):
         distmat = np.tile(np.arange(4), (4, 1))
         query_ids = [0, 0, 1, 1]
         gallery_ids = [0, 0, 1, 1]
-        ret = cmc(distmat, query_ids=query_ids, gallery_ids=gallery_ids, topk=4)
+        ret = cmc(distmat, query_ids=query_ids, gallery_ids=gallery_ids, topk=4,
+                  separate_camera_set=False, single_gallery_shot=False)
         self.assertTrue(np.all(ret == [0.5, 0.5, 1, 1]))
 
     def test_duplicate_cams(self):
@@ -28,5 +29,6 @@ class TestCmc(TestCase):
         query_cams = [0,0,0,0,0]
         gallery_cams = [0,1,1,1,1]
         ret = cmc(distmat, query_ids=query_ids, gallery_ids=gallery_ids,
-                  query_cams=query_cams, gallery_cams=gallery_cams, topk=5)
+                  query_cams=query_cams, gallery_cams=gallery_cams, topk=5,
+                  separate_camera_set=False, single_gallery_shot=False)
         self.assertTrue(np.all(ret == [0.6, 0.6, 0.6, 1, 1]))
