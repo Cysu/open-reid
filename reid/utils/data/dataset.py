@@ -3,7 +3,7 @@ import os.path as osp
 
 import numpy as np
 
-from reid.utils.serialization import read_json
+from ..serialization import read_json
 
 
 def _pluck(identities, indices, relabel=False):

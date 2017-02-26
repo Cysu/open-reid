@@ -3,9 +3,9 @@ import os.path as osp
 
 import numpy as np
 
-from reid.utils.data import Dataset
-from reid.utils.osutils import mkdir_if_missing
-from reid.utils.serialization import write_json
+from ..utils.data import Dataset
+from ..utils.osutils import mkdir_if_missing
+from ..utils.serialization import write_json
 
 
 class VIPeR(Dataset):

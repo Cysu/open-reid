@@ -3,9 +3,9 @@ import time
 
 from torch.autograd import Variable
 
-from reid.evaluation import accuracy, cmc
-from reid.metrics import pairwise_distance
-from reid.utils.meters import AverageMeter
+from .evaluation import accuracy, cmc
+from .metrics import pairwise_distance
+from .utils.meters import AverageMeter
 
 
 class Trainer(object):
