@@ -4,6 +4,7 @@ import time
 from torch.autograd import Variable
 
 from .evaluation import accuracy, cmc
+from .loss.oim import OIMLoss
 from .metrics import pairwise_distance
 from .utils.meters import AverageMeter
 
@@ -32,10 +33,10 @@ class Trainer(object):
             targets = Variable(pids)
 
             outputs = self.model(inputs)
-            if self.args.criterion == 'xentropy':
-                loss = self.criterion(outputs, targets)
-            else:
+            if isinstance(self.criterion, OIMLoss):
                 loss, outputs = self.criterion(outputs, targets)
+            else:
+                loss = self.criterion(outputs, targets)
             prec1, = accuracy(outputs.data, pids)
             losses.update(loss.data[0], imgs.size(0))
             top1.update(prec1[0], imgs.size(0))
