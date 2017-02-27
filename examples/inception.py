@@ -3,6 +3,7 @@ import argparse
 import os.path as osp
 
 import numpy as np
+import sys
 import torch
 import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
@@ -13,13 +14,14 @@ from reid.models import Inception
 from reid.train import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
+from reid.utils.logging import Logger
 from reid.utils.serialization import load_model_, save_model
 
 
-def get_data(dataset_name, data_dir, batch_size, workers):
+def get_data(dataset_name, split_id, data_dir, batch_size, workers):
     root = osp.join(data_dir, dataset_name)
     dataset = get_dataset(dataset_name, root,
-                          split_id=0, num_val=100, download=True)
+                          split_id=split_id, num_val=100, download=True)
 
     normalizer = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])
@@ -63,9 +65,15 @@ def main(args):
     torch.manual_seed(args.seed)
     torch.cuda.manual_seed_all(args.seed)
 
+    cudnn.benchmark = True
+
+    # Redirect print to both console and log file
+    sys.stdout = Logger(osp.join(args.logs_dir, 'log.txt'))
+
     # Create data loaders
     dataset, train_loader, val_loader, test_loader = \
-        get_data(args.dataset, args.data_dir, args.batch_size, args.workers)
+        get_data(args.dataset, args.split, args.data_dir,
+                 args.batch_size, args.workers)
 
     # Create model
     if args.loss == 'xentropy':
@@ -84,8 +92,6 @@ def main(args):
               .format(args.start_epoch, best_top1))
     else:
         best_top1 = 0
-
-    cudnn.benchmark = True
 
     # Evaluator
     evaluator = Evaluator(model, args)
@@ -127,7 +133,10 @@ def main(args):
             'state_dict': model.state_dict(),
             'epoch': epoch + 1,
             'best_top1': best_top1,
-        }, is_best)
+        }, is_best, fpath=osp.join(args.logs_dir, 'checkpoint.pth.tar'))
+
+        print(' * Finished epoch {}  top1: {:.1%}  best: {:.1%}{}'.
+              format(epoch, top1, best_top1, ' *' if is_best else ''))
 
     # Final test
     print('Test:')
@@ -136,21 +145,30 @@ def main(args):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="ID Training Inception Model")
+    # data
     parser.add_argument('-d', '--dataset', type=str, default='cuhk03',
                         choices=['cuhk03', 'viper'])
-    parser.add_argument('-j', '--workers', type=int, default=4)
     parser.add_argument('-b', '--batch-size', type=int, default=64)
+    parser.add_argument('-j', '--workers', type=int, default=4)
+    parser.add_argument('--split', type=int, default=0)
+    # loss
+    parser.add_argument('--loss', type=str, default='xentropy',
+                        choices=['xentropy', 'oim'])
+    # optimizer
+    parser.add_argument('--lr', type=float, default=0.1)
+    parser.add_argument('--momentum', type=float, default=0.9)
+    parser.add_argument('--weight-decay', type=float, default=5e-4)
+    # training configs
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true')
     parser.add_argument('--start-epoch', type=int, default=0)
     parser.add_argument('--epochs', type=int, default=40)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
-    parser.add_argument('--loss', type=str, default='xentropy',
-                        choices=['xentropy', 'oim'])
-    parser.add_argument('--lr', type=float, default=0.1)
-    parser.add_argument('--momentum', type=float, default=0.9)
-    parser.add_argument('--weight-decay', type=float, default=5e-4)
-    parser.add_argument('--data-dir', type=str, default='data')
-    parser.add_argument('--logs-dir', type=str, default='logs')
+    # misc
+    working_dir = osp.dirname(osp.abspath(__file__))
+    parser.add_argument('--data-dir', type=str, metavar='PATH',
+                        default=osp.join(working_dir, 'data'))
+    parser.add_argument('--logs-dir', type=str, metavar='PATH',
+                        default=osp.join(working_dir, 'logs'))
     main(parser.parse_args())
