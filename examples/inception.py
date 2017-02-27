@@ -149,7 +149,7 @@ if __name__ == '__main__':
     parser.add_argument('-d', '--dataset', type=str, default='cuhk03',
                         choices=['cuhk03', 'viper'])
     parser.add_argument('-b', '--batch-size', type=int, default=64)
-    parser.add_argument('-j', '--workers', type=int, default=4)
+    parser.add_argument('-j', '--workers', type=int, default=2)
     parser.add_argument('--split', type=int, default=0)
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
@@ -162,7 +162,7 @@ if __name__ == '__main__':
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true')
     parser.add_argument('--start-epoch', type=int, default=0)
-    parser.add_argument('--epochs', type=int, default=40)
+    parser.add_argument('--epochs', type=int, default=120)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
     # misc
