@@ -78,7 +78,7 @@ class Evaluator(object):
                          separate_camera_set=False, single_gallery_shot=False)
         print('CMC Scores:')
         for k in [1, 5, 10]:
-            print('  top-{:<3}{:6.1%}'.format(k, cmc_scores[k-1]))
+            print('  top-{:<3}{:5.1%}'.format(k, cmc_scores[k-1]))
         return cmc_scores[0]
 
     def extract_features(self, data_loader):
