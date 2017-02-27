@@ -68,7 +68,8 @@ def main(args):
     cudnn.benchmark = True
 
     # Redirect print to both console and log file
-    sys.stdout = Logger(osp.join(args.logs_dir, 'log.txt'))
+    if not args.evaluate:
+        sys.stdout = Logger(osp.join(args.logs_dir, 'log.txt'))
 
     # Create data loaders
     dataset, train_loader, val_loader, test_loader = \
@@ -106,7 +107,7 @@ def main(args):
     if args.loss == 'xentropy':
         criterion = torch.nn.CrossEntropyLoss().cuda()
     else:
-        criterion = OIMLoss(256, dataset.num_train_ids, scalar=20).cuda()
+        criterion = OIMLoss(256, dataset.num_train_ids, scalar=10).cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -117,7 +118,7 @@ def main(args):
 
     # Schedule learning rate
     def adjust_lr(epoch):
-        lr = args.lr * (0.1 ** (epoch // 50))
+        lr = args.lr * (0.1 ** (epoch // 40))
         for g in optimizer.param_groups:
             g['lr'] = lr
 
@@ -162,7 +163,7 @@ if __name__ == '__main__':
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true')
     parser.add_argument('--start-epoch', type=int, default=0)
-    parser.add_argument('--epochs', type=int, default=120)
+    parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
     # misc

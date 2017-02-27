@@ -69,17 +69,29 @@ class Evaluator(object):
     def evaluate(self, data_loader, query, gallery):
         features = self.extract_features(data_loader)
         distmat = pairwise_distance(features, query, gallery)
+
         query_ids = [pid for _, pid, _ in query]
         gallery_ids = [pid for _, pid, _ in gallery]
         query_cams = [cam for _, _, cam in query]
         gallery_cams = [cam for _, _, cam in gallery]
-        cmc_scores = cmc(distmat, query_ids, gallery_ids,
-                         query_cams, gallery_cams,
-                         separate_camera_set=False, single_gallery_shot=False)
-        print('CMC Scores:')
+
+        # Compute both new and old cmc scores
+        cmc_scores_new = cmc(distmat, query_ids, gallery_ids,
+                             query_cams, gallery_cams,
+                             separate_camera_set=False,
+                             single_gallery_shot=False)
+        cmc_scores_old = cmc(distmat, query_ids, gallery_ids,
+                             query_cams, gallery_cams,
+                             separate_camera_set=True,
+                             single_gallery_shot=True)
+
+        print('CMC Scores  (new)  (old):')
         for k in [1, 5, 10]:
-            print('  top-{:<3}{:5.1%}'.format(k, cmc_scores[k-1]))
-        return cmc_scores[0]
+            print('    top-{:<3} {:5.1%}  {:5.1%}'
+                  .format(k, cmc_scores_new[k-1], cmc_scores_old[k-1]))
+
+        # Use the new cmc top-1 score for validation criterion
+        return cmc_scores_new[0]
 
     def extract_features(self, data_loader):
         self.model.eval()
