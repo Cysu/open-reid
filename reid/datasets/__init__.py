@@ -1,9 +1,11 @@
 from .cuhk03 import CUHK03
+from .market1501 import Market1501
 from .viper import VIPeR
 
 __sets = {
     'viper': VIPeR,
     'cuhk03': CUHK03,
+    'market1501': Market1501,
 }
 
 
