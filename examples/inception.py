@@ -79,9 +79,9 @@ def main(args):
     # Create model
     if args.loss == 'xentropy':
         model = Inception(num_classes=dataset.num_train_ids,
-                          num_features=256, dropout=0.5)
+                          num_features=args.features, dropout=0.5)
     else:
-        model = Inception(num_features=256, norm=True, dropout=0.5)
+        model = Inception(num_features=args.features, norm=True, dropout=0.5)
     model = torch.nn.DataParallel(model).cuda()
 
     # Load from checkpoint
@@ -107,7 +107,8 @@ def main(args):
     if args.loss == 'xentropy':
         criterion = torch.nn.CrossEntropyLoss().cuda()
     else:
-        criterion = OIMLoss(256, dataset.num_train_ids, scalar=10).cuda()
+        criterion = OIMLoss(args.features, dataset.num_train_ids,
+                            scalar=10).cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -152,6 +153,8 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--batch-size', type=int, default=64)
     parser.add_argument('-j', '--workers', type=int, default=2)
     parser.add_argument('--split', type=int, default=0)
+    # model
+    parser.add_argument('--features', type=int, default=128)
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
                         choices=['xentropy', 'oim'])
