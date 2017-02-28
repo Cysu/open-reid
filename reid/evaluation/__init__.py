@@ -28,8 +28,10 @@ def _unique_sample(ids_dict, num):
 
 
 def cmc(distmat, query_ids=None, gallery_ids=None,
-        query_cams=None, gallery_cams=None,
-        topk=100, separate_camera_set=True, single_gallery_shot=False):
+        query_cams=None, gallery_cams=None, topk=100,
+        separate_camera_set=False,
+        single_gallery_shot=False,
+        first_match_break=False):
     m, n = distmat.shape
     # Fill up default values
     if query_ids is None:
@@ -78,6 +80,9 @@ def cmc(distmat, query_ids=None, gallery_ids=None,
             delta = 1. / (len(index) * repeat)
             for j, k in enumerate(index):
                 if k - j >= topk: break
+                if first_match_break:
+                    ret[k - j] += 1
+                    break
                 ret[k - j] += delta
         num_valid_queries += 1
     if num_valid_queries == 0:

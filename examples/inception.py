@@ -137,7 +137,7 @@ def main(args):
             'best_top1': best_top1,
         }, is_best, fpath=osp.join(args.logs_dir, 'checkpoint.pth.tar'))
 
-        print(' * Finished epoch {:4d}  top1: {:5.1%}  best: {:5.1%}{}'.
+        print('\n * Finished epoch {:3d}  top1: {:5.1%}  best: {:5.1%}{}\n'.
               format(epoch, top1, best_top1, ' *' if is_best else ''))
 
     # Final test
