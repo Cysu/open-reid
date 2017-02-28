@@ -13,9 +13,7 @@ class VIPeR(Dataset):
     md5 = '1c2d9fc1cc800332567a0da25a1ce68c'
 
     def __init__(self, root, split_id=0, num_val=0.3, download=False):
-        super(VIPeR, self).__init__()
-        self.root = root
-        self.split_id = split_id
+        super(VIPeR, self).__init__(root, split_id=split_id)
 
         if download:
             self.download()

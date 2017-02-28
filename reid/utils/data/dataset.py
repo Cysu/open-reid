@@ -23,9 +23,9 @@ def _pluck(identities, indices, relabel=False):
 
 
 class Dataset(object):
-    def __init__(self):
-        self.root = None
-        self.split_id = None
+    def __init__(self, root, split_id=0):
+        self.root = root
+        self.split_id = split_id
         self.meta = None
         self.split = None
         self.train, self.val = [], []
