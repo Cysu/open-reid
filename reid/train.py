@@ -48,13 +48,13 @@ class Trainer(object):
             batch_time.update(time.time() - end)
             end = time.time()
 
-            if i % self.args.print_freq == 0:
+            if (i + 1) % self.args.print_freq == 0:
                 print('Epoch: [{}][{}/{}]\t'
                       'Time {:.3f} ({:.3f})\t'
                       'Data {:.3f} ({:.3f})\t'
                       'Loss {:.3f} ({:.3f})\t'
                       'Top1 {:.2%} ({:.2%})\t'.format(
-                    epoch, i, len(data_loader),
+                    epoch, i + 1, len(data_loader),
                     batch_time.val, batch_time.avg,
                     data_time.val, data_time.avg,
                     losses.val, losses.avg, top1.val, top1.avg))
@@ -123,11 +123,11 @@ class Evaluator(object):
             batch_time.update(time.time() - end)
             end = time.time()
 
-            if i % self.args.print_freq == 0:
+            if (i + 1) % self.args.print_freq == 0:
                 print('Evaluate: [{}/{}]\t'
                       'Time {:.3f} ({:.3f})\t'
                       'Data {:.3f} ({:.3f})\t'.format(
-                    i, len(data_loader),
+                    i + 1, len(data_loader),
                     batch_time.val, batch_time.avg,
                     data_time.val, data_time.avg))
 
