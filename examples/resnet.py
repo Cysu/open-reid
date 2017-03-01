@@ -166,8 +166,8 @@ if __name__ == '__main__':
     # model
     parser.add_argument('--depth', type=int, default=50,
                         choices=[18, 34, 50, 101, 152])
-    parser.add_argument('--features', type=int, default=0)
-    parser.add_argument('--dropout', type=float, default=0.9)
+    parser.add_argument('--features', type=int, default=256)
+    parser.add_argument('--dropout', type=float, default=0.5)
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
                         choices=['xentropy', 'oim'])
@@ -180,7 +180,7 @@ if __name__ == '__main__':
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true')
     parser.add_argument('--start-epoch', type=int, default=0)
-    parser.add_argument('--epochs', type=int, default=100)
+    parser.add_argument('--epochs', type=int, default=70)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
     # misc
