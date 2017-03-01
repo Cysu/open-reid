@@ -49,6 +49,7 @@ class Inception(nn.Module):
         self.num_features = num_features
         self.norm = norm
         self.dropout = dropout
+        self.has_embedding = num_features > 0
 
         self.conv1 = _make_conv(3, 32)
         self.conv2 = _make_conv(32, 32)
@@ -62,8 +63,13 @@ class Inception(nn.Module):
         self.inception6a = self._make_inception(256, 'Avg', 1)
         self.inception6b = self._make_inception(256, 'Max', 2)
         self.global_pool = nn.AvgPool2d(kernel_size=(9, 4))
-        self.feat = nn.Linear(self.in_planes, self.num_features)
-        self.feat_bn = nn.BatchNorm1d(self.num_features)
+
+        if self.has_embedding:
+            self.feat = nn.Linear(self.in_planes, self.num_features)
+            self.feat_bn = nn.BatchNorm1d(self.num_features)
+        else:
+            # Change the num_features to CNN output channels
+            self.num_features = self.in_planes
         if self.dropout > 0:
             self.drop = nn.Dropout(self.dropout)
         if self.num_classes > 0:
@@ -84,11 +90,12 @@ class Inception(nn.Module):
         x = self.inception6b(x)
         x = self.global_pool(x)
         x = x.view(x.size(0), -1)
-        x = self.feat(x)
-        x = self.feat_bn(x)
+        if self.has_embedding:
+            x = self.feat(x)
+            x = self.feat_bn(x)
         if self.norm:
             x = x / x.norm(2, 1).expand_as(x)
-        else:
+        elif self.has_embedding:
             x = F.relu(x)
         if self.dropout > 0:
             x = self.drop(x)
