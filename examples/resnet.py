@@ -109,16 +109,20 @@ def main(args):
         evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
         return
 
-    # Criterion and optimizer
+    # Criterion
     if args.loss == 'xentropy':
         criterion = torch.nn.CrossEntropyLoss().cuda()
     else:
-        criterion = OIMLoss(model.num_features, dataset.num_train_ids,
+        criterion = OIMLoss(model.module.num_features, dataset.num_train_ids,
                             scalar=args.oim_scalar).cuda()
 
-    optimizer = torch.optim.SGD(model.parameters(), args.lr,
-                                momentum=args.momentum,
-                                weight_decay=args.weight_decay)
+    # Optimizer: different learning rates for pretrained and new layers
+    base_param_ids = set(map(id, model.module.base.parameters()))
+    new_params = [p for p in model.parameters() if id(p) not in base_param_ids]
+    optimizer = torch.optim.SGD([
+        {'params': model.module.base.parameters(), 'lr_mult': 0.1},
+        {'params': new_params, 'lr_mult': 1.0}],
+        lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
     # Trainer
     trainer = Trainer(model, criterion, args)
@@ -127,7 +131,7 @@ def main(args):
     def adjust_lr(epoch):
         lr = args.lr * (0.1 ** (epoch // 40))
         for g in optimizer.param_groups:
-            g['lr'] = lr
+            g['lr'] = lr * g['lr_mult']
 
     # Start training
     for epoch in range(args.start_epoch, args.epochs):
