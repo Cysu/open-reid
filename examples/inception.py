@@ -142,7 +142,8 @@ def main(args):
               format(epoch, top1, best_top1, ' *' if is_best else ''))
 
     # Final test
-    print('Test:')
+    print('Test with best model:')
+    load_model_(osp.join(args.logs_dir, 'model_best.pth.tar'), model)
     evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
 
 
