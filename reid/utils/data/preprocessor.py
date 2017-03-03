@@ -12,7 +12,12 @@ class Preprocessor(object):
     def __len__(self):
         return len(self.dataset)
 
-    def __getitem__(self, index):
+    def __getitem__(self, indices):
+        if isinstance(indices, (tuple, list)):
+            return [self._get_single_item(index) for index in indices]
+        return self._get_single_item(indices)
+
+    def _get_single_item(self, index):
         fname, pid, camid = self.dataset[index]
         fpath = fname
         if self.root is not None:
