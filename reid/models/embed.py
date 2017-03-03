@@ -17,9 +17,9 @@ class EltwiseSubEmbed(nn.Module):
     def forward(self, x1, x2):
         x = x1 - x2
         if self.nonlinearity == 'square':
-            x.pow_(2)
+            x = x.pow(2)
         elif self.nonlinearity == 'abs':
-            x.abs_()
+            x = x.abs()
         x = self.bn(x)
         x = self.classifier(x)
         return x

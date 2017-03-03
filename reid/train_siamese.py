@@ -56,5 +56,5 @@ class Trainer(object):
     def _parse_data(self, pair):
         (imgs1, _, pids1, _), (imgs2, _, pids2, _) = pair
         inputs1, inputs2 = Variable(imgs1), Variable(imgs2)
-        targets = (pids1 == pids2).long().cuda()
+        targets = Variable((pids1 == pids2).long().cuda())
         return inputs1, inputs2, targets
