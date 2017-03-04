@@ -12,7 +12,7 @@ from reid.datasets import get_dataset
 from reid.models import Inception
 from reid.models.embed import EltwiseSubEmbed
 from reid.models.siamese import Siamese
-from reid.train_siamese import Trainer
+from reid.train_siamese import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomPairSampler
 from reid.utils.data.preprocessor import Preprocessor
@@ -38,7 +38,28 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers):
         sampler=RandomPairSampler(dataset.train, neg_pos_ratio=1),
         batch_size=batch_size, num_workers=workers, pin_memory=False)
 
-    return dataset, train_loader
+    val_loader = DataLoader(
+        Preprocessor(dataset.val, root=dataset.images_dir,
+                     transform=transforms.Compose([
+                         transforms.RectScale(144, 56),
+                         transforms.ToTensor(),
+                         normalizer,
+                     ])),
+        batch_size=batch_size, num_workers=workers,
+        shuffle=False, pin_memory=False)
+
+    test_loader = DataLoader(
+        Preprocessor(list(set(dataset.query) | set(dataset.gallery)),
+                     root=dataset.images_dir,
+                     transform=transforms.Compose([
+                         transforms.RectScale(144, 56),
+                         transforms.ToTensor(),
+                         normalizer,
+                     ])),
+        batch_size=batch_size, num_workers=workers,
+        shuffle=False, pin_memory=False)
+
+    return dataset, train_loader, val_loader, test_loader
 
 
 def main(args):
@@ -53,14 +74,15 @@ def main(args):
         sys.stdout = Logger(osp.join(args.logs_dir, 'log.txt'))
 
     # Create data loaders
-    dataset, train_loader = \
+    dataset, train_loader, val_loader, test_loader = \
         get_data(args.dataset, args.split, args.data_dir,
                  args.batch_size, args.workers)
 
     # Create models
-    model = Siamese(Inception(num_classes=0, num_features=args.features,
-                              dropout=args.dropout),
-                    EltwiseSubEmbed(args.features))
+    base_model = Inception(num_classes=0, num_features=args.features,
+                           dropout=args.dropout)
+    embed_model = EltwiseSubEmbed(args.features)
+    model = Siamese(base_model, embed_model)
     model = torch.nn.DataParallel(model).cuda()
 
     # Load from checkpoint
@@ -72,6 +94,18 @@ def main(args):
               .format(args.start_epoch, best_top1))
     else:
         best_top1 = 0
+
+    # Evaluator
+    evaluator = Evaluator(base_model, embed_model, args)
+    cache_file = osp.join(args.logs_dir, 'cache.h5')
+    if args.evaluate:
+        print("Validation:")
+        evaluator.evaluate(val_loader, dataset.val, dataset.val,
+                           cache_file=cache_file)
+        print("Test:")
+        evaluator.evaluate(test_loader, dataset.query, dataset.gallery,
+                           cache_file=cache_file)
+        return
 
     # Criterion
     criterion = torch.nn.CrossEntropyLoss().cuda()
@@ -93,6 +127,26 @@ def main(args):
     for epoch in range(args.start_epoch, args.epochs):
         adjust_lr(epoch)
         trainer.train(epoch, train_loader, optimizer)
+
+        top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val,
+                                  cache_file=cache_file)
+
+        is_best = top1 > best_top1
+        best_top1 = max(top1, best_top1)
+        save_model({
+            'state_dict': model.state_dict(),
+            'epoch': epoch + 1,
+            'best_top1': best_top1,
+        }, is_best, fpath=osp.join(args.logs_dir, 'checkpoint.pth.tar'))
+
+        print('\n * Finished epoch {:3d}  top1: {:5.1%}  best: {:5.1%}{}\n'.
+              format(epoch, top1, best_top1, ' *' if is_best else ''))
+
+    # Final test
+    print('Test with best model:')
+    load_model_(osp.join(args.logs_dir, 'model_best.pth.tar'), model)
+    evaluator.evaluate(test_loader, dataset.query, dataset.gallery,
+                       cache_file=cache_file)
 
 
 if __name__ == '__main__':
