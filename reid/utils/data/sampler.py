@@ -4,6 +4,18 @@ import numpy as np
 from torch.utils.data.sampler import *
 
 
+def _choose_from(start, end, excluding=None, size=1, replace=False):
+    num = end - start + 1
+    if excluding is None:
+        return np.random.choice(num, size=size, replace=replace) + start
+    ex_start, ex_end = excluding
+    num_ex = ex_end - ex_start + 1
+    num -= num_ex
+    inds = np.random.choice(num, size=size, replace=replace) + start
+    inds += (inds >= ex_start) * num_ex
+    return inds
+
+
 class PairSampler(Sampler):
     def __init__(self, data_source, neg_pos_ratio=1, exhaustive=False):
         super(PairSampler, self).__init__(data_source)
@@ -11,15 +23,17 @@ class PairSampler(Sampler):
         self.num_samples = len(data_source)
         self.neg_pos_ratio = neg_pos_ratio
         self.exhaustive = exhaustive
-        # Build up positive sets and negative lists
+
         if not exhaustive:
-            all_samples = set(np.arange(self.num_samples))
-            self.pos_samples = defaultdict(set)
-            for index, (_, pid, _) in enumerate(data_source):
-                self.pos_samples[pid].add(index)
-            self.neg_samples = {}
-            for pid, samples in self.pos_samples.items():
-                self.neg_samples[pid] = list(all_samples - samples)
+            # Sort by pid
+            indices = np.argsort(np.asarray(data_source)[:, 1])
+            self.index_map = dict(zip(np.arange(self.num_samples), indices))
+            # Get the range of indices for each pid
+            self.index_range = defaultdict(lambda: [self.num_samples, -1])
+            for i, j in enumerate(indices):
+                _, pid, _ = data_source[j]
+                self.index_range[pid][0] = min(self.index_range[pid][0], i)
+                self.index_range[pid][1] = max(self.index_range[pid][1], i)
 
     def __iter__(self):
         if self.exhaustive:
@@ -29,17 +43,20 @@ class PairSampler(Sampler):
             return
 
         indices = np.random.permutation(self.num_samples)
-        for anchor_index in indices:
-            _, anchor_pid, _ = self.data_source[anchor_index]
-            pos_samples = self.pos_samples[anchor_pid]
-            # Choose one positive sample randomly
-            pos_index = np.random.choice(list(pos_samples - {anchor_index}))
-            yield anchor_index, pos_index
-            # Choose several negative samples randomly
-            neg_indices = np.random.choice(self.neg_samples[anchor_pid],
-                                           self.neg_pos_ratio, replace=False)
+        for i in indices:
+            # anchor sample
+            anchor_index = self.index_map[i]
+            _, pid, _ = self.data_source[anchor_index]
+            # positive sample
+            start, end = self.index_range[pid]
+            pos_index = _choose_from(start, end, excluding=(i, i))[0]
+            yield anchor_index, self.index_map[pos_index]
+            # negative samples
+            neg_indices = _choose_from(0, self.num_samples - 1,
+                                       excluding=(start, end),
+                                       size=self.neg_pos_ratio)
             for neg_index in neg_indices:
-                yield anchor_index, neg_index
+                yield anchor_index, self.index_map[neg_index]
 
     def __len__(self):
         if self.exhaustive:
