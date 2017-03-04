@@ -14,7 +14,7 @@ from reid.models.embed import EltwiseSubEmbed
 from reid.models.siamese import Siamese
 from reid.train_siamese import Trainer
 from reid.utils.data import transforms
-from reid.utils.data.sampler import PairSampler
+from reid.utils.data.sampler import RandomPairSampler
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
 from reid.utils.serialization import load_model_, save_model
@@ -35,7 +35,7 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers):
                          transforms.ToTensor(),
                          normalizer,
                      ])),
-        sampler=PairSampler(dataset.train, neg_pos_ratio=1, exhaustive=False),
+        sampler=RandomPairSampler(dataset.train, neg_pos_ratio=1),
         batch_size=batch_size, num_workers=workers, pin_memory=False)
 
     return dataset, train_loader
