@@ -6,11 +6,9 @@ from torch.utils.data import Dataset
 class FeatureDatabase(Dataset):
     def __init__(self, *args, **kwargs):
         super(FeatureDatabase, self).__init__()
-        self.args = args
-        self.kwargs = kwargs
+        self.fid = h5py.File(*args, **kwargs)
 
     def __enter__(self):
-        self.fid = h5py.File(*self.args, **self.kwargs)
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):

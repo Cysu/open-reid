@@ -4,6 +4,7 @@ import time
 from torch.autograd import Variable
 
 from .evaluation import accuracy, cmc
+from .features import extract_features
 from .loss.oim import OIMLoss
 from .metrics import pairwise_distance
 from .utils.meters import AverageMeter
@@ -67,7 +68,8 @@ class Evaluator(object):
         self.args = args
 
     def evaluate(self, data_loader, query, gallery):
-        features = self.extract_features(data_loader)
+        features = extract_features(self.model, data_loader,
+                                    print_freq=self.args.print_freq)
         distmat = pairwise_distance(features, query, gallery)
 
         query_ids = [pid for _, pid, _ in query]
@@ -100,35 +102,3 @@ class Evaluator(object):
 
         # Use the new cmc top-1 score for validation criterion
         return cmc_scores['new'][0]
-
-    def extract_features(self, data_loader):
-        self.model.eval()
-
-        features = {}
-
-        batch_time = AverageMeter()
-        data_time = AverageMeter()
-
-        end = time.time()
-        for i, (imgs, fnames, _, _) in enumerate(data_loader):
-            data_time.update(time.time() - end)
-
-            inputs = Variable(imgs, volatile=True)
-            outputs = self.model(inputs).data
-
-            assert len(fnames) == outputs.size(0)
-            for fname, output in zip(fnames, outputs):
-                features[fname] = output
-
-            batch_time.update(time.time() - end)
-            end = time.time()
-
-            if (i + 1) % self.args.print_freq == 0:
-                print('Evaluate: [{}/{}]\t'
-                      'Time {:.3f} ({:.3f})\t'
-                      'Data {:.3f} ({:.3f})\t'.format(
-                    i + 1, len(data_loader),
-                    batch_time.val, batch_time.avg,
-                    data_time.val, data_time.avg))
-
-        return features
