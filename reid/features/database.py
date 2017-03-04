@@ -14,7 +14,12 @@ class FeatureDatabase(Dataset):
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.close()
 
-    def __getitem__(self, key):
+    def __getitem__(self, keys):
+        if isinstance(keys, (tuple, list)):
+            return [self._get_single_item(k) for k in keys]
+        return self._get_single_item(keys)
+
+    def _get_single_item(self, key):
         return np.asarray(self.fid[key])
 
     def __setitem__(self, key, value):
