@@ -15,7 +15,7 @@ from reid.train import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
-from reid.utils.serialization import load_model_, save_model
+from reid.utils.serialization import load_checkpoint, save_checkpoint
 
 
 def get_data(dataset_name, split_id, data_dir, batch_size, workers):
@@ -92,7 +92,8 @@ def main(args):
 
     # Load from checkpoint
     if args.resume:
-        checkpoint = load_model_(args.resume, model)
+        checkpoint = load_checkpoint(args.resume)
+        model.load_state_dict(checkpoint['state_dict'])
         args.start_epoch = checkpoint['epoch']
         best_top1 = checkpoint['best_top1']
         print("=> start epoch {}  best top1 {:.1%}"
@@ -141,7 +142,7 @@ def main(args):
 
         is_best = top1 > best_top1
         best_top1 = max(top1, best_top1)
-        save_model({
+        save_checkpoint({
             'state_dict': model.state_dict(),
             'epoch': epoch + 1,
             'best_top1': best_top1,
@@ -152,7 +153,8 @@ def main(args):
 
     # Final test
     print('Test with best model:')
-    load_model_(osp.join(args.logs_dir, 'model_best.pth.tar'), model)
+    checkpoint = load_checkpoint(osp.join(args.logs_dir, 'model_best.pth.tar'))
+    model.load_state_dict(checkpoint['state_dict'])
     evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
 
 
