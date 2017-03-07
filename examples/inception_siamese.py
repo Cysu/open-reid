@@ -17,7 +17,8 @@ from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomPairSampler
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
-from reid.utils.serialization import load_checkpoint, save_checkpoint
+from reid.utils.serialization import load_checkpoint, save_checkpoint, \
+    copy_state_dict
 
 
 def get_data(dataset_name, split_id, data_dir, batch_size, workers):
@@ -84,6 +85,11 @@ def main(args):
     embed_model = EltwiseSubEmbed(args.features)
     model = Siamese(base_model, embed_model)
     model = torch.nn.DataParallel(model).cuda()
+
+    if args.retrain:
+        checkpoint = load_checkpoint(args.retrain)
+        copy_state_dict(checkpoint['state_dict'], base_model, strip='module.')
+        copy_state_dict(checkpoint['state_dict'], embed_model, strip='module.')
 
     # Load from checkpoint
     if args.resume:
@@ -166,6 +172,7 @@ if __name__ == '__main__':
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
     # training configs
+    parser.add_argument('--retrain', type=str, default='', metavar='PATH')
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true')
     parser.add_argument('--start-epoch', type=int, default=0)
