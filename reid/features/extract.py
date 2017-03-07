@@ -44,9 +44,9 @@ def extract_features(model, data_loader, output_file=None,
         data_time.update(time.time() - end)
 
         inputs = Variable(imgs, volatile=True)
-        outputs = wrapper(inputs).data
+        outputs = wrapper(inputs).data.cpu()
         if output_file is not None:
-            outputs = outputs.cpu().numpy()
+            outputs = outputs.numpy()
 
         for fname, output in zip(fnames, outputs):
             features[fname] = output

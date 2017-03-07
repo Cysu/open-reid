@@ -66,9 +66,9 @@ class Trainer(object):
         return inputs1, inputs2, targets
 
 
-class FeaturePreprocessor(object):
+class FeaturePairPreprocessor(object):
     def __init__(self, features, query, gallery):
-        super(FeaturePreprocessor, self).__init__()
+        super(FeaturePairPreprocessor, self).__init__()
         self.features = features
         self.query = query
         self.gallery = gallery
@@ -98,18 +98,11 @@ class Evaluator(object):
         if cache_file is not None:
             features = FeatureDatabase(cache_file, 'r')
 
-        for k, _, _ in query:
-            assert k in features
-
-        for k, _, _ in gallery:
-            assert k in features
-
         # Build a data loader for exhaustive (query, gallery) pairs
-        processor = FeaturePreprocessor(features, query, gallery)
+        processor = FeaturePairPreprocessor(features, query, gallery)
         data_loader = DataLoader(
             processor, sampler=ExhaustivePairSampler(query, gallery),
-            batch_size=self.args.batch_size, num_workers=1,
-            pin_memory=False)
+            batch_size=len(gallery), num_workers=1, pin_memory=False)
 
         # Do forward of the embedding model
         self.embed_model.eval()

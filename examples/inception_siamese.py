@@ -97,14 +97,11 @@ def main(args):
 
     # Evaluator
     evaluator = Evaluator(base_model, embed_model, args)
-    cache_file = osp.join(args.logs_dir, 'cache.h5')
     if args.evaluate:
         print("Validation:")
-        evaluator.evaluate(val_loader, dataset.val, dataset.val,
-                           cache_file=cache_file)
+        evaluator.evaluate(val_loader, dataset.val, dataset.val)
         print("Test:")
-        evaluator.evaluate(test_loader, dataset.query, dataset.gallery,
-                           cache_file=cache_file)
+        evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
         return
 
     # Criterion
@@ -128,8 +125,7 @@ def main(args):
         adjust_lr(epoch)
         trainer.train(epoch, train_loader, optimizer)
 
-        top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val,
-                                  cache_file=cache_file)
+        top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val)
 
         is_best = top1 > best_top1
         best_top1 = max(top1, best_top1)
@@ -145,8 +141,7 @@ def main(args):
     # Final test
     print('Test with best model:')
     load_model_(osp.join(args.logs_dir, 'model_best.pth.tar'), model)
-    evaluator.evaluate(test_loader, dataset.query, dataset.gallery,
-                       cache_file=cache_file)
+    evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
 
 
 if __name__ == '__main__':
