@@ -10,8 +10,8 @@ from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
 from reid.models import ResNet
-from reid.models.embed import EltwiseSubEmbed
-from reid.models.siamese import Siamese
+from reid.models.embedding import EltwiseSubEmbed
+from reid.models.multi_branch import SiameseNet
 from reid.train_siamese import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomPairSampler
@@ -86,8 +86,10 @@ def main(args):
     # Create models
     base_model = ResNet(args.depth, num_classes=0, num_features=args.features,
                         dropout=args.dropout)
-    embed_model = EltwiseSubEmbed(args.features)
-    model = Siamese(base_model, embed_model)
+    embed_model = EltwiseSubEmbed(use_batch_norm=True,
+                                  use_classifier=True,
+                                  num_features=args.features, num_classes=2)
+    model = SiameseNet(base_model, embed_model)
     model = torch.nn.DataParallel(model).cuda()
 
     if args.retrain:
