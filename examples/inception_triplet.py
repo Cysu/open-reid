@@ -112,7 +112,7 @@ def main(args):
         return
 
     # Criterion
-    criterion = torch.nn.MarginRankingLoss(margin=0.5).cuda()
+    criterion = torch.nn.MarginRankingLoss(margin=args.margin).cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -165,8 +165,7 @@ if __name__ == '__main__':
     parser.add_argument('--features', type=int, default=256)
     parser.add_argument('--dropout', type=float, default=0.5)
     # loss
-    parser.add_argument('--loss', type=str, default='xentropy',
-                        choices=['xentropy'])
+    parser.add_argument('--margin', type=float, default=0.5)
     # optimizer
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
