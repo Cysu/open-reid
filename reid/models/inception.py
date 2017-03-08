@@ -42,9 +42,9 @@ class Block(nn.Module):
         return torch.cat([b(x) for b in self.branches], 1)
 
 
-class Inception(nn.Module):
+class InceptionNet(nn.Module):
     def __init__(self, num_classes=0, num_features=256, norm=False, dropout=0):
-        super(Inception, self).__init__()
+        super(InceptionNet, self).__init__()
         self.num_classes = num_classes
         self.num_features = num_features
         self.norm = norm

@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 
 from reid.datasets import VIPeR
 from reid.features import FeatureDatabase, extract_features
-from reid.models import Inception
+from reid.models import InceptionNet
 from reid.utils.data import transforms, Preprocessor
 
 
@@ -23,7 +23,7 @@ class TestExtractFeatures(TestCase):
             batch_size=128, num_workers=2,
             shuffle=False, pin_memory=False)
 
-        model = Inception(num_features=256, norm=True, dropout=0.5)
+        model = InceptionNet(num_features=256, norm=True, dropout=0.5)
         model = torch.nn.DataParallel(model).cuda()
 
         mem_features = extract_features(model, data_loader)

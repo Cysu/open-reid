@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
 from reid.loss.oim import OIMLoss
-from reid.models import Inception
+from reid.models import InceptionNet
 from reid.train import Trainer, Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
@@ -78,11 +78,11 @@ def main(args):
 
     # Create model
     if args.loss == 'xentropy':
-        model = Inception(num_classes=dataset.num_train_ids,
-                          num_features=args.features, dropout=args.dropout)
+        model = InceptionNet(num_classes=dataset.num_train_ids,
+                             num_features=args.features, dropout=args.dropout)
     else:
-        model = Inception(num_features=args.features,
-                          norm=True, dropout=args.dropout)
+        model = InceptionNet(num_features=args.features,
+                             norm=True, dropout=args.dropout)
     model = torch.nn.DataParallel(model).cuda()
 
     # Load from checkpoint
