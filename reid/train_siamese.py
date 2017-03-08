@@ -119,7 +119,7 @@ class Evaluator(object):
             inputs1 = Variable(inputs1, volatile=True)
             inputs2 = Variable(inputs2, volatile=True)
             outputs = self.embed_model(inputs1, inputs2)
-            outputs = F.softmax(outputs).data[:, 1]
+            outputs = F.softmax(outputs).data[:, 0]
 
             assert outputs.numel() == inputs1.size(0)
 

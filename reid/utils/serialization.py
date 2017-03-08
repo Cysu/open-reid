@@ -39,6 +39,7 @@ def load_checkpoint(fpath):
 
 def copy_state_dict(state_dict, model, strip=None):
     tgt_state = model.state_dict()
+    copied_names = set()
     for name, param in state_dict.items():
         if strip is not None:
             name = name.strip(strip)
@@ -50,8 +51,10 @@ def copy_state_dict(state_dict, model, strip=None):
             print('mismatch:', name, param.size(), tgt_state[name].size())
             continue
         tgt_state[name].copy_(param)
+        copied_names.add(name)
 
-    missing = set(tgt_state.keys()) - set(state_dict.keys())
-    print("missing keys in state_dict:", missing)
+    missing = set(tgt_state.keys()) - copied_names
+    if len(missing) > 0:
+        print("missing keys in state_dict:", missing)
 
     return model
