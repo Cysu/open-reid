@@ -9,12 +9,13 @@ import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
+from reid.mining import mine_hard_triplets
 from reid.models import InceptionNet
 from reid.models.embedding import EltwiseSubEmbed
 from reid.models.multi_branch import TripletNet
 from reid.train_triplet import Trainer, Evaluator
 from reid.utils.data import transforms
-from reid.utils.data.sampler import RandomTripletSampler
+from reid.utils.data.sampler import RandomTripletSampler, SubsetRandomSampler
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
 from reid.utils.serialization import load_checkpoint, save_checkpoint, \
@@ -111,6 +112,20 @@ def main(args):
         evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
         return
 
+    if args.hard_examples:
+        # Use sequential train set loader
+        data_loader = DataLoader(
+            Preprocessor(dataset.train, root=dataset.images_dir,
+                         transform=val_loader.dataset.transform),
+            batch_size=args.batch_size, num_workers=args.workers,
+            shuffle=False, pin_memory=False)
+        # Mine hard triplet examples, index of [(anchor, pos, neg), ...]
+        triplets = mine_hard_triplets(torch.nn.DataParallel(base_model).cuda(),
+                                      data_loader, margin=args.margin)
+        print("Mined {} hard example triplets".format(len(triplets)))
+        # Build a hard examples loader
+        train_loader.sampler = SubsetRandomSampler(triplets)
+
     # Criterion
     criterion = torch.nn.MarginRankingLoss(margin=args.margin).cuda()
 
@@ -161,6 +176,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--batch-size', type=int, default=64)
     parser.add_argument('-j', '--workers', type=int, default=2)
     parser.add_argument('--split', type=int, default=0)
+    parser.add_argument('--hard-examples', action='store_true')
     # model
     parser.add_argument('--features', type=int, default=256)
     parser.add_argument('--dropout', type=float, default=0.5)
