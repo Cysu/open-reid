@@ -1,4 +1,6 @@
 import time
+from collections import OrderedDict
+
 from torch import nn
 from torch.autograd import Variable
 
@@ -34,7 +36,8 @@ def extract_features(model, data_loader, output_file=None,
     model.eval()
     wrapper = _ModelWrapper(model)
 
-    features = {} if output_file is None else FeatureDatabase(output_file, 'w')
+    features = OrderedDict() if output_file is None else \
+        FeatureDatabase(output_file, 'w')
 
     batch_time = AverageMeter()
     data_time = AverageMeter()
