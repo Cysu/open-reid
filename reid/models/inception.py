@@ -67,7 +67,7 @@ class InceptionNet(nn.Module):
             self.dropout = dropout
             self.has_embedding = num_features > 0
 
-            self.global_pool = nn.AvgPool2d(kernel_size=(9, 4))
+            self.global_pool = nn.AvgPool2d(kernel_size=(10, 4))
 
             if self.has_embedding:
                 self.feat = nn.Linear(self.in_planes, self.num_features)

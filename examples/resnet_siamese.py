@@ -10,7 +10,7 @@ from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
 from reid.models import ResNet
-from reid.models.embedding import EltwiseSubEmbed
+from reid.models.embedding import EltwiseSubEmbed, KronEmbed
 from reid.models.multi_branch import SiameseNet
 from reid.train_siamese import Trainer, Evaluator
 from reid.utils.data import transforms
@@ -84,11 +84,15 @@ def main(args):
                  args.batch_size, args.workers)
 
     # Create models
-    base_model = ResNet(args.depth, num_classes=0, num_features=args.features,
-                        dropout=args.dropout)
-    embed_model = EltwiseSubEmbed(use_batch_norm=True,
-                                  use_classifier=True,
-                                  num_features=args.features, num_classes=2)
+    if args.embedding == 'kron':
+        base_model = ResNet(args.depth, cut_at_pooling=True)
+        embed_model = KronEmbed(7, 7, 128, 2)
+    else:
+        base_model = ResNet(args.depth, num_classes=0,
+                            num_features=args.features, dropout=args.dropout)
+        embed_model = EltwiseSubEmbed(use_batch_norm=True,
+                                      use_classifier=True,
+                                      num_features=args.features, num_classes=2)
     model = SiameseNet(base_model, embed_model)
     model = torch.nn.DataParallel(model).cuda()
 
@@ -172,6 +176,8 @@ if __name__ == '__main__':
                         choices=[18, 34, 50, 101, 152])
     parser.add_argument('--features', type=int, default=256)
     parser.add_argument('--dropout', type=float, default=0.5)
+    parser.add_argument('--embedding', type=str, default='kron',
+                        choices=['kron', 'sub'])
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
                         choices=['xentropy'])
