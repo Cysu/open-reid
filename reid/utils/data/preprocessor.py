@@ -5,6 +5,7 @@ from PIL import Image
 
 class Preprocessor(object):
     def __init__(self, dataset, root=None, transform=None):
+        super(Preprocessor, self).__init__()
         self.dataset = dataset
         self.root = root
         self.transform = transform
@@ -26,3 +27,17 @@ class Preprocessor(object):
         if self.transform is not None:
             img = self.transform(img)
         return img, fname, pid, camid
+
+
+class KeyValuePreprocessor(object):
+    def __init__(self, dataset):
+        super(KeyValuePreprocessor, self).__init__()
+        self.dataset = dataset
+
+    def __len__(self):
+        return len(self.dataset)
+
+    def __getitem__(self, keys):
+        if isinstance(keys, (tuple, list)):
+            return [self.dataset[key] for key in keys]
+        return self.dataset[keys]

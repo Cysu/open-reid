@@ -1,14 +1,14 @@
 from unittest import TestCase
 
 from reid.datasets import VIPeR
-from reid.utils.data.sampler import RandomPairSampler, ExhaustivePairSampler
+from reid.utils.data.sampler import RandomPairSampler, ExhaustiveSampler
 
 
 class TestPairSampler(TestCase):
     def test_exhaustive(self):
         dataset = VIPeR('/tmp/open-reid/viper',
                         split_id=0, num_val=100, download=True)
-        sampler = ExhaustivePairSampler(dataset.train)
+        sampler = ExhaustiveSampler(dataset.train)
 
         n = len(dataset.train)
         self.assertEquals(len(sampler), n * n)

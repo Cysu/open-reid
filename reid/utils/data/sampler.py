@@ -17,21 +17,20 @@ def _choose_from(start, end, excluding=None, size=1, replace=False):
     return inds
 
 
-class ExhaustivePairSampler(Sampler):
-    def __init__(self, data_source_1, data_source_2=None):
-        if data_source_2 is None:
-            data_source_2 = data_source_1
-        self.data_source_1 = data_source_1
-        self.num_samples_1 = len(data_source_1)
-        self.data_source_2 = data_source_2
-        self.num_samples_2 = len(data_source_2)
+class ExhaustiveSampler(Sampler):
+    def __init__(self, *data_sources, return_index=False):
+        self.data_sources = data_sources
+        self.return_index = return_index
 
     def __iter__(self):
-        return itertools.product(range(self.num_samples_1),
-                                 range(self.num_samples_2))
+        if self.return_index:
+            return itertools.product(
+                *[range(len(x)) for x in self.data_sources])
+        else:
+            return itertools.product(*self.data_sources)
 
     def __len__(self):
-        return self.num_samples_1 * self.num_samples_2
+        return np.prod([len(x) for x in self.data_sources])
 
 
 class RandomPairSampler(Sampler):
