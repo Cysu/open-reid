@@ -23,43 +23,53 @@ class ResNet(nn.Module):
         152: resnet152,
     }
 
-    def __init__(self, depth, pretrained=True, num_classes=0, num_features=0,
-                 norm=False, dropout=0):
+    def __init__(self, depth, pretrained=True, cut_at_pooling=False,
+                 num_classes=0, num_features=0, norm=False, dropout=0):
         super(ResNet, self).__init__()
 
         self.depth = depth
         self.pretrained = pretrained
-        self.num_classes = num_classes
-        self.num_features = num_features
-        self.norm = norm
-        self.dropout = dropout
-        self.has_embedding = num_features > 0
+        self.cut_at_pooling = cut_at_pooling
 
         # Construct base (pretrained) resnet
         if depth not in ResNet.__factory:
             raise KeyError("Unsupported depth:", depth)
         self.base = ResNet.__factory[depth](pretrained=pretrained)
 
-        # Remove the last fc layer (replace it by an identity for easier impl)
-        out_planes = self.base.fc.in_features
-        self.base.fc = Identity()
+        if not self.cut_at_pooling:
+            self.num_classes = num_classes
+            self.num_features = num_features
+            self.norm = norm
+            self.dropout = dropout
+            self.has_embedding = num_features > 0
 
-        # Append new layers
-        if self.has_embedding:
-            self.feat = nn.Linear(out_planes, self.num_features)
-            self.feat_bn = nn.BatchNorm1d(self.num_features)
-        else:
-            # Change the num_features to CNN output channels
-            self.num_features = out_planes
-        if self.dropout > 0:
-            self.drop = nn.Dropout(self.dropout)
-        if self.num_classes > 0:
-            self.classifier = nn.Linear(self.num_features, self.num_classes)
+            # Remove the last fc layer (replace it by an identity)
+            out_planes = self.base.fc.in_features
+            self.base.fc = Identity()
+
+            # Append new layers
+            if self.has_embedding:
+                self.feat = nn.Linear(out_planes, self.num_features)
+                self.feat_bn = nn.BatchNorm1d(self.num_features)
+            else:
+                # Change the num_features to CNN output channels
+                self.num_features = out_planes
+            if self.dropout > 0:
+                self.drop = nn.Dropout(self.dropout)
+            if self.num_classes > 0:
+                self.classifier = nn.Linear(self.num_features, self.num_classes)
 
         if not self.pretrained:
             self.reset_params()
 
     def forward(self, x):
+        if self.cut_at_pooling:
+            for name, module in self.base._modules.items():
+                if name == 'avgpool':
+                    break
+                x = module(x)
+            return x
+
         x = self.base(x)
         x = x.view(x.size(0), -1)
         if self.has_embedding:

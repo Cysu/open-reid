@@ -43,13 +43,10 @@ class Block(nn.Module):
 
 
 class InceptionNet(nn.Module):
-    def __init__(self, num_classes=0, num_features=256, norm=False, dropout=0):
+    def __init__(self, cut_at_pooling=False, num_classes=0, num_features=256,
+                 norm=False, dropout=0):
         super(InceptionNet, self).__init__()
-        self.num_classes = num_classes
-        self.num_features = num_features
-        self.norm = norm
-        self.dropout = dropout
-        self.has_embedding = num_features > 0
+        self.cut_at_pooling = cut_at_pooling
 
         self.conv1 = _make_conv(3, 32)
         self.conv2 = _make_conv(32, 32)
@@ -62,18 +59,26 @@ class InceptionNet(nn.Module):
         self.inception5b = self._make_inception(128, 'Max', 2)
         self.inception6a = self._make_inception(256, 'Avg', 1)
         self.inception6b = self._make_inception(256, 'Max', 2)
-        self.global_pool = nn.AvgPool2d(kernel_size=(9, 4))
 
-        if self.has_embedding:
-            self.feat = nn.Linear(self.in_planes, self.num_features)
-            self.feat_bn = nn.BatchNorm1d(self.num_features)
-        else:
-            # Change the num_features to CNN output channels
-            self.num_features = self.in_planes
-        if self.dropout > 0:
-            self.drop = nn.Dropout(self.dropout)
-        if self.num_classes > 0:
-            self.classifier = nn.Linear(self.num_features, self.num_classes)
+        if not self.cut_at_pooling:
+            self.num_classes = num_classes
+            self.num_features = num_features
+            self.norm = norm
+            self.dropout = dropout
+            self.has_embedding = num_features > 0
+
+            self.global_pool = nn.AvgPool2d(kernel_size=(9, 4))
+
+            if self.has_embedding:
+                self.feat = nn.Linear(self.in_planes, self.num_features)
+                self.feat_bn = nn.BatchNorm1d(self.num_features)
+            else:
+                # Change the num_features to CNN output channels
+                self.num_features = self.in_planes
+            if self.dropout > 0:
+                self.drop = nn.Dropout(self.dropout)
+            if self.num_classes > 0:
+                self.classifier = nn.Linear(self.num_features, self.num_classes)
 
         self.reset_params()
 
@@ -88,6 +93,10 @@ class InceptionNet(nn.Module):
         x = self.inception5b(x)
         x = self.inception6a(x)
         x = self.inception6b(x)
+
+        if self.cut_at_pooling:
+            return x
+
         x = self.global_pool(x)
         x = x.view(x.size(0), -1)
         if self.has_embedding:
