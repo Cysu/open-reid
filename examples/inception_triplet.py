@@ -13,7 +13,8 @@ from reid.mining import mine_hard_triplets
 from reid.models import InceptionNet
 from reid.models.embedding import EltwiseSubEmbed
 from reid.models.multi_branch import TripletNet
-from reid.train_triplet import Trainer, Evaluator
+from reid.trainers import TripletTrainer
+from reid.evaluators import SiameseEvaluator
 from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomTripletSampler, SubsetRandomSampler
 from reid.utils.data.preprocessor import Preprocessor
@@ -24,6 +25,7 @@ from reid.utils.serialization import load_checkpoint, save_checkpoint, \
 
 def get_data(dataset_name, split_id, data_dir, batch_size, workers):
     root = osp.join(data_dir, dataset_name)
+
     dataset = get_dataset(dataset_name, root,
                           split_id=split_id, num_val=100, download=True)
 
@@ -104,7 +106,9 @@ def main(args):
         best_top1 = 0
 
     # Evaluator
-    evaluator = Evaluator(base_model, embed_model, args)
+    evaluator = SiameseEvaluator(
+        torch.nn.DataParallel(base_model).cuda(),
+        torch.nn.DataParallel(embed_model).cuda())
     if args.evaluate:
         print("Validation:")
         evaluator.evaluate(val_loader, dataset.val, dataset.val)
@@ -134,7 +138,7 @@ def main(args):
                                 weight_decay=args.weight_decay)
 
     # Trainer
-    trainer = Trainer(model, criterion, args)
+    trainer = TripletTrainer(model, criterion)
 
     # Schedule learning rate
     def adjust_lr(epoch):
@@ -178,7 +182,7 @@ if __name__ == '__main__':
     parser.add_argument('--split', type=int, default=0)
     parser.add_argument('--hard-examples', action='store_true')
     # model
-    parser.add_argument('--features', type=int, default=256)
+    parser.add_argument('--features', type=int, default=128)
     parser.add_argument('--dropout', type=float, default=0.5)
     # loss
     parser.add_argument('--margin', type=float, default=0.5)

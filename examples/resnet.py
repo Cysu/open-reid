@@ -11,7 +11,8 @@ from torch.utils.data import DataLoader
 from reid.datasets import get_dataset
 from reid.loss.oim import OIMLoss
 from reid.models import ResNet
-from reid.train import Trainer, Evaluator
+from reid.trainers import Trainer
+from reid.evaluators import Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
@@ -20,6 +21,7 @@ from reid.utils.serialization import load_checkpoint, save_checkpoint
 
 def get_data(dataset_name, split_id, data_dir, batch_size, workers):
     root = osp.join(data_dir, dataset_name)
+
     dataset = get_dataset(dataset_name, root,
                           split_id=split_id, num_val=100, download=True)
 
@@ -102,7 +104,7 @@ def main(args):
         best_top1 = 0
 
     # Evaluator
-    evaluator = Evaluator(model, args)
+    evaluator = Evaluator(model)
     if args.evaluate:
         print("Validation:")
         evaluator.evaluate(val_loader, dataset.val, dataset.val)
@@ -126,7 +128,7 @@ def main(args):
         lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
 
     # Trainer
-    trainer = Trainer(model, criterion, args)
+    trainer = Trainer(model, criterion)
 
     # Schedule learning rate
     def adjust_lr(epoch):

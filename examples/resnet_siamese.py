@@ -6,13 +6,16 @@ import numpy as np
 import sys
 import torch
 import torch.backends.cudnn as cudnn
+import torch.nn.functional as F
+from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
 from reid.models import ResNet
 from reid.models.embedding import EltwiseSubEmbed, KronEmbed
 from reid.models.multi_branch import SiameseNet
-from reid.train_siamese import Trainer, Evaluator
+from reid.trainers import SiameseTrainer
+from reid.evaluators import SiameseEvaluator
 from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomPairSampler
 from reid.utils.data.preprocessor import Preprocessor
@@ -23,6 +26,7 @@ from reid.utils.serialization import load_checkpoint, save_checkpoint, \
 
 def get_data(dataset_name, split_id, data_dir, batch_size, workers):
     root = osp.join(data_dir, dataset_name)
+
     dataset = get_dataset(dataset_name, root,
                           split_id=split_id, num_val=100, download=True)
 
@@ -113,7 +117,10 @@ def main(args):
         best_top1 = 0
 
     # Evaluator
-    evaluator = Evaluator(base_model, embed_model, args)
+    evaluator = SiameseEvaluator(
+        torch.nn.DataParallel(base_model).cuda(),
+        torch.nn.DataParallel(embed_model).cuda(),
+        dist_fn=lambda x: F.softmax(Variable(x)).data[:, 0])
     if args.evaluate:
         print("Validation:")
         evaluator.evaluate(val_loader, dataset.val, dataset.val)
@@ -129,7 +136,7 @@ def main(args):
                                 weight_decay=args.weight_decay)
 
     # Trainer
-    trainer = Trainer(model, criterion, args)
+    trainer = SiameseTrainer(model, criterion)
 
     # Schedule learning rate
     def adjust_lr(epoch):

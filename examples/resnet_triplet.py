@@ -13,7 +13,8 @@ from reid.mining import mine_hard_triplets
 from reid.models import ResNet
 from reid.models.embedding import EltwiseSubEmbed
 from reid.models.multi_branch import TripletNet
-from reid.train_triplet import Trainer, Evaluator
+from reid.trainers import TripletTrainer
+from reid.evaluators import SiameseEvaluator
 from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomTripletSampler, SubsetRandomSampler
 from reid.utils.data.preprocessor import Preprocessor
@@ -108,7 +109,9 @@ def main(args):
         best_top1 = 0
 
     # Evaluator
-    evaluator = Evaluator(base_model, embed_model, args)
+    evaluator = SiameseEvaluator(
+        torch.nn.DataParallel(base_model).cuda(),
+        torch.nn.DataParallel(embed_model).cuda())
     if args.evaluate:
         print("Validation:")
         evaluator.evaluate(val_loader, dataset.val, dataset.val)
@@ -138,7 +141,7 @@ def main(args):
                                 weight_decay=args.weight_decay)
 
     # Trainer
-    trainer = Trainer(model, criterion, args)
+    trainer = TripletTrainer(model, criterion)
 
     # Schedule learning rate
     def adjust_lr(epoch):
