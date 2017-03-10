@@ -104,7 +104,7 @@ class Evaluator(object):
         processor = FeaturePairPreprocessor(features, query, gallery)
         data_loader = DataLoader(
             processor, sampler=ExhaustivePairSampler(query, gallery),
-            batch_size=min(len(gallery), 4096), num_workers=1,
+            batch_size=min(len(gallery), 4096), num_workers=self.args.workers,
             pin_memory=False)
 
         # Do forward of the embedding model
