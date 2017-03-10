@@ -57,7 +57,7 @@ class ResNet(nn.Module):
             self.classifier = nn.Linear(self.num_features, self.num_classes)
 
         if not self.pretrained:
-            self._reset_params()
+            self.reset_params()
 
     def forward(self, x):
         x = self.base(x)
@@ -75,7 +75,7 @@ class ResNet(nn.Module):
             x = self.classifier(x)
         return x
 
-    def _reset_params(self):
+    def reset_params(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels

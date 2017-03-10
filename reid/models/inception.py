@@ -75,7 +75,7 @@ class InceptionNet(nn.Module):
         if self.num_classes > 0:
             self.classifier = nn.Linear(self.num_features, self.num_classes)
 
-        self._reset_params()
+        self.reset_params()
 
     def forward(self, x):
         x = self.conv1(x)
@@ -109,7 +109,7 @@ class InceptionNet(nn.Module):
                           out_planes * 2 + self.in_planes)
         return block
 
-    def _reset_params(self):
+    def reset_params(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
                 n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
