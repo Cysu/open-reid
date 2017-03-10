@@ -24,10 +24,13 @@ def kron_matching(*inputs):
     # Generate the index used for scatter
     #    index = H x W x H x W
     #    index[i,j,p,q] = (p-i+H-1) * (2*W-1) + (q-j+W-1)
+    use_cuda = inputs[0].is_cuda
     i1 = torch.range(0, H - 1).long()
+    if use_cuda: i1 = i1.cuda()
     i1 = i1.expand(H, H) - i1.unsqueeze(1).expand(H, H)
     i1 = (i1 + H - 1) * (2 * W - 1)
     i2 = torch.range(0, W - 1).long()
+    if use_cuda: i2 = i2.cuda()
     i2 = i2.expand(W, W) - i2.unsqueeze(1).expand(W, W)
     i2 = i2 + W - 1
     i1 = i1.view(H, 1, H, 1).expand(H, W, H, W)
@@ -42,7 +45,9 @@ def kron_matching(*inputs):
     x = x.view(N, H, W, H * W)
     index = index.view(1, H, W, H * W).expand_as(x)
     index = Variable(index, requires_grad=False)
-    out = Variable(torch.zeros(N, H, W, (2 * H - 1) * (2 * W - 1)))
+    out = torch.zeros(N, H, W, (2 * H - 1) * (2 * W - 1))
+    if use_cuda: out = out.cuda()
+    out = Variable(out)
     out.scatter_(3, index, x)
     out = out.permute(0, 3, 1, 2).contiguous()
 
