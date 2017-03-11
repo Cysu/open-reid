@@ -15,7 +15,7 @@ from reid.models import ResNet
 from reid.models.embedding import EltwiseSubEmbed, KronEmbed
 from reid.models.multi_branch import SiameseNet
 from reid.trainers import SiameseTrainer
-from reid.evaluators import SiameseEvaluator
+from reid.evaluators import CascadeEvaluator
 from reid.utils.data import transforms
 from reid.utils.data.sampler import RandomPairSampler
 from reid.utils.data.preprocessor import Preprocessor
@@ -117,10 +117,10 @@ def main(args):
         best_top1 = 0
 
     # Evaluator
-    evaluator = SiameseEvaluator(
+    evaluator = CascadeEvaluator(
         torch.nn.DataParallel(base_model).cuda(),
         torch.nn.DataParallel(embed_model).cuda(),
-        dist_fn=lambda x: F.softmax(Variable(x)).data[:, 0])
+        embed_dist_fn=lambda x: F.softmax(Variable(x)).data[:, 0])
     if args.evaluate:
         print("Validation:")
         evaluator.evaluate(val_loader, dataset.val, dataset.val)
