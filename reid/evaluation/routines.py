@@ -4,7 +4,8 @@ from .metrics import cmc
 
 
 def evaluate_cmc(distmat, query, gallery, topk=(1, 5, 10)):
-    distmat = distmat.cpu().numpy()
+    if type(distmat).__module__ == 'torch':
+        distmat = distmat.cpu().numpy()
 
     query_ids = [pid for _, pid, _ in query]
     gallery_ids = [pid for _, pid, _ in gallery]

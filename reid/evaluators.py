@@ -1,3 +1,4 @@
+import numpy as np
 from torch.utils.data import DataLoader
 
 from .evaluation.routines import evaluate_cmc
@@ -19,11 +20,11 @@ class Evaluator(object):
 
 
 class SiameseEvaluator(object):
-    def __init__(self, base_model, embed_model, dist_fn=None):
+    def __init__(self, base_model, embed_model, embed_dist_fn=None):
         super(SiameseEvaluator, self).__init__()
         self.base_model = base_model
         self.embed_model = embed_model
-        self.dist_fn = dist_fn
+        self.embed_dist_fn = embed_dist_fn
 
     def evaluate(self, data_loader, query, gallery, cache_file=None):
         # Extract features image by image
@@ -44,14 +45,74 @@ class SiameseEvaluator(object):
 
         # Extract embeddings of each (query, gallery) pair
         embeddings = extract_embeddings(self.embed_model, data_loader)
+        if self.embed_dist_fn is not None:
+            embeddings = self.embed_dist_fn(embeddings)
 
         if cache_file is not None:
             features.close()
 
         # Convert embeddings to distance matrix
-        if self.dist_fn is not None:
-            embeddings = self.dist_fn(embeddings)
         distmat = embeddings.contiguous().view(len(query), len(gallery))
 
         # Evaluate CMC scores
+        return evaluate_cmc(distmat, query, gallery)
+
+
+class CascadeEvaluator(object):
+    def __init__(self, base_model, embed_model, embed_dist_fn=None):
+        super(CascadeEvaluator, self).__init__()
+        self.base_model = base_model
+        self.embed_model = embed_model
+        self.embed_dist_fn = embed_dist_fn
+
+    def evaluate(self, data_loader, query, gallery, cache_file=None,
+                 rerank_topk=20):
+        # Extract features image by image
+        features = extract_features(self.base_model, data_loader,
+                                    output_file=cache_file)
+        if cache_file is not None:
+            features = FeatureDatabase(cache_file, 'r')
+
+        # Compute pairwise distance and evaluate for the first stage
+        distmat = pairwise_distance(features, query, gallery)
+        print("First stage evaluation:")
+        evaluate_cmc(distmat, query, gallery)
+
+        # Sort according to the first stage distance
+        distmat = distmat.cpu().numpy()
+        rank_indices = np.argsort(distmat, axis=1)
+
+        # Build a data loader for topk predictions for each query
+        pair_samples = []
+        for i, indices in enumerate(rank_indices):
+            query_fname, _, _ = query[i]
+            for j in indices[:rerank_topk]:
+                gallery_fname, _, _ = gallery[j]
+                pair_samples.append((query_fname, gallery_fname))
+
+        data_loader = DataLoader(
+            KeyValuePreprocessor(features),
+            sampler=pair_samples,
+            batch_size=min(len(gallery), 4096),
+            num_workers=1, pin_memory=False)
+
+        # Extract embeddings of each pair
+        embeddings = extract_embeddings(self.embed_model, data_loader)
+        if self.embed_dist_fn is not None:
+            embeddings = self.embed_dist_fn(embeddings)
+
+        if cache_file is not None:
+            features.close()
+
+        # Merge two-stage distances
+        for k, embed in enumerate(embeddings):
+            i, j = k // rerank_topk, k % rerank_topk
+            distmat[i, rank_indices[i, j]] = embed
+        for i, indices in enumerate(rank_indices):
+            bar = max(distmat[i][indices[:rerank_topk]])
+            gap = max(bar + 1. - distmat[i, indices[rerank_topk]], 0)
+            if gap > 0:
+                distmat[i][indices[rerank_topk:]] += gap
+
+        print("Second stage evaluation:")
         return evaluate_cmc(distmat, query, gallery)
