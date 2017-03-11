@@ -38,8 +38,10 @@ def mine_hard_triplets(model, data_loader, margin=0):
     for i, d in enumerate(distmat):
         pos_indices = np.where(pids == pids[i])[0]
         neg_indices = np.where(pids != pids[i])[0]
-        for p in pos_indices:
-            for n in neg_indices:
-                if d[p] + margin >= d[n]:
-                    triplets.append((i, p, n))
+        sorted_pos = np.argsort(d[pos_indices])[::-1]
+        for j in sorted_pos:
+            p = pos_indices[j]
+            mask = (d[neg_indices] <= d[p] + margin)
+            neg_indices = neg_indices[mask]
+            triplets.extend([(i, p, n) for n in neg_indices])
     return triplets
