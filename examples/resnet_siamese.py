@@ -11,13 +11,14 @@ from torch.autograd import Variable
 from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
+from reid.mining import mine_hard_pairs
 from reid.models import ResNet
 from reid.models.embedding import EltwiseSubEmbed, KronEmbed
 from reid.models.multi_branch import SiameseNet
 from reid.trainers import SiameseTrainer
 from reid.evaluators import CascadeEvaluator
 from reid.utils.data import transforms
-from reid.utils.data.sampler import RandomPairSampler
+from reid.utils.data.sampler import RandomPairSampler, SubsetRandomSampler
 from reid.utils.data.preprocessor import Preprocessor
 from reid.utils.logging import Logger
 from reid.utils.serialization import load_checkpoint, save_checkpoint, \
@@ -128,6 +129,20 @@ def main(args):
         evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
         return
 
+    if args.hard_examples:
+        # Use sequential train set loader
+        data_loader = DataLoader(
+            Preprocessor(dataset.train, root=dataset.images_dir,
+                         transform=val_loader.dataset.transform),
+            batch_size=args.batch_size, num_workers=args.workers,
+            shuffle=False, pin_memory=False)
+        # Mine hard triplet examples, index of [(anchor, pos, neg), ...]
+        pairs = mine_hard_pairs(torch.nn.DataParallel(base_model).cuda(),
+                                data_loader, margin=args.margin)
+        print("Mined {} hard example triplets".format(len(pairs)))
+        # Build a hard examples loader
+        train_loader.sampler = SubsetRandomSampler(pairs)
+
     # Criterion
     criterion = torch.nn.CrossEntropyLoss().cuda()
 
@@ -178,6 +193,7 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--batch-size', type=int, default=64)
     parser.add_argument('-j', '--workers', type=int, default=2)
     parser.add_argument('--split', type=int, default=0)
+    parser.add_argument('--hard-examples', action='store_true')
     # model
     parser.add_argument('--depth', type=int, default=50,
                         choices=[18, 34, 50, 101, 152])
@@ -188,6 +204,7 @@ if __name__ == '__main__':
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
                         choices=['xentropy'])
+    parser.add_argument('--margin', type=float, default=0.5)
     # optimizer
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
