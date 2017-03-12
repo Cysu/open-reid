@@ -3,6 +3,8 @@ import math
 import torch.nn.functional as F
 from torch import nn, torch
 
+from .affine import Affine
+
 
 def _make_conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1,
                bias=False):
@@ -44,7 +46,7 @@ class Block(nn.Module):
 
 class InceptionNet(nn.Module):
     def __init__(self, cut_at_pooling=False, num_classes=0, num_features=256,
-                 norm=False, dropout=0):
+                 norm=False, scale=False, dropout=0):
         super(InceptionNet, self).__init__()
         self.cut_at_pooling = cut_at_pooling
 
@@ -64,6 +66,7 @@ class InceptionNet(nn.Module):
             self.num_classes = num_classes
             self.num_features = num_features
             self.norm = norm
+            self.scale = scale
             self.dropout = dropout
             self.has_embedding = num_features > 0
 
@@ -75,6 +78,8 @@ class InceptionNet(nn.Module):
             else:
                 # Change the num_features to CNN output channels
                 self.num_features = self.in_planes
+            if self.scale:
+                self.affine = Affine(self.num_features, axis=1, bias=False)
             if self.dropout > 0:
                 self.drop = nn.Dropout(self.dropout)
             if self.num_classes > 0:
@@ -106,6 +111,8 @@ class InceptionNet(nn.Module):
             x = x / x.norm(2, 1).expand_as(x)
         elif self.has_embedding:
             x = F.relu(x)
+        if self.scale:
+            x = self.affine(x)
         if self.dropout > 0:
             x = self.drop(x)
         if self.num_classes > 0:
