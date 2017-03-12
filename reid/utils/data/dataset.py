@@ -67,7 +67,7 @@ class Dataset(object):
         if verbose:
             print(self.__class__.__name__, "dataset loaded")
             print("  subset  | # ids | # images")
-            print("  -------------------------")
+            print("  --------------------------")
             print("  train   | {:5d} | {:8d}"
                   .format(self.num_train_ids, len(self.train)))
             print("  val     | {:5d} | {:8d}"
