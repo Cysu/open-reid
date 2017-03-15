@@ -89,7 +89,7 @@ def main(args):
                        num_features=args.features, dropout=args.dropout)
     else:
         model = ResNet(args.depth, pretrained=True, num_features=args.features,
-                       norm=True, scale=True, dropout=args.dropout)
+                       norm=True, dropout=args.dropout)
     model = torch.nn.DataParallel(model).cuda()
 
     # Load from checkpoint

@@ -41,7 +41,7 @@ def cmc(distmat, query_ids=None, gallery_ids=None,
     if query_cams is None:
         query_cams = np.zeros(m).astype(np.int32)
     if gallery_cams is None:
-        gallery_cams = np.ones(m).astype(np.int32)
+        gallery_cams = np.ones(n).astype(np.int32)
     # Ensure numpy array
     query_ids = np.asarray(query_ids)
     gallery_ids = np.asarray(gallery_ids)
