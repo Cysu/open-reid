@@ -5,11 +5,11 @@ import numpy as np
 from torch.utils.data.sampler import *
 
 
-def _choose_from(start, end, excluding=None, size=1, replace=False):
+def _choose_from(start, end, excluded_range=None, size=1, replace=False):
     num = end - start + 1
-    if excluding is None:
+    if excluded_range is None:
         return np.random.choice(num, size=size, replace=replace) + start
-    ex_start, ex_end = excluding
+    ex_start, ex_end = excluded_range
     num_ex = ex_end - ex_start + 1
     num -= num_ex
     inds = np.random.choice(num, size=size, replace=replace) + start
@@ -57,11 +57,11 @@ class RandomPairSampler(Sampler):
             _, pid, _ = self.data_source[anchor_index]
             # positive sample
             start, end = self.index_range[pid]
-            pos_index = _choose_from(start, end, excluding=(i, i))[0]
+            pos_index = _choose_from(start, end, excluded_range=(i, i))[0]
             yield anchor_index, self.index_map[pos_index]
             # negative samples
             neg_indices = _choose_from(0, self.num_samples - 1,
-                                       excluding=(start, end),
+                                       excluded_range=(start, end),
                                        size=self.neg_pos_ratio)
             for neg_index in neg_indices:
                 yield anchor_index, self.index_map[neg_index]
@@ -93,11 +93,11 @@ class RandomTripletSampler(Sampler):
             _, pid, _ = self.data_source[anchor_index]
             # positive sample
             start, end = self.index_range[pid]
-            pos_index = _choose_from(start, end, excluding=(i, i))[0]
+            pos_index = _choose_from(start, end, excluded_range=(i, i))[0]
             pos_index = self.index_map[pos_index]
             # negative samples
             neg_index = _choose_from(0, self.num_samples - 1,
-                                     excluding=(start, end))[0]
+                                     excluded_range=(start, end))[0]
             neg_index = self.index_map[neg_index]
             yield anchor_index, pos_index, neg_index
 
