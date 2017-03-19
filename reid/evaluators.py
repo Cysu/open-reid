@@ -1,7 +1,7 @@
 import numpy as np
 from torch.utils.data import DataLoader
 
-from .evaluation.routines import evaluate_cmc
+from .evaluation.routines import evaluate_all
 from .features import FeatureDatabase, extract_features, extract_embeddings
 from .metrics import pairwise_distance
 from .utils.data.preprocessor import KeyValuePreprocessor
@@ -16,7 +16,7 @@ class Evaluator(object):
     def evaluate(self, data_loader, query, gallery):
         features = extract_features(self.model, data_loader)
         distmat = pairwise_distance(features, query, gallery)
-        return evaluate_cmc(distmat, query, gallery)
+        return evaluate_all(distmat, query=query, gallery=gallery)
 
 
 class SiameseEvaluator(object):
@@ -55,7 +55,7 @@ class SiameseEvaluator(object):
         distmat = embeddings.contiguous().view(len(query), len(gallery))
 
         # Evaluate CMC scores
-        return evaluate_cmc(distmat, query, gallery)
+        return evaluate_all(distmat, query=query, gallery=gallery)
 
 
 class CascadeEvaluator(object):
@@ -76,7 +76,7 @@ class CascadeEvaluator(object):
         # Compute pairwise distance and evaluate for the first stage
         distmat = pairwise_distance(features, query, gallery)
         print("First stage evaluation:")
-        evaluate_cmc(distmat, query, gallery)
+        evaluate_all(distmat, query=query, gallery=gallery)
 
         # Sort according to the first stage distance
         distmat = distmat.cpu().numpy()
@@ -115,4 +115,4 @@ class CascadeEvaluator(object):
                 distmat[i][indices[rerank_topk:]] += gap
 
         print("Second stage evaluation:")
-        return evaluate_cmc(distmat, query, gallery)
+        return evaluate_all(distmat, query, gallery)
