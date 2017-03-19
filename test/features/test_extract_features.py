@@ -7,6 +7,7 @@ from torch.utils.data import DataLoader
 from reid.datasets import VIPeR
 from reid.features import FeatureDatabase, extract_features
 from reid.models import InceptionNet
+from reid.utils import to_numpy
 from reid.utils.data import transforms, Preprocessor
 
 
@@ -35,6 +36,6 @@ class TestExtractFeatures(TestCase):
             self.assertEquals(len(mem_features), len(db))
             for name in mem_features:
                 self.assertTrue(name in db)
-                x, y = mem_features[name].cpu().numpy(), db[name]
+                x, y = to_numpy(mem_features[name]), db[name]
                 self.assertEquals(x.shape, y.shape)
                 self.assertTrue(np.allclose(x, y))

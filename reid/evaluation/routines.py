@@ -1,14 +1,14 @@
 from __future__ import print_function
 
 from .metrics import cmc
+from ..utils import to_numpy
 
 
 def evaluate_all(distmat, query=None, gallery=None,
                  query_ids=None, gallery_ids=None,
                  query_cams=None, gallery_cams=None,
                  cmc_topk=(1, 5, 10)):
-    if type(distmat).__module__ == 'torch':
-        distmat = distmat.cpu().numpy()
+    distmat = to_numpy(distmat)
 
     if query is not None and gallery is not None:
         query_ids = [pid for _, pid, _ in query]

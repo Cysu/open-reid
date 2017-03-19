@@ -2,14 +2,14 @@ import numpy as np
 
 from .features import extract_features
 from .metrics import pairwise_distance
+from .utils import to_numpy
 
 
 def mine_hard_pairs(model, data_loader, margin=0):
     model.eval()
     # Compute pairwise distance
     features = extract_features(model, data_loader, print_freq=1)
-    distmat = pairwise_distance(features)
-    distmat = distmat.cpu().numpy()
+    distmat = to_numpy(pairwise_distance(features))
     # Get the pids
     dataset = data_loader.dataset.dataset
     pids = np.asarray([pid for _, pid, _ in dataset])
@@ -28,8 +28,7 @@ def mine_hard_triplets(model, data_loader, margin=0):
     model.eval()
     # Compute pairwise distance
     features = extract_features(model, data_loader, print_freq=1)
-    distmat = pairwise_distance(features)
-    distmat = distmat.cpu().numpy()
+    distmat = to_numpy(pairwise_distance(features))
     # Get the pids
     dataset = data_loader.dataset.dataset
     pids = np.asarray([pid for _, pid, _ in dataset])
