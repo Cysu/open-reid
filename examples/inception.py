@@ -109,10 +109,11 @@ def main(args):
 
     # Criterion and optimizer
     if args.loss == 'xentropy':
-        criterion = torch.nn.CrossEntropyLoss().cuda()
+        criterion = torch.nn.CrossEntropyLoss()
     else:
         criterion = OIMLoss(model.module.num_features, dataset.num_train_ids,
-                            scalar=args.oim_scalar).cuda()
+                            scalar=args.oim_scalar, momentum=args.oim_momentum)
+    criterion.cuda()
 
     optimizer = torch.optim.SGD(model.parameters(), args.lr,
                                 momentum=args.momentum,
@@ -166,6 +167,7 @@ if __name__ == '__main__':
     parser.add_argument('--loss', type=str, default='xentropy',
                         choices=['xentropy', 'oim'])
     parser.add_argument('--oim-scalar', type=float, default=10)
+    parser.add_argument('--oim-momentum', type=float, default=0.5)
     # optimizer
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
