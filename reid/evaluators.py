@@ -4,6 +4,7 @@ from torch.utils.data import DataLoader
 from .evaluation.routines import evaluate_all
 from .features import FeatureDatabase, extract_features, extract_embeddings
 from .metrics import pairwise_distance
+from .utils import to_numpy
 from .utils.data.preprocessor import KeyValuePreprocessor
 from .utils.data.sampler import ExhaustiveSampler
 
@@ -79,7 +80,7 @@ class CascadeEvaluator(object):
         evaluate_all(distmat, query=query, gallery=gallery)
 
         # Sort according to the first stage distance
-        distmat = distmat.cpu().numpy()
+        distmat = to_numpy(distmat)
         rank_indices = np.argsort(distmat, axis=1)
 
         # Build a data loader for topk predictions for each query
