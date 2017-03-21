@@ -140,6 +140,8 @@ def main(args):
     # Start training
     for epoch in range(args.start_epoch, args.epochs):
         adjust_lr(epoch)
+        if args.loss == 'oim':
+            criterion.scalar = args.oim_scalar + (epoch // 5)
         trainer.train(epoch, train_loader, optimizer)
         top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val)
 
@@ -166,13 +168,13 @@ if __name__ == '__main__':
     # data
     parser.add_argument('-d', '--dataset', type=str, default='cuhk03',
                         choices=['cuhk03', 'market1501', 'viper', 'duke'])
-    parser.add_argument('-b', '--batch-size', type=int, default=64)
-    parser.add_argument('-j', '--workers', type=int, default=2)
+    parser.add_argument('-b', '--batch-size', type=int, default=256)
+    parser.add_argument('-j', '--workers', type=int, default=4)
     parser.add_argument('--split', type=int, default=0)
     # model
     parser.add_argument('--depth', type=int, default=50,
                         choices=[18, 34, 50, 101, 152])
-    parser.add_argument('--features', type=int, default=256)
+    parser.add_argument('--features', type=int, default=128)
     parser.add_argument('--dropout', type=float, default=0.5)
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
@@ -187,7 +189,7 @@ if __name__ == '__main__':
     parser.add_argument('--resume', type=str, default='', metavar='PATH')
     parser.add_argument('--evaluate', action='store_true')
     parser.add_argument('--start-epoch', type=int, default=0)
-    parser.add_argument('--epochs', type=int, default=70)
+    parser.add_argument('--epochs', type=int, default=50)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
     # misc
