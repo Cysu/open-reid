@@ -1,4 +1,5 @@
 from .cuhk03 import CUHK03
+from .duke import Duke
 from .market1501 import Market1501
 from .viper import VIPeR
 
@@ -6,6 +7,7 @@ __factory = {
     'viper': VIPeR,
     'cuhk03': CUHK03,
     'market1501': Market1501,
+    'duke': Duke,
 }
 
 
