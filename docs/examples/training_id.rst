@@ -93,3 +93,19 @@ Market1501
    ResNet-50 CrossEntropy 26.0         53.3       73.8           ``python examples/resnet.py -d market1501 --loss xentropy``
    ResNet-50 OIM          28.9         55.8       76.0           ``python examples/resnet.py -d market1501 --loss oim --oim-scalar 30``
    ========= ============ ============ ========== ============== ================================
+
+Duke
+^^^^
+
+.. table::
+   :column-wrapping: fftttf
+   :column-alignment: llrrrl
+
+   ========= ============ ============ ========== ============== ================================
+   Net       Loss         CMC allshots CMC cuhk03 CMC market1501 Training Parameters
+   ========= ============ ============ ========== ============== ================================
+   Inception CrossEntropy 13.8         35.1       50.0           ``python examples/inception.py -d duke --loss xentropy``
+   Inception OIM          18.4         40.7       56.1           ``python examples/inception.py -d duke --loss oim --oim-scalar 20``
+   ResNet-50 CrossEntropy 18.9         38.5       58.1           ``python examples/resnet.py -d duke --loss xentropy``
+   ResNet-50 OIM          23.9         44.7       63.3           ``python examples/resnet.py -d duke --loss oim --oim-scalar 30``
+   ========= ============ ============ ========== ============== ================================
