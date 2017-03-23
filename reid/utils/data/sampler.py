@@ -116,7 +116,7 @@ class RandomIdentitySampler(Sampler):
         self.num_samples = len(self.pids)
 
     def __len__(self):
-        return self.num_samples
+        return self.num_samples * self.num_instances
 
     def __iter__(self):
         indices = torch.randperm(self.num_samples)
