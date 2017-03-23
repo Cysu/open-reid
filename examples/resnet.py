@@ -10,16 +10,19 @@ from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
 from reid.loss.oim import OIMLoss
+from reid.loss.triplet import TripletLoss
 from reid.models import ResNet
 from reid.trainers import Trainer
 from reid.evaluators import Evaluator
 from reid.utils.data import transforms
 from reid.utils.data.preprocessor import Preprocessor
+from reid.utils.data.sampler import RandomIdentitySampler
 from reid.utils.logging import Logger
 from reid.utils.serialization import load_checkpoint, save_checkpoint
 
 
-def get_data(dataset_name, split_id, data_dir, batch_size, workers):
+def get_data(dataset_name, split_id, data_dir, batch_size, workers,
+             num_instances):
     root = osp.join(data_dir, dataset_name)
 
     dataset = get_dataset(dataset_name, root,
@@ -28,17 +31,22 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers):
     normalizer = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])
 
-    train_loader = DataLoader(
-        Preprocessor(dataset.train, root=dataset.images_dir,
-                     transform=transforms.Compose([
-                         transforms.RectScale(256, 256),
-                         transforms.RandomCrop(224),
-                         transforms.RandomHorizontalFlip(),
-                         transforms.ToTensor(),
-                         normalizer,
-                     ])),
-        batch_size=batch_size, num_workers=workers,
-        shuffle=True, pin_memory=False)
+    train_processor = Preprocessor(dataset.train, root=dataset.images_dir,
+                                   transform=transforms.Compose([
+                                       transforms.RectScale(256, 256),
+                                       transforms.RandomCrop(224),
+                                       transforms.RandomHorizontalFlip(),
+                                       transforms.ToTensor(),
+                                       normalizer,
+                                   ]))
+    if num_instances > 0:
+        train_loader = DataLoader(
+            train_processor, batch_size=batch_size, num_workers=workers,
+            sampler=RandomIdentitySampler(dataset.train, num_instances))
+    else:
+        train_loader = DataLoader(
+            train_processor, batch_size=batch_size, num_workers=workers,
+            shuffle=True)
 
     val_loader = DataLoader(
         Preprocessor(dataset.val, root=dataset.images_dir,
@@ -78,9 +86,13 @@ def main(args):
         sys.stdout = Logger(osp.join(args.logs_dir, 'log.txt'))
 
     # Create data loaders
+    if args.loss == 'triplet':
+        assert args.num_instances > 1, 'TripletLoss requires num_instances > 1'
+        assert args.batch_size % args.num_instances == 0, \
+            'num_instances should divide batch_size'
     dataset, train_loader, val_loader, test_loader = \
         get_data(args.dataset, args.split, args.data_dir,
-                 args.batch_size, args.workers)
+                 args.batch_size, args.workers, args.num_instances)
 
     # Create model
     if args.loss == 'xentropy':
@@ -115,9 +127,11 @@ def main(args):
     # Criterion
     if args.loss == 'xentropy':
         criterion = torch.nn.CrossEntropyLoss()
-    else:
+    elif args.loss == 'oim':
         criterion = OIMLoss(model.module.num_features, dataset.num_train_ids,
                             scalar=args.oim_scalar, momentum=args.oim_momentum)
+    else:
+        criterion = TripletLoss(margin=args.triplet_margin)
     criterion.cuda()
 
     # Optimizer: different learning rates for pretrained and new layers
@@ -171,6 +185,12 @@ if __name__ == '__main__':
     parser.add_argument('-b', '--batch-size', type=int, default=256)
     parser.add_argument('-j', '--workers', type=int, default=4)
     parser.add_argument('--split', type=int, default=0)
+    parser.add_argument('--num-instances', type=int, default=0,
+                        help="If greater than zero, each minibatch will"
+                             "consist of (batch_size // num_instances)"
+                             "identities, and each identity will have"
+                             "num_instances instances. Used in conjunction with"
+                             "--loss triplet")
     # model
     parser.add_argument('--depth', type=int, default=50,
                         choices=[18, 34, 50, 101, 152])
@@ -178,9 +198,10 @@ if __name__ == '__main__':
     parser.add_argument('--dropout', type=float, default=0.5)
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
-                        choices=['xentropy', 'oim'])
+                        choices=['xentropy', 'oim', 'triplet'])
     parser.add_argument('--oim-scalar', type=float, default=10)
     parser.add_argument('--oim-momentum', type=float, default=0.5)
+    parser.add_argument('--triplet-margin', type=float, default=0.5)
     # optimizer
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
