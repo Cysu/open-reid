@@ -15,27 +15,18 @@ class TripletLoss(nn.Module):
         dist = torch.pow(inputs, 2).sum(1).expand(n, n)
         dist = dist + dist.t()
         dist.addmm_(1, -2, inputs, inputs.t())
-        dist = dist.clamp(min=0).sqrt()
-        # Enumerate triplets (a, n, p), and save (an, ap) distance indices
-        d, y = dist.data, targets.data
-        indices = []
+        dist = dist.clamp(min=1e-12).sqrt()  # for numerical stability
+        # For each anchor, find the hardest positive and negative
+        mask = targets.expand(n, n).eq(targets.expand(n, n).t())
+        dist_ap, dist_an = [], []
         for i in range(n):
-            for j in range(n):
-                if i == j: continue
-                if y[i] != y[j]: continue
-                for k in range(n):
-                    if y[k] == y[i]: continue
-                    if d[i][k] - d[i][j] >= self.margin: continue
-                    indices.append((i * n + k, i * n + j))
-        indices = torch.Tensor(indices).long()
-        if dist.is_cuda:
-            indices = indices.cuda()
-        # Since torch does not support 2d indexing yet, we need to flatten it
-        dist = dist.view(-1)
-        dist_an, dist_ap = dist[indices[:, 0]], dist[indices[:, 1]]
+            dist_ap.append(dist[i][mask[i]].max())
+            dist_an.append(dist[i][1 - mask[i]].min())
+        dist_ap = torch.cat(dist_ap)
+        dist_an = torch.cat(dist_an)
         # Compute ranking hinge loss
-        y = torch.ones(dist_an.size(0))
-        if dist.is_cuda:
-            y = y.cuda()
+        y = dist_an.data.new()
+        y.resize_as_(dist_an.data)
+        y.fill_(1)
         y = Variable(y)
         return self.ranking_loss(dist_an, dist_ap, y)
