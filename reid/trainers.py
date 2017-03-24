@@ -4,6 +4,7 @@ import time
 import torch
 from torch.autograd import Variable
 
+from reid.loss.triplet import TripletLoss
 from .evaluation import accuracy
 from .loss.oim import OIMLoss
 from .utils.meters import AverageMeter
@@ -67,12 +68,19 @@ class Trainer(BaseTrainer):
 
     def _forward(self, inputs, targets):
         outputs = self.model(*inputs)
-        if isinstance(self.criterion, OIMLoss):
-            loss, outputs = self.criterion(outputs, targets)
-        else:
+        if isinstance(self.criterion, torch.nn.CrossEntropyLoss):
             loss = self.criterion(outputs, targets)
-        prec1, = accuracy(outputs.data, targets.data)
-        return loss, prec1[0]
+            prec, = accuracy(outputs.data, targets.data)
+            prec = prec[0]
+        elif isinstance(self.criterion, OIMLoss):
+            loss, outputs = self.criterion(outputs, targets)
+            prec, = accuracy(outputs.data, targets.data)
+            prec = prec[0]
+        elif isinstance(self.criterion, TripletLoss):
+            loss, prec = self.criterion(outputs, targets)
+        else:
+            raise ValueError("Unsupported loss:", self.criterion)
+        return loss, prec
 
 
 class SiameseTrainer(BaseTrainer):
