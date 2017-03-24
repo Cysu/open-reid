@@ -5,8 +5,6 @@ from torch import nn
 from torchvision.models import resnet18, resnet34, resnet50, resnet101, \
     resnet152
 
-from .affine import Affine
-
 
 class Identity(nn.Module):
     def __init__(self):
@@ -26,8 +24,7 @@ class ResNet(nn.Module):
     }
 
     def __init__(self, depth, pretrained=True, cut_at_pooling=False,
-                 num_classes=0, num_features=0,
-                 norm=False, scale=False, dropout=0):
+                 num_classes=0, num_features=0, norm=False, dropout=0):
         super(ResNet, self).__init__()
 
         self.depth = depth
@@ -43,7 +40,6 @@ class ResNet(nn.Module):
             self.num_classes = num_classes
             self.num_features = num_features
             self.norm = norm
-            self.scale = scale
             self.dropout = dropout
             self.has_embedding = num_features > 0
 
@@ -58,8 +54,6 @@ class ResNet(nn.Module):
             else:
                 # Change the num_features to CNN output channels
                 self.num_features = out_planes
-            if self.scale:
-                self.affine = Affine(self.num_features, axis=1, bias=False)
             if self.dropout > 0:
                 self.drop = nn.Dropout(self.dropout)
             if self.num_classes > 0:
@@ -85,8 +79,6 @@ class ResNet(nn.Module):
             x = x / x.norm(2, 1).expand_as(x)
         elif self.has_embedding:
             x = F.relu(x)
-        if self.scale:
-            x = self.affine(x)
         if self.dropout > 0:
             x = self.drop(x)
         if self.num_classes > 0:
