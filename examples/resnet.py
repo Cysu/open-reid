@@ -99,9 +99,15 @@ def main(args):
         model = ResNet(args.depth, pretrained=True,
                        num_classes=dataset.num_train_ids,
                        num_features=args.features, dropout=args.dropout)
-    else:
+    elif args.loss == 'oim':
         model = ResNet(args.depth, pretrained=True, num_features=args.features,
                        norm=True, dropout=args.dropout)
+    elif args.loss == 'triplet':
+        model = ResNet(args.depth, pretrained=True,
+                       num_features=1024, num_classes=args.features,
+                       dropout=args.dropout)
+    else:
+        raise ValueError("Cannot recognize loss type:", args.loss)
     model = torch.nn.DataParallel(model).cuda()
 
     # Load from checkpoint
@@ -130,24 +136,40 @@ def main(args):
     elif args.loss == 'oim':
         criterion = OIMLoss(model.module.num_features, dataset.num_train_ids,
                             scalar=args.oim_scalar, momentum=args.oim_momentum)
-    else:
+    elif args.loss == 'triplet':
         criterion = TripletLoss(margin=args.triplet_margin)
+    else:
+        raise ValueError("Cannot recognize loss type:", args.loss)
     criterion.cuda()
 
     # Optimizer: different learning rates for pretrained and new layers
     base_param_ids = set(map(id, model.module.base.parameters()))
     new_params = [p for p in model.parameters() if id(p) not in base_param_ids]
-    optimizer = torch.optim.SGD([
+    param_groups = [
         {'params': model.module.base.parameters(), 'lr_mult': 0.1},
-        {'params': new_params, 'lr_mult': 1.0}],
-        lr=args.lr, momentum=args.momentum, weight_decay=args.weight_decay)
+        {'params': new_params, 'lr_mult': 1.0}]
+    if args.optimizer == 'sgd':
+        optimizer = torch.optim.SGD(param_groups,
+                                    lr=args.lr, momentum=args.momentum,
+                                    weight_decay=args.weight_decay)
+    elif args.optimizer == 'adam':
+        optimizer = torch.optim.Adam(param_groups, lr=args.lr,
+                                     weight_decay=args.weight_decay)
+    else:
+        raise ValueError("Cannot recognize optimizer type:", args.optimizer)
 
     # Trainer
     trainer = Trainer(model, criterion)
 
     # Schedule learning rate
     def adjust_lr(epoch):
-        lr = args.lr * (0.1 ** (epoch // 40))
+        if args.optimizer == 'sgd':
+            lr = args.lr * (0.1 ** (epoch // 40))
+        elif args.optimizer == 'adam':
+            lr = args.lr if epoch <= 400 else \
+                args.lr * (0.001 ** (epoch - 400) / 275)
+        else:
+            raise ValueError("Cannot recognize optimizer type:", args.optimizer)
         for g in optimizer.param_groups:
             g['lr'] = lr * g['lr_mult']
 
@@ -203,6 +225,8 @@ if __name__ == '__main__':
     parser.add_argument('--oim-momentum', type=float, default=0.5)
     parser.add_argument('--triplet-margin', type=float, default=0.5)
     # optimizer
+    parser.add_argument('--optimizer', type=str, default='sgd',
+                        choices=['sgd', 'adam'])
     parser.add_argument('--lr', type=float, default=0.1)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
