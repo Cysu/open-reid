@@ -1,6 +1,6 @@
 from __future__ import print_function
 
-from .metrics import cmc
+from .metrics import cmc, mean_ap
 from ..utils import to_numpy
 
 
@@ -19,7 +19,11 @@ def evaluate_all(distmat, query=None, gallery=None,
         assert (query_ids is not None and gallery_ids is not None
                 and query_cams is not None and gallery_cams is not None)
 
-    # Compute both new and old cmc scores
+    # Compute mean AP
+    mAP = mean_ap(distmat, query_ids, gallery_ids, query_cams, gallery_cams)
+    print('Mean AP: {:4.1%}'.format(mAP))
+
+    # Compute all kinds of CMC scores
     cmc_configs = {
         'allshots': dict(separate_camera_set=False,
                          single_gallery_shot=False,
