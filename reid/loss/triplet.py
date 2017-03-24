@@ -29,4 +29,6 @@ class TripletLoss(nn.Module):
         y.resize_as_(dist_an.data)
         y.fill_(1)
         y = Variable(y)
-        return self.ranking_loss(dist_an, dist_ap, y)
+        loss = self.ranking_loss(dist_an, dist_ap, y)
+        prec = (dist_an.data > dist_ap.data).sum() * 1. / y.size(0)
+        return loss, prec
