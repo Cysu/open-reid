@@ -6,7 +6,7 @@ class TestOIMLoss(TestCase):
         import torch
         import torch.nn.functional as F
         from torch.autograd import Variable
-        from reid.loss.oim import OIMLoss
+        from reid.loss import OIMLoss
         criterion = OIMLoss(3, 3, scalar=1.0, size_average=False)
         criterion.lut = torch.eye(3)
         x = Variable(torch.randn(3, 3), requires_grad=True)

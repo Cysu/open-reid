@@ -4,9 +4,8 @@ import time
 import torch
 from torch.autograd import Variable
 
-from reid.loss.triplet import TripletLoss
-from .evaluation import accuracy
-from .loss.oim import OIMLoss
+from .evaluation_metrics import classification
+from .loss import OIMLoss, TripletLoss
 from .utils.meters import AverageMeter
 
 
@@ -70,11 +69,11 @@ class Trainer(BaseTrainer):
         outputs = self.model(*inputs)
         if isinstance(self.criterion, torch.nn.CrossEntropyLoss):
             loss = self.criterion(outputs, targets)
-            prec, = accuracy(outputs.data, targets.data)
+            prec, = classification(outputs.data, targets.data)
             prec = prec[0]
         elif isinstance(self.criterion, OIMLoss):
             loss, outputs = self.criterion(outputs, targets)
-            prec, = accuracy(outputs.data, targets.data)
+            prec, = classification(outputs.data, targets.data)
             prec = prec[0]
         elif isinstance(self.criterion, TripletLoss):
             loss, prec = self.criterion(outputs, targets)

@@ -1,10 +1,10 @@
 from unittest import TestCase
 import numpy as np
 
-from reid.evaluation import cmc
+from reid.evaluation_metrics import cmc
 
 
-class TestCmc(TestCase):
+class TestCMC(TestCase):
     def test_only_distmat(self):
         distmat = np.array([[0, 1, 2, 3, 4],
                             [1, 0, 2, 3, 4],

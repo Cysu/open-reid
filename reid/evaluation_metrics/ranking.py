@@ -3,21 +3,7 @@ from collections import defaultdict
 import numpy as np
 from sklearn.metrics import average_precision_score
 
-
-def accuracy(output, target, topk=(1,)):
-    """Computes the precision@k for the specified values of k"""
-    maxk = max(topk)
-    batch_size = target.size(0)
-
-    _, pred = output.topk(maxk, 1, True, True)
-    pred = pred.t()
-    correct = pred.eq(target.view(1, -1).expand_as(pred))
-
-    ret = []
-    for k in topk:
-        correct_k = correct[:k].view(-1).float().sum(0)
-        ret.append(correct_k.mul_(1. / batch_size))
-    return ret
+from ..utils import to_numpy
 
 
 def _unique_sample(ids_dict, num):
@@ -33,6 +19,7 @@ def cmc(distmat, query_ids=None, gallery_ids=None,
         separate_camera_set=False,
         single_gallery_shot=False,
         first_match_break=False):
+    distmat = to_numpy(distmat)
     m, n = distmat.shape
     # Fill up default values
     if query_ids is None:
@@ -93,6 +80,7 @@ def cmc(distmat, query_ids=None, gallery_ids=None,
 
 def mean_ap(distmat, query_ids=None, gallery_ids=None,
             query_cams=None, gallery_cams=None):
+    distmat = to_numpy(distmat)
     m, n = distmat.shape
     # Fill up default values
     if query_ids is None:
