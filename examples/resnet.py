@@ -9,6 +9,7 @@ import torch.backends.cudnn as cudnn
 from torch.utils.data import DataLoader
 
 from reid.datasets import get_dataset
+from reid.dist_metric import DistanceMetric
 from reid.loss.oim import OIMLoss
 from reid.loss.triplet import TripletLoss
 from reid.models import ResNet
@@ -121,13 +122,17 @@ def main(args):
     else:
         best_top1 = 0
 
+    # Distance metric
+    metric = DistanceMetric(algorithm=args.dist_metric)
+
     # Evaluator
     evaluator = Evaluator(model)
     if args.evaluate:
+        metric.train(model, train_loader)
         print("Validation:")
-        evaluator.evaluate(val_loader, dataset.val, dataset.val)
+        evaluator.evaluate(val_loader, dataset.val, dataset.val, metric)
         print("Test:")
-        evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
+        evaluator.evaluate(test_loader, dataset.query, dataset.gallery, metric)
         return
 
     # Criterion
@@ -196,6 +201,7 @@ def main(args):
     print('Test with best model:')
     checkpoint = load_checkpoint(osp.join(args.logs_dir, 'model_best.pth.tar'))
     model.load_state_dict(checkpoint['state_dict'])
+    metric.train(model, train_loader)
     evaluator.evaluate(test_loader, dataset.query, dataset.gallery)
 
 
@@ -237,6 +243,9 @@ if __name__ == '__main__':
     parser.add_argument('--epochs', type=int, default=50)
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
+    # metric learning
+    parser.add_argument('--dist-metric', type=str, default='euclidean',
+                        choices=['euclidean', 'kissme'])
     # misc
     working_dir = osp.dirname(osp.abspath(__file__))
     parser.add_argument('--data-dir', type=str, metavar='PATH',
