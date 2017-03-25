@@ -2,7 +2,7 @@ from unittest import TestCase
 
 import numpy as np
 
-from reid.features.database import FeatureDatabase
+from reid.feature_extraction.database import FeatureDatabase
 
 
 class TestFeatureDatabase(TestCase):

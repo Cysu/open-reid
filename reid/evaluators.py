@@ -1,6 +1,40 @@
+from __future__ import print_function
+import time
+from collections import OrderedDict
+
 from .evaluation_metrics import cmc, mean_ap
-from .features import extract_features
+from .feature_extraction import extract_cnn_feature
 from .metrics import pairwise_distance
+from .utils.meters import AverageMeter
+
+
+def extract_features(model, data_loader, print_freq=1):
+    model.eval()
+    batch_time = AverageMeter()
+    data_time = AverageMeter()
+
+    features = OrderedDict()
+
+    end = time.time()
+    for i, (imgs, fnames, _, _) in enumerate(data_loader):
+        data_time.update(time.time() - end)
+
+        outputs = extract_cnn_feature(model, imgs)
+        for fname, output in zip(fnames, outputs):
+            features[fname] = output
+
+        batch_time.update(time.time() - end)
+        end = time.time()
+
+        if (i + 1) % print_freq == 0:
+            print('Extract Features: [{}/{}]\t'
+                  'Time {:.3f} ({:.3f})\t'
+                  'Data {:.3f} ({:.3f})\t'.format(
+                i + 1, len(data_loader),
+                batch_time.val, batch_time.avg,
+                data_time.val, data_time.avg))
+
+    return features
 
 
 def evaluate_all(distmat, query=None, gallery=None,
