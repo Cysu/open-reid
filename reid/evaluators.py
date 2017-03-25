@@ -2,26 +2,29 @@ from __future__ import print_function
 import time
 from collections import OrderedDict
 
+import torch
+
 from .evaluation_metrics import cmc, mean_ap
 from .feature_extraction import extract_cnn_feature
-from .metrics import pairwise_distance
 from .utils.meters import AverageMeter
 
 
-def extract_features(model, data_loader, print_freq=1):
+def extract_features(model, data_loader, print_freq=1, metric=None):
     model.eval()
     batch_time = AverageMeter()
     data_time = AverageMeter()
 
     features = OrderedDict()
+    labels = OrderedDict()
 
     end = time.time()
-    for i, (imgs, fnames, _, _) in enumerate(data_loader):
+    for i, (imgs, fnames, pids, _) in enumerate(data_loader):
         data_time.update(time.time() - end)
 
         outputs = extract_cnn_feature(model, imgs)
-        for fname, output in zip(fnames, outputs):
+        for fname, output, pid in zip(fnames, outputs, pids):
             features[fname] = output
+            labels[fname] = pid
 
         batch_time.update(time.time() - end)
         end = time.time()
@@ -29,12 +32,37 @@ def extract_features(model, data_loader, print_freq=1):
         if (i + 1) % print_freq == 0:
             print('Extract Features: [{}/{}]\t'
                   'Time {:.3f} ({:.3f})\t'
-                  'Data {:.3f} ({:.3f})\t'.format(
-                i + 1, len(data_loader),
-                batch_time.val, batch_time.avg,
-                data_time.val, data_time.avg))
+                  'Data {:.3f} ({:.3f})\t'
+                  .format(i + 1, len(data_loader),
+                          batch_time.val, batch_time.avg,
+                          data_time.val, data_time.avg))
 
-    return features
+    return features, labels
+
+
+def pairwise_distance(features, query=None, gallery=None, metric=None):
+    if query is None and gallery is None:
+        n = len(features)
+        x = torch.cat(list(features.values()))
+        x = x.view(n, -1)
+        if metric is not None:
+            x = metric.transform(x)
+        dist = torch.pow(x, 2).sum(1) * 2
+        dist = dist.expand(n, n) - 2 * torch.mm(x, x.t())
+        return dist
+
+    x = torch.cat([features[f].unsqueeze(0) for f, _, _ in query], 0)
+    y = torch.cat([features[f].unsqueeze(0) for f, _, _ in gallery], 0)
+    m, n = x.size(0), y.size(0)
+    x = x.view(m, -1)
+    y = y.view(n, -1)
+    if metric is not None:
+        x = metric.transform(x)
+        y = metric.transform(y)
+    dist = torch.pow(x, 2).sum(1).expand(m, n) + \
+           torch.pow(y, 2).sum(1).expand(n, m).t()
+    dist.addmm_(1, -2, x, y.t())
+    return dist
 
 
 def evaluate_all(distmat, query=None, gallery=None,
@@ -86,7 +114,7 @@ class Evaluator(object):
         super(Evaluator, self).__init__()
         self.model = model
 
-    def evaluate(self, data_loader, query, gallery):
-        features = extract_features(self.model, data_loader)
-        distmat = pairwise_distance(features, query, gallery)
+    def evaluate(self, data_loader, query, gallery, metric=None):
+        features, _ = extract_features(self.model, data_loader)
+        distmat = pairwise_distance(features, query, gallery, metric=metric)
         return evaluate_all(distmat, query=query, gallery=gallery)

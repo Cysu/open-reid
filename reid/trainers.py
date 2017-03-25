@@ -45,11 +45,12 @@ class BaseTrainer(object):
                       'Time {:.3f} ({:.3f})\t'
                       'Data {:.3f} ({:.3f})\t'
                       'Loss {:.3f} ({:.3f})\t'
-                      'Prec {:.2%} ({:.2%})\t'.format(
-                      epoch, i + 1, len(data_loader),
-                      batch_time.val, batch_time.avg,
-                      data_time.val, data_time.avg,
-                      losses.val, losses.avg, precisions.val, precisions.avg))
+                      'Prec {:.2%} ({:.2%})\t'
+                      .format(epoch, i + 1, len(data_loader),
+                              batch_time.val, batch_time.avg,
+                              data_time.val, data_time.avg,
+                              losses.val, losses.avg,
+                              precisions.val, precisions.avg))
 
     def _parse_data(self, inputs):
         raise NotImplementedError
