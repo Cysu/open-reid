@@ -16,3 +16,6 @@ class DistanceMetric(object):
         features = torch.stack(features.values()).numpy()
         labels = torch.cat(labels.values()).numpy()
         self.metric.fit(features, labels)
+
+    def transform(self, X):
+        return self.metric.transform(X)
