@@ -6,14 +6,6 @@ from torchvision.models import resnet18, resnet34, resnet50, resnet101, \
     resnet152
 
 
-class Identity(nn.Module):
-    def __init__(self):
-        super(Identity, self).__init__()
-
-    def forward(self, x):
-        return x
-
-
 class ResNet(nn.Module):
     __factory = {
         18: resnet18,
@@ -45,7 +37,6 @@ class ResNet(nn.Module):
 
             # Remove the last fc layer (replace it by an identity)
             out_planes = self.base.fc.in_features
-            self.base.fc = Identity()
 
             # Append new layers
             if self.has_embedding:
@@ -63,15 +54,17 @@ class ResNet(nn.Module):
             self.reset_params()
 
     def forward(self, x):
+        for name, module in self.base._modules.items():
+            if name == 'avgpool':
+                break
+            x = module(x)
+
         if self.cut_at_pooling:
-            for name, module in self.base._modules.items():
-                if name == 'avgpool':
-                    break
-                x = module(x)
             return x
 
-        x = self.base(x)
+        x = F.avg_pool2d(x, x.size()[2:])
         x = x.view(x.size(0), -1)
+
         if self.has_embedding:
             x = self.feat(x)
             x = self.feat_bn(x)
