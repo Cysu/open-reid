@@ -1,6 +1,8 @@
 import numpy as np
 from metric_learn.base_metric import BaseMetricLearner
 
+from . import validate_cov_matrix
+
 
 class KISSME(BaseMetricLearner):
     def __init__(self):
@@ -30,4 +32,5 @@ class KISSME(BaseMetricLearner):
         S = X[idxa] - X[idxb]
         C0 = S.transpose().dot(S) / num_matches
         self.M_ = np.linalg.inv(C1) - np.linalg.inv(C0)
+        self.M_ = validate_cov_matrix(self.M_)
         self.X_ = X
