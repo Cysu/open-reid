@@ -18,4 +18,11 @@ class DistanceMetric(object):
         self.metric.fit(features, labels)
 
     def transform(self, X):
-        return self.metric.transform(X)
+        if torch.is_tensor(X):
+            X = X.numpy()
+            X = self.metric.transform(X)
+            X = torch.from_numpy(X)
+        else:
+            X = self.metric.transform(X)
+        return X
+

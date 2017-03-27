@@ -1,7 +1,15 @@
 import numpy as np
 from metric_learn.base_metric import BaseMetricLearner
 
-from . import validate_cov_matrix
+
+def validate_cov_matrix(M, threshold=1e-10, eps=1e-6):
+    try:
+        _ = np.linalg.cholesky(M)
+    except np.linalg.LinAlgError:
+        w, v = np.linalg.eig(M)
+        w[w <= threshold] = eps
+        M = (v * w).dot(v.T)
+    return M
 
 
 class KISSME(BaseMetricLearner):

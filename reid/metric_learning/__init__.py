@@ -22,12 +22,3 @@ def get_metric(algorithm, *args, **kwargs):
         raise KeyError("Unknown metric:", algorithm)
     return __factory[algorithm](*args, **kwargs)
 
-
-def validate_cov_matrix(M, threshold=1e-10, eps=1e-6):
-    try:
-        _ = np.linalg.cholesky(M)
-    except np.linalg.LinAlgError:
-        w, v = np.linalg.eig(M)
-        w[w <= threshold] = eps
-        M = (v * w).dot(v.T)
-    return M
