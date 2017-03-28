@@ -180,8 +180,6 @@ def main(args):
     # Start training
     for epoch in range(args.start_epoch, args.epochs):
         adjust_lr(epoch)
-        if args.loss == 'oim':
-            criterion.scalar = args.oim_scalar + (epoch // 5)
         trainer.train(epoch, train_loader, optimizer)
         top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val)
 
