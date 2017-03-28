@@ -53,7 +53,7 @@ class ResNet(nn.Module):
                 self.drop = nn.Dropout(self.dropout)
             if self.num_classes > 0:
                 self.classifier = nn.Linear(self.num_features, self.num_classes)
-                init.kaiming_normal(self.classifier.weight, mode='fan_out')
+                init.normal(self.classifier.weight, std=0.001)
                 init.constant(self.classifier.bias, 0)
 
         if not self.pretrained:
@@ -94,7 +94,7 @@ class ResNet(nn.Module):
                 init.constant(m.weight, 1)
                 init.constant(m.bias, 0)
             elif isinstance(m, nn.Linear):
-                init.kaiming_normal(m.weight, mode='fan_out')
+                init.normal(m.weight, std=0.001)
                 if m.bias is not None:
                     init.constant(m.bias, 0)
 

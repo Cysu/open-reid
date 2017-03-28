@@ -150,7 +150,15 @@ def main(args):
 
     # Optimizer
     if args.optimizer == 'sgd':
-        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+        if args.loss == 'xentropy':
+            base_param_ids = set(map(id, model.module.base.parameters()))
+            new_params = [p for p in model.parameters() if id(p) not in base_param_ids]
+            param_groups = [
+                {'params': model.module.base.parameters(), 'lr_mult': 0.1},
+                {'params': new_params, 'lr_mult': 1.0}]
+        else:
+            param_groups = model.parameters()
+        optimizer = torch.optim.SGD(param_groups, lr=args.lr,
                                     momentum=args.momentum,
                                     weight_decay=args.weight_decay,
                                     nesterov=True)
@@ -173,7 +181,7 @@ def main(args):
         else:
             raise ValueError("Cannot recognize optimizer type:", args.optimizer)
         for g in optimizer.param_groups:
-            g['lr'] = lr
+            g['lr'] = lr * g.get('lr_mult', 1)
 
     # Start training
     for epoch in range(args.start_epoch, args.epochs):

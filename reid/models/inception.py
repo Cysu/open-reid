@@ -129,7 +129,7 @@ class InceptionNet(nn.Module):
                 init.constant(m.weight, 1)
                 init.constant(m.bias, 0)
             elif isinstance(m, nn.Linear):
-                init.kaiming_normal(m.weight, mode='fan_out')
+                init.normal(m.weight, std=0.001)
                 if m.bias is not None:
                     init.constant(m.bias, 0)
 
