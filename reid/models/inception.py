@@ -1,7 +1,9 @@
 import math
 
+import torch
 import torch.nn.functional as F
-from torch import nn, torch
+import torch.nn.init as init
+from torch import nn
 
 
 def _make_conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1,
@@ -120,14 +122,14 @@ class InceptionNet(nn.Module):
     def reset_params(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                nn.init.kaiming_normal(m.weight, mode='fan_out')
+                init.kaiming_normal(m.weight, mode='fan_out')
                 if m.bias is not None:
-                    nn.init.constant(m.bias, 0)
+                    init.constant(m.bias, 0)
             elif isinstance(m, nn.BatchNorm2d):
-                nn.init.constant(m.weight, 1)
-                nn.init.constant(m.bias, 0)
+                init.constant(m.weight, 1)
+                init.constant(m.bias, 0)
             elif isinstance(m, nn.Linear):
-                nn.init.kaiming_normal(m.weight, mode='fan_out')
+                init.kaiming_normal(m.weight, mode='fan_out')
                 if m.bias is not None:
-                    nn.init.constant(m.bias, 0)
+                    init.constant(m.bias, 0)
 
