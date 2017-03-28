@@ -23,7 +23,6 @@
 import sphinx_rtd_theme
 import cloud_sptheme
 
-
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
@@ -43,7 +42,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
-    'cloud_sptheme.ext.table_styling'
+    # 'cloud_sptheme.ext.table_styling'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -90,7 +89,6 @@ pygments_style = 'sphinx'
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = True
 
-
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -113,12 +111,17 @@ html_theme_options = {
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
+html_context = {
+    'css_files': [
+        'https://fonts.googleapis.com/css?family=Lato',
+        '_static/css/openreid_theme.css',
+    ],
+}
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'Open-ReIDdoc'
-
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -148,7 +151,6 @@ latex_documents = [
      'Tong Xiao', 'manual'),
 ]
 
-
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
@@ -157,7 +159,6 @@ man_pages = [
     (master_doc, 'open-reid', 'Open-ReID Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -170,11 +171,12 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
-
-
-
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {
+    'python': ('https://docs.python.org/', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'pytorch': ('http://pytorch.org/docs/', None),
+}
 
 # -- A patch that prevents Sphinx from cross-referencing ivar tags -------
 # See http://stackoverflow.com/a/41184353/3343043
@@ -222,5 +224,6 @@ def patched_make_field(self, types, domain, items):
             bodynode += nodes.list_item('', handle_item(fieldarg, content))
     fieldbody = nodes.field_body('', bodynode)
     return nodes.field('', fieldname, fieldbody)
+
 
 TypedField.make_field = patched_make_field
