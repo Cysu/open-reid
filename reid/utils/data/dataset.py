@@ -28,9 +28,9 @@ class Dataset(object):
         self.split_id = split_id
         self.meta = None
         self.split = None
-        self.train, self.val = [], []
+        self.train, self.val, self.trainval = [], [], []
         self.query, self.gallery = [], []
-        self.num_train_ids, self.num_val_ids = 0, 0
+        self.num_train_ids, self.num_val_ids, self.num_trainval_ids = 0, 0, 0
 
     @property
     def images_dir(self):
@@ -59,22 +59,26 @@ class Dataset(object):
         identities = self.meta['identities']
         self.train = _pluck(identities, train_pids, relabel=True)
         self.val = _pluck(identities, val_pids, relabel=True)
+        self.trainval = _pluck(identities, trainval_pids, relabel=True)
         self.query = _pluck(identities, self.split['query'])
         self.gallery = _pluck(identities, self.split['gallery'])
         self.num_train_ids = len(train_pids)
         self.num_val_ids = len(val_pids)
+        self.num_trainval_ids = len(trainval_pids)
 
         if verbose:
             print(self.__class__.__name__, "dataset loaded")
-            print("  subset  | # ids | # images")
-            print("  --------------------------")
-            print("  train   | {:5d} | {:8d}"
+            print("  subset   | # ids | # images")
+            print("  ---------------------------")
+            print("  train    | {:5d} | {:8d}"
                   .format(self.num_train_ids, len(self.train)))
-            print("  val     | {:5d} | {:8d}"
+            print("  val      | {:5d} | {:8d}"
                   .format(self.num_val_ids, len(self.val)))
-            print("  query   | {:5d} | {:8d}"
+            print("  trainval | {:5d} | {:8d}"
+                  .format(self.num_trainval_ids, len(self.val)))
+            print("  query    | {:5d} | {:8d}"
                   .format(len(self.split['query']), len(self.query)))
-            print("  gallery | {:5d} | {:8d}"
+            print("  gallery  | {:5d} | {:8d}"
                   .format(len(self.split['gallery']), len(self.gallery)))
 
     def _check_integrity(self):
