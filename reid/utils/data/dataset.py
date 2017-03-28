@@ -75,7 +75,7 @@ class Dataset(object):
             print("  val      | {:5d} | {:8d}"
                   .format(self.num_val_ids, len(self.val)))
             print("  trainval | {:5d} | {:8d}"
-                  .format(self.num_trainval_ids, len(self.val)))
+                  .format(self.num_trainval_ids, len(self.trainval)))
             print("  query    | {:5d} | {:8d}"
                   .format(len(self.split['query']), len(self.query)))
             print("  gallery  | {:5d} | {:8d}"
