@@ -35,13 +35,16 @@ class ResNet(nn.Module):
             self.dropout = dropout
             self.has_embedding = num_features > 0
 
-            # Remove the last fc layer (replace it by an identity)
             out_planes = self.base.fc.in_features
 
             # Append new layers
             if self.has_embedding:
                 self.feat = nn.Linear(out_planes, self.num_features)
                 self.feat_bn = nn.BatchNorm1d(self.num_features)
+                nn.init.kaiming_normal(self.feat.weight, mode='fan_out')
+                nn.init.constant(self.feat.bias, 0)
+                nn.init.constant(self.feat_bn.weight, 1)
+                nn.init.constant(self.feat_bn.bias, 0)
             else:
                 # Change the num_features to CNN output channels
                 self.num_features = out_planes
@@ -49,6 +52,8 @@ class ResNet(nn.Module):
                 self.drop = nn.Dropout(self.dropout)
             if self.num_classes > 0:
                 self.classifier = nn.Linear(self.num_features, self.num_classes)
+                nn.init.kaiming_normal(self.classifier.weight, model='fan_out')
+                nn.init.constant(self.classifier.bias, 0)
 
         if not self.pretrained:
             self.reset_params()
@@ -81,14 +86,14 @@ class ResNet(nn.Module):
     def reset_params(self):
         for m in self.modules():
             if isinstance(m, nn.Conv2d):
-                n = m.kernel_size[0] * m.kernel_size[1] * m.out_channels
-                m.weight.data.normal_(0, math.sqrt(2. / n))
+                nn.init.kaiming_normal(m.weight, mode='fan_out')
                 if m.bias is not None:
-                    m.bias.data.zero_()
+                    nn.init.constant(m.bias, 0)
             elif isinstance(m, nn.BatchNorm2d):
-                m.weight.data.fill_(1)
-                m.bias.data.zero_()
+                nn.init.constant(m.weight, 1)
+                nn.init.constant(m.bias, 0)
             elif isinstance(m, nn.Linear):
-                m.weight.data.normal_(0, 0.001)
+                nn.init.kaiming_normal(m.weight, mode='fan_out')
                 if m.bias is not None:
-                    m.bias.data.zero_()
+                    nn.init.constant(m.bias, 0)
+
