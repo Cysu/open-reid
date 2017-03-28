@@ -173,8 +173,8 @@ def main(args):
         if args.optimizer == 'sgd':
             lr = args.lr * (0.1 ** (epoch // 40))
         elif args.optimizer == 'adam':
-            lr = args.lr if epoch <= 400 else \
-                args.lr * (0.001 ** (epoch - 400) / 275)
+            lr = args.lr if epoch <= 100 else \
+                args.lr * (0.001 ** (epoch - 100) / 50)
         else:
             raise ValueError("Cannot recognize optimizer type:", args.optimizer)
         for g in optimizer.param_groups:
