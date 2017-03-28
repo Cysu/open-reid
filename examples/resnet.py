@@ -225,13 +225,13 @@ if __name__ == '__main__':
     # loss
     parser.add_argument('--loss', type=str, default='xentropy',
                         choices=['xentropy', 'oim', 'triplet'])
-    parser.add_argument('--oim-scalar', type=float, default=10)
+    parser.add_argument('--oim-scalar', type=float, default=30)
     parser.add_argument('--oim-momentum', type=float, default=0.5)
     parser.add_argument('--triplet-margin', type=float, default=0.5)
     # optimizer
     parser.add_argument('--optimizer', type=str, default='sgd',
                         choices=['sgd', 'adam'])
-    parser.add_argument('--lr', type=float, default=0.1)
+    parser.add_argument('--lr', type=float, default=0.01)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight-decay', type=float, default=5e-4)
     # training configs
