@@ -23,7 +23,7 @@ from reid.utils.serialization import load_checkpoint, save_checkpoint
 
 
 def get_data(dataset_name, split_id, data_dir, batch_size, workers,
-             num_instances):
+             num_instances, combine_trainval=False):
     root = osp.join(data_dir, dataset_name)
 
     dataset = get_dataset(dataset_name, root,
@@ -32,7 +32,11 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
     normalizer = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                       std=[0.229, 0.224, 0.225])
 
-    train_processor = Preprocessor(dataset.train, root=dataset.images_dir,
+    train_set = dataset.trainval if combine_trainval else dataset.train
+    num_classes = (dataset.num_trainval_ids if combine_trainval
+                   else dataset.num_train_ids)
+
+    train_processor = Preprocessor(train_set, root=dataset.images_dir,
                                    transform=transforms.Compose([
                                        transforms.RandomSizedRectCrop(256, 128),
                                        transforms.RandomHorizontalFlip(),
@@ -42,7 +46,7 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
     if num_instances > 0:
         train_loader = DataLoader(
             train_processor, batch_size=batch_size, num_workers=workers,
-            sampler=RandomIdentitySampler(dataset.train, num_instances))
+            sampler=RandomIdentitySampler(train_set, num_instances))
     else:
         train_loader = DataLoader(
             train_processor, batch_size=batch_size, num_workers=workers,
@@ -51,8 +55,7 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
     val_loader = DataLoader(
         Preprocessor(dataset.val, root=dataset.images_dir,
                      transform=transforms.Compose([
-                         transforms.RectScale(288, 144),
-                         transforms.CenterCrop((256, 128)),
+                         transforms.RectScale(256, 128),
                          transforms.ToTensor(),
                          normalizer,
                      ])),
@@ -63,15 +66,14 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
         Preprocessor(list(set(dataset.query) | set(dataset.gallery)),
                      root=dataset.images_dir,
                      transform=transforms.Compose([
-                         transforms.RectScale(288, 144),
-                         transforms.CenterCrop((256, 128)),
+                         transforms.RectScale(256, 128),
                          transforms.ToTensor(),
                          normalizer,
                      ])),
         batch_size=batch_size, num_workers=workers,
         shuffle=False, pin_memory=False)
 
-    return dataset, train_loader, val_loader, test_loader
+    return dataset, num_classes, train_loader, val_loader, test_loader
 
 
 def main(args):
@@ -90,22 +92,22 @@ def main(args):
         assert args.num_instances > 1, 'TripletLoss requires num_instances > 1'
         assert args.batch_size % args.num_instances == 0, \
             'num_instances should divide batch_size'
-    dataset, train_loader, val_loader, test_loader = \
+    dataset, num_classes, train_loader, val_loader, test_loader = \
         get_data(args.dataset, args.split, args.data_dir,
-                 args.batch_size, args.workers, args.num_instances)
+                 args.batch_size, args.workers, args.num_instances,
+                 combine_trainval=args.combine_trainval)
 
     # Create model
     if args.loss == 'xentropy':
         model = ResNet(args.depth, pretrained=True,
-                       num_classes=dataset.num_train_ids,
+                       num_classes=num_classes,
                        num_features=args.features, dropout=args.dropout)
     elif args.loss == 'oim':
         model = ResNet(args.depth, pretrained=True, num_features=args.features,
                        norm=True, dropout=args.dropout)
     elif args.loss == 'triplet':
         model = ResNet(args.depth, pretrained=True,
-                       num_features=1024, num_classes=args.features,
-                       dropout=args.dropout)
+                       num_features=args.features, dropout=args.dropout)
     else:
         raise ValueError("Cannot recognize loss type:", args.loss)
     model = torch.nn.DataParallel(model).cuda()
@@ -138,7 +140,7 @@ def main(args):
     if args.loss == 'xentropy':
         criterion = torch.nn.CrossEntropyLoss()
     elif args.loss == 'oim':
-        criterion = OIMLoss(model.module.num_features, dataset.num_train_ids,
+        criterion = OIMLoss(model.module.num_features, num_classes,
                             scalar=args.oim_scalar, momentum=args.oim_momentum)
     elif args.loss == 'triplet':
         criterion = TripletLoss(margin=args.triplet_margin)
@@ -155,7 +157,8 @@ def main(args):
     if args.optimizer == 'sgd':
         optimizer = torch.optim.SGD(param_groups,
                                     lr=args.lr, momentum=args.momentum,
-                                    weight_decay=args.weight_decay)
+                                    weight_decay=args.weight_decay,
+                                    nesterov=True)
     elif args.optimizer == 'adam':
         optimizer = torch.optim.Adam(param_groups, lr=args.lr,
                                      weight_decay=args.weight_decay)
@@ -216,6 +219,9 @@ if __name__ == '__main__':
                              "identities, and each identity will have"
                              "num_instances instances. Used in conjunction with"
                              "--loss triplet")
+    parser.add_argument('--combine-trainval', action='store_true',
+                        help="Use train and val sets together for training."
+                             "Val set is still used for validation.")
     # model
     parser.add_argument('--depth', type=int, default=50,
                         choices=[18, 34, 50, 101, 152])
