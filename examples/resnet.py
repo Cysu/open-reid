@@ -148,19 +148,14 @@ def main(args):
         raise ValueError("Cannot recognize loss type:", args.loss)
     criterion.cuda()
 
-    # Optimizer: different learning rates for pretrained and new layers
-    base_param_ids = set(map(id, model.module.base.parameters()))
-    new_params = [p for p in model.parameters() if id(p) not in base_param_ids]
-    param_groups = [
-        {'params': model.module.base.parameters(), 'lr_mult': 0.1},
-        {'params': new_params, 'lr_mult': 1.0}]
+    # Optimizer
     if args.optimizer == 'sgd':
-        optimizer = torch.optim.SGD(param_groups,
-                                    lr=args.lr, momentum=args.momentum,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
+                                    momentum=args.momentum,
                                     weight_decay=args.weight_decay,
                                     nesterov=True)
     elif args.optimizer == 'adam':
-        optimizer = torch.optim.Adam(param_groups, lr=args.lr,
+        optimizer = torch.optim.Adam(model.parameters(), lr=args.lr,
                                      weight_decay=args.weight_decay)
     else:
         raise ValueError("Cannot recognize optimizer type:", args.optimizer)
@@ -178,7 +173,7 @@ def main(args):
         else:
             raise ValueError("Cannot recognize optimizer type:", args.optimizer)
         for g in optimizer.param_groups:
-            g['lr'] = lr * g['lr_mult']
+            g['lr'] = lr
 
     # Start training
     for epoch in range(args.start_epoch, args.epochs):

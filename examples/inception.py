@@ -134,7 +134,7 @@ def main(args):
         evaluator.evaluate(test_loader, dataset.query, dataset.gallery, metric)
         return
 
-    # Criterion and optimizer
+    # Criterion
     if args.loss == 'xentropy':
         criterion = torch.nn.CrossEntropyLoss()
     elif args.loss == 'oim':
@@ -146,8 +146,9 @@ def main(args):
         raise ValueError("Cannot recognize loss type:", args.loss)
     criterion.cuda()
 
+    # Optimizer
     if args.optimizer == 'sgd':
-        optimizer = torch.optim.SGD(model.parameters(), args.lr,
+        optimizer = torch.optim.SGD(model.parameters(), lr=args.lr,
                                     momentum=args.momentum,
                                     weight_decay=args.weight_decay)
     elif args.optimizer == 'adam':
@@ -164,8 +165,8 @@ def main(args):
         if args.optimizer == 'sgd':
             lr = args.lr * (0.1 ** (epoch // 60))
         elif args.optimizer == 'adam':
-            lr = args.lr if epoch <= 400 else \
-                args.lr * (0.001 ** (epoch - 400) / 275)
+            lr = args.lr if epoch <= 100 else \
+                args.lr * (0.001 ** (epoch - 100) / 50)
         else:
             raise ValueError("Cannot recognize optimizer type:", args.optimizer)
         for g in optimizer.param_groups:
