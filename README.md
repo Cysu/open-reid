@@ -20,4 +20,6 @@ python setup.py install
 python examples/inception.py -d viper -b 64 -j 2 --loss xentropy --logs-dir logs/inception-viper-xentropy
 ```
 
-This is just a quick demo, which may not have very good performance.
+This is just a quick example. Check about more details at
+[here](http://open-reid.readthedocs.io/en/latest/examples/01-training_id.html)
+and the [benchmarks](http://open-reid.readthedocs.io/en/latest/examples/02-benchmarks.html) page.
