@@ -111,14 +111,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
-
-html_context = {
-    'css_files': [
-        'https://fonts.googleapis.com/css?family=Lato',
-        '_static/css/openreid_theme.css',
-    ],
-}
+html_static_path = ['_static']
 
 # -- Options for HTMLHelp output ------------------------------------------
 
@@ -179,6 +172,11 @@ intersphinx_mapping = {
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
     'pytorch': ('http://pytorch.org/docs/', None),
 }
+
+
+def setup(app):
+    app.add_stylesheet('_static/css/openreid_theme.css')
+    app.add_stylesheet('https://fonts.googleapis.com/css?family=Lato')
 
 # -- A patch that prevents Sphinx from cross-referencing ivar tags -------
 # See http://stackoverflow.com/a/41184353/3343043
