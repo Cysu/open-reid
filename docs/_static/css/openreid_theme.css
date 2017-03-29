@@ -113,3 +113,7 @@ footer p {
 nav .hidden-section {
     display: inherit;
 }
+
+.rst-content .citation ol {
+    margin-bottom: 0;
+}

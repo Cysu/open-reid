@@ -1,3 +1,4 @@
+=====================
 Overview of Open-ReID
 =====================
 
@@ -7,6 +8,7 @@ set of models and evaluation metrics, as well as examples to reproduce (near)
 state-of-the-art results. Open-ReID is mainly based on `PyTorch
 <http://pytorch.org/>`_.
 
+---------
 Structure
 ---------
 
