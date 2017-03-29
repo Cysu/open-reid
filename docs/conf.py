@@ -21,7 +21,6 @@
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
 import sphinx_rtd_theme
-import cloud_sptheme
 
 # -- General configuration ------------------------------------------------
 
