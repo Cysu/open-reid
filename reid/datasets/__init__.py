@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from .cuhk01 import CUHK01
 from .cuhk03 import CUHK03
 from .duke import Duke

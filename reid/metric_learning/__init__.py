@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 from metric_learn import *
 
 from .euclidean import Euclidean
