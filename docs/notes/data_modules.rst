@@ -72,3 +72,12 @@ Each dataset may define multiple training / test data splits. They are listed in
        "query": [2, 4, ...],        # for test query, a subset of gallery
    }
 
+.. _data-loading-system:
+
+-------------------
+Data Loading System
+-------------------
+
+The objective of the data loading system is to sample mini-batches efficiently from the dataset. In our design, it consists of four components, namely ``Dataset``, ``Sampler``, ``Preprocessor``, and ``Data Loader``. Their relations are depicted in the figure below.
+
+A ``Dataset`` is a list of items ``(filename, person_id, camera_id)``. A ``Sampler`` is an iterator that each time provides an index. The ``Preprocessor`` takes the index as input, loading the image at the given index (with transformations), and returns a tuple of ``(image, filename, person_id, camera_id)``. At the top, we adopt the ``torch.utils.data.DataLoader`` to load mini-batches using multi-processing, which is constructed with ``Preprocessor`` and ``Sampler``.
