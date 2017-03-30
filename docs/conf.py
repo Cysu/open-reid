@@ -92,12 +92,25 @@ todo_include_todos = True
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-#
+# Use a custom css file. See https://blog.deimos.fr/2014/10/02/sphinxdoc-and-readthedocs-theme-tricks-2/
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
+
+    def setup(app):
+        app.add_stylesheet('https://fonts.googleapis.com/css?family=Lato')
+        app.add_stylesheet('_static/css/openreid_theme.css')
+else:
+    html_context = {
+        'css_files': [
+            'https://media.readthedocs.org/css/sphinx_rtd_theme.css',
+            'https://media.readthedocs.org/css/readthedocs-doc-embed.css',
+            'https://fonts.googleapis.com/css?family=Lato',
+            '_static/css/openreid_theme.css',
+        ],
+    }
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
@@ -172,11 +185,6 @@ intersphinx_mapping = {
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
     'pytorch': ('http://pytorch.org/docs/', None),
 }
-
-
-def setup(app):
-    app.add_stylesheet('_static/css/openreid_theme.css')
-    app.add_stylesheet('https://fonts.googleapis.com/css?family=Lato')
 
 # -- A patch that prevents Sphinx from cross-referencing ivar tags -------
 # See http://stackoverflow.com/a/41184353/3343043

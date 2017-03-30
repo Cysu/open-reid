@@ -13,14 +13,16 @@ Open-ReID is a deep learning library for person re-identification based no PyTor
    :maxdepth: 1
    :caption: Notes
 
-   notes/*
+   notes/overview
+   notes/evaluation_metrics
 
 .. toctree::
    :glob:
    :maxdepth: 1
    :caption: Examples
 
-   examples/*
+   examples/training_id
+   examples/benchmarks
 
 .. toctree::
    :maxdepth: 2
