@@ -17,9 +17,10 @@ python setup.py install
 ## Examples
 
 ```shell
-python examples/inception.py -d viper -b 64 -j 2 --loss xentropy --logs-dir logs/inception-viper-xentropy
+python examples/resnet.py -d viper -b 64 -j 2 --loss oim --logs-dir logs/resnet-viper-oim
 ```
 
-This is just a quick example. Check about more details at
-[here](http://open-reid.readthedocs.io/en/latest/examples/01-training_id.html)
-and the [benchmarks](http://open-reid.readthedocs.io/en/latest/examples/02-benchmarks.html) page.
+This is just a quick example. VIPeR dataset may not be large enough to train a deep neural network.
+
+Check about more details at [here](http://open-reid.readthedocs.io/en/latest/examples/training_id.html)
+and the [benchmarks](http://open-reid.readthedocs.io/en/latest/examples/benchmarks.html) page.
