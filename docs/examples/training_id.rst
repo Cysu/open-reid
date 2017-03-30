@@ -79,9 +79,9 @@ GPUs to be used, one need to specify the environment variable
    # 1 GPU, reduce the batch size to 64, lr to 0.025
    CUDA_VISIBLE_DEVICES=0 python examples/inception.py -d viper -b 64 --lr 0.025
 
-Note that the effective batch size specified by the `-b` option will be divided
-automatically by the number of GPUs. For example, 4 GPUs with ``-b 256`` will
-have 64 minibatch samples on each GPU.
+Note that the effective batch size specified by the ``-b`` option will be
+divided automatically by the number of GPUs. For example, 4 GPUs with ``-b 256``
+will have 64 minibatch samples on each GPU.
 
 In the second command above, we reduce the batch size and initial learning rate
 to 1/4, in order to adapt the original 4 GPUs setting to only 1 GPU.
