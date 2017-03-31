@@ -1,0 +1,412 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Training Identification Nets &mdash; Open-ReID  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/openreid_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Open-ReID  documentation" href="../index.html"/>
+        <link rel="next" title="Benchmarks" href="benchmarks.html"/>
+        <link rel="prev" title="Evaluation Metrics" href="../notes/evaluation_metrics.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Open-ReID
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/overview.html">Overview of Open-ReID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notes/overview.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/data_modules.html">Data Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notes/data_modules.html#unified-data-format">Unified Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes/data_modules.html#data-loading-system">Data Loading System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/evaluation_metrics.html">Evaluation Metrics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Training Identification Nets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#head-first-example">Head First Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#training-options">Training Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#datasets">Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-gpu-and-batch-size">Multi-GPU and Batch Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resume-from-checkpoints">Resume from Checkpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#evaluate-a-trained-model">Evaluate a Trained Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tips-and-tricks">Tips and Tricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="benchmarks.html">Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html#cuhk03">CUHK03</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html#market1501">Market1501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="benchmarks.html#duke">Duke</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">SDK Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../trainers.html">reid.trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evaluators.html">reid.evaluators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dist_metric.html">reid.dist_metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../datasets.html">reid.datasets</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open-ReID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Training Identification Nets</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/training_id.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="training-identification-nets">
+<h1>Training Identification Nets<a class="headerlink" href="#training-identification-nets" title="Permalink to this headline">¶</a></h1>
+<p>This example will present how to train nets with identification loss on popular
+datasets.</p>
+<p>The objective of training an identification net is to learn good feature
+representation for persons. If the features of the same person are similar,
+while the features of different people are dissimilar, then querying a target
+person from a gallery database would become easy.</p>
+<p>Different loss functions could be adopted for this purpose, for example,</p>
+<ul class="simple">
+<li>Softmax cross entropy loss <a class="reference internal" href="#zheng2016person" id="id1">[zheng2016person]</a> <a class="reference internal" href="#xiao2016learning" id="id2">[xiao2016learning]</a></li>
+<li>Triplet loss <a class="reference internal" href="#hermans2017in" id="id3">[hermans2017in]</a></li>
+<li>Online instance matching (OIM) loss <a class="reference internal" href="#xiaoli2017joint" id="id4">[xiaoli2017joint]</a></li>
+</ul>
+<div class="section" id="head-first-example">
+<span id="id5"></span><h2>Head First Example<a class="headerlink" href="#head-first-example" title="Permalink to this headline">¶</a></h2>
+<p>After cloning the repository, we can start with training an Inception net on
+VIPeR from scratch</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>python examples/inception.py -d viper -b <span class="m">64</span> -j <span class="m">2</span> --loss xentropy --logs-dir logs/inception-viper-xentropy
+</pre></div>
+</div>
+<p>This script automatically downloads the VIPeR dataset and starts training, with
+batch size of 64 and two processes for data loading. Softmax cross entropy is
+used as the loss function. The training log should be print to screen as well as
+saved to <code class="docutils literal"><span class="pre">logs/inception-viper-xentropy/log.txt</span></code>. When training ends, it will
+evaluate the best model (the one with best validation performance) on the test
+set, and report several commonly used metrics.</p>
+</div>
+<div class="section" id="training-options">
+<span id="id6"></span><h2>Training Options<a class="headerlink" href="#training-options" title="Permalink to this headline">¶</a></h2>
+<p>Many training options are available through command line arguments. See all the
+options by <code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-h</span></code>. Here we elaborate on several
+commonly used options.</p>
+<div class="section" id="datasets">
+<span id="data-options"></span><h3>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h3>
+<p>Specify the dataset by <code class="docutils literal"><span class="pre">-d</span> <span class="pre">name</span></code>, where <code class="docutils literal"><span class="pre">name</span></code> can be one of <code class="docutils literal"><span class="pre">cuhk03</span></code>,
+<code class="docutils literal"><span class="pre">market1501</span></code>, <code class="docutils literal"><span class="pre">duke</span></code>, and <code class="docutils literal"><span class="pre">viper</span></code> currently. For some datasets that cannot
+be downloaded automatically, running the script will raise an error with a link
+to the dataset. One may need to manually download it and put it to the directory
+instructed also by the error message.</p>
+</div>
+<div class="section" id="multi-gpu-and-batch-size">
+<span id="gpu-options"></span><h3>Multi-GPU and Batch Size<a class="headerlink" href="#multi-gpu-and-batch-size" title="Permalink to this headline">¶</a></h3>
+<p>All the examples support data parallel training on multiple GPUs. By default,
+the program will use all the GPUs listed in <code class="docutils literal"><span class="pre">nvidia-smi</span></code>. To control which
+GPUs to be used, one need to specify the environment variable
+<code class="docutils literal"><span class="pre">CUDA_VISIBLE_DEVICES</span></code> before running the python script. For example,</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># 4 GPUs, with effective batch size of 256</span>
+<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3 python examples/inception.py -d viper -b <span class="m">256</span> --lr <span class="m">0</span>.1
+
+<span class="c1"># 1 GPU, reduce the batch size to 64, lr to 0.025</span>
+<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span> python examples/inception.py -d viper -b <span class="m">64</span> --lr <span class="m">0</span>.025
+</pre></div>
+</div>
+<p>Note that the effective batch size specified by the <code class="docutils literal"><span class="pre">-b</span></code> option will be
+divided automatically by the number of GPUs. For example, 4 GPUs with <code class="docutils literal"><span class="pre">-b</span> <span class="pre">256</span></code>
+will have 64 minibatch samples on each GPU.</p>
+<p>In the second command above, we reduce the batch size and initial learning rate
+to 1/4, in order to adapt the original 4 GPUs setting to only 1 GPU.</p>
+</div>
+<div class="section" id="resume-from-checkpoints">
+<span id="resume-options"></span><h3>Resume from Checkpoints<a class="headerlink" href="#resume-from-checkpoints" title="Permalink to this headline">¶</a></h3>
+<p>After each training epoch, the script would save a latest <code class="docutils literal"><span class="pre">checkpoint.pth.tar</span></code>
+in the specified logs directory, and update a <code class="docutils literal"><span class="pre">model_best.pth.tar</span></code> if the
+model achieves the best validation performance so far. To resume from this
+checkpoint, just run the script with <code class="docutils literal"><span class="pre">--resume</span> <span class="pre">/path/to/checkpoint.pth.tar</span></code>.</p>
+</div>
+<div class="section" id="evaluate-a-trained-model">
+<span id="eval-options"></span><h3>Evaluate a Trained Model<a class="headerlink" href="#evaluate-a-trained-model" title="Permalink to this headline">¶</a></h3>
+<p>To evaluate a trained model, just run the script with <code class="docutils literal"><span class="pre">--resume</span>
+<span class="pre">/path/to/model_best.pth.tar</span> <span class="pre">--evaluate</span></code>. Different evaluation metrics,
+especially different versions of CMC could lead to drastically different
+numbers.</p>
+</div>
+</div>
+<div class="section" id="tips-and-tricks">
+<span id="id7"></span><h2>Tips and Tricks<a class="headerlink" href="#tips-and-tricks" title="Permalink to this headline">¶</a></h2>
+<p>Training a baseline network can be tricky. Many options and parameters could
+(significantly) affect the reported performance number. Here we list some tips
+and tricks for experiments.</p>
+<dl class="docutils">
+<dt>Combine train and val</dt>
+<dd>One can first use separate training and validation set to tune the
+hyperparameters, then fix the hyperparameters and combine both sets togehter
+to train a final model. This can be done by appending an option
+<code class="docutils literal"><span class="pre">--combine-trainval</span></code>, and could lead to much better performance on the
+test set.</dd>
+<dt>Input size</dt>
+<dd>Larger input image size could benefit the performance. But it depends on the
+network architecture.</dd>
+<dt>Multi-scale multi-crop test</dt>
+<dd>Using multi-scale multi-crop for test normally guarantees performance gain.
+However, it sacrifies the running speed significantly. We have not
+implemented this yet.</dd>
+<dt>Classifier initialization for softmax cross entropy loss</dt>
+<dd>We found that initializing the softmax classifier weight with normal
+distribution <code class="docutils literal"><span class="pre">std=0.001</span></code> generally leads to better performance. It is also
+important to use larger learning rate for the classifier if underlying CNN is
+already pretrained.</dd>
+</dl>
+</div>
+<div class="section" id="references">
+<h2>References<a class="headerlink" href="#references" title="Permalink to this headline">¶</a></h2>
+<table class="docutils citation" frame="void" id="zheng2016person" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[zheng2016person]</a></td><td><ol class="first last upperalpha simple" start="12">
+<li>Zheng, Y. Yang, and A.G. Hauptmann. Person Re-identification: Past, Present and Future. <em>arXiv:1610.02984</em>, 2014.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="xiao2016learning" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[xiao2016learning]</a></td><td><ol class="first last upperalpha simple" start="20">
+<li>Xiao, H. Li, W. Ouyang, and X. Wang. Learning deep feature representations with domain guided dropout for person re-identification. In <em>CVPR</em>, 2016.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="xiaoli2017joint" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[xiaoli2017joint]</a></td><td><ol class="first last upperalpha simple" start="20">
+<li>Xiao*, S. Li*, B. Wang, L. Lin, and X. Wang. Joint Detection and Identification Feature Learning for Person Search. In <em>CVPR</em>, 2017.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="hermans2017in" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[hermans2017in]</a></td><td><ol class="first last upperalpha simple">
+<li>Hermans, L. Beyer, and B. Leibe. In Defense of the Triplet Loss for Person Re-Identification. <em>arXiv:1703.07737</em>, 2017.</li>
+</ol>
+</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="benchmarks.html" class="btn btn-neutral float-right" title="Benchmarks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../notes/evaluation_metrics.html" class="btn btn-neutral" title="Evaluation Metrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Tong Xiao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

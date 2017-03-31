@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Benchmarks &mdash; Open-ReID  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/openreid_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Open-ReID  documentation" href="../index.html"/>
+        <link rel="next" title="reid.trainers" href="../trainers.html"/>
+        <link rel="prev" title="Training Identification Nets" href="training_id.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Open-ReID
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../notes/overview.html">Overview of Open-ReID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notes/overview.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/data_modules.html">Data Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../notes/data_modules.html#unified-data-format">Unified Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../notes/data_modules.html#data-loading-system">Data Loading System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../notes/evaluation_metrics.html">Evaluation Metrics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="training_id.html">Training Identification Nets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="training_id.html#head-first-example">Head First Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_id.html#training-options">Training Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="training_id.html#datasets">Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="training_id.html#multi-gpu-and-batch-size">Multi-GPU and Batch Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="training_id.html#resume-from-checkpoints">Resume from Checkpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="training_id.html#evaluate-a-trained-model">Evaluate a Trained Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="training_id.html#tips-and-tricks">Tips and Tricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="training_id.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#cuhk03">CUHK03</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#market1501">Market1501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#duke">Duke</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">SDK Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../trainers.html">reid.trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evaluators.html">reid.evaluators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dist_metric.html">reid.dist_metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../datasets.html">reid.datasets</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open-ReID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Benchmarks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/examples/benchmarks.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="benchmarks">
+<h1>Benchmarks<a class="headerlink" href="#benchmarks" title="Permalink to this headline">¶</a></h1>
+<p>Benchmarks for different models and loss functions on various datasets.</p>
+<p>All the experiments are conducted under the settings of:</p>
+<ul class="simple">
+<li>4 GPUs for training, meaning that <code class="docutils literal"><span class="pre">CUDA_VISIBLE_DEVICES=0,1,2,3</span></code> is set for the training scripts</li>
+<li>Total effective batch size of 256. Consider reducing batch size and learning rate if you only have one GPU. See <a class="reference internal" href="training_id.html#gpu-options"><span class="std std-ref">Multi-GPU and Batch Size</span></a> for more details.</li>
+<li>Use the default dataset split <code class="docutils literal"><span class="pre">--split</span> <span class="pre">0</span></code>, but combine training and validation sets for training models <code class="docutils literal"><span class="pre">--combine-trainval</span></code></li>
+<li>Use the default random seed <code class="docutils literal"><span class="pre">--seed</span> <span class="pre">1</span></code></li>
+<li>Use Euclidean distance directly for evaluation</li>
+<li>Use single-query and single-crop for evaluation</li>
+<li>Full set of evaluation metrics are reported. See <a class="reference internal" href="../notes/evaluation_metrics.html#evaluation-metrics"><span class="std std-ref">Evaluation Metrics</span></a> for more explanations.</li>
+</ul>
+<div class="section" id="cuhk03">
+<span id="cuhk03-benchmark"></span><h2>CUHK03<a class="headerlink" href="#cuhk03" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="5%" />
+<col width="3%" />
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Net</th>
+<th class="head">Loss</th>
+<th class="head">Mean AP</th>
+<th class="head">CMC allshots</th>
+<th class="head">CMC cuhk03</th>
+<th class="head">CMC market1501</th>
+<th class="head">Training Script</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Inception</td>
+<td>Triplet</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>Inception</td>
+<td>CrossEntropy</td>
+<td>65.8</td>
+<td>48.6</td>
+<td>73.2</td>
+<td>71.0</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">cuhk03</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-cuhk03-xentropy</span></code></td>
+</tr>
+<tr class="row-even"><td>Inception</td>
+<td>OIM</td>
+<td>71.4</td>
+<td>56.0</td>
+<td><strong>77.7</strong></td>
+<td>76.5</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">cuhk03</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">20</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-cuhk03-oim</span></code></td>
+</tr>
+<tr class="row-odd"><td>ResNet-50</td>
+<td>Triplet</td>
+<td>69.8</td>
+<td>53.0</td>
+<td>76.1</td>
+<td>76.0</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">cuhk03</span> <span class="pre">--combine-trainval</span> <span class="pre">--num-instances</span> <span class="pre">4</span> <span class="pre">--dropout</span> <span class="pre">0</span> <span class="pre">--loss</span> <span class="pre">triplet</span> <span class="pre">--optimizer</span> <span class="pre">adam</span> <span class="pre">--lr</span> <span class="pre">0.0001</span> <span class="pre">--epochs</span> <span class="pre">150</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-cuhk03-triplet</span></code></td>
+</tr>
+<tr class="row-even"><td>ResNet-50</td>
+<td>CrossEntropy</td>
+<td>62.7</td>
+<td>44.6</td>
+<td>70.8</td>
+<td>69.0</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">cuhk03</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--lr</span> <span class="pre">0.1</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-cuhk03-xentropy</span></code></td>
+</tr>
+<tr class="row-odd"><td>ResNet-50</td>
+<td>OIM</td>
+<td><strong>72.5</strong></td>
+<td><strong>58.2</strong></td>
+<td>77.5</td>
+<td><strong>79.2</strong></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">cuhk03</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-cuhk03-oim</span></code></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="market1501">
+<span id="market1501-benchmark"></span><h2>Market1501<a class="headerlink" href="#market1501" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="3%" />
+<col width="5%" />
+<col width="3%" />
+<col width="5%" />
+<col width="4%" />
+<col width="5%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Net</th>
+<th class="head">Loss</th>
+<th class="head">Mean AP</th>
+<th class="head">CMC allshots</th>
+<th class="head">CMC cuhk03</th>
+<th class="head">CMC market1501</th>
+<th class="head">Training Script</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Inception</td>
+<td>Triplet</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>Inception</td>
+<td>CrossEntropy</td>
+<td>51.8</td>
+<td>26.8</td>
+<td>57.1</td>
+<td>75.8</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">market1501</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-market1501-xentropy</span></code></td>
+</tr>
+<tr class="row-even"><td>Inception</td>
+<td>OIM</td>
+<td>54.3</td>
+<td>30.1</td>
+<td>58.3</td>
+<td>77.9</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">market1501</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">20</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-market1501-oim</span></code></td>
+</tr>
+<tr class="row-odd"><td>ResNet-50</td>
+<td>Triplet</td>
+<td>56.9</td>
+<td>31.3</td>
+<td>60.5</td>
+<td>78.6</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">market1501</span> <span class="pre">--combine-trainval</span> <span class="pre">--num-instances</span> <span class="pre">4</span> <span class="pre">--dropout</span> <span class="pre">0</span> <span class="pre">--loss</span> <span class="pre">triplet</span> <span class="pre">--optimizer</span> <span class="pre">adam</span> <span class="pre">--lr</span> <span class="pre">0.0001</span> <span class="pre">--epochs</span> <span class="pre">150</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-market1501-triplet</span></code></td>
+</tr>
+<tr class="row-even"><td>ResNet-50</td>
+<td>CrossEntropy</td>
+<td>59.8</td>
+<td>35.5</td>
+<td>62.8</td>
+<td>81.4</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">market1501</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--lr</span> <span class="pre">0.1</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-market1501-xentropy</span></code></td>
+</tr>
+<tr class="row-odd"><td>ResNet-50</td>
+<td>OIM</td>
+<td><strong>60.9</strong></td>
+<td><strong>37.3</strong></td>
+<td><strong>63.6</strong></td>
+<td><strong>82.1</strong></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">market1501</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">20</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-market1501-oim</span></code></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+</div>
+<div class="section" id="duke">
+<span id="duke-benchmark"></span><h2>Duke<a class="headerlink" href="#duke" title="Permalink to this headline">¶</a></h2>
+<blockquote>
+<div><table border="1" class="docutils">
+<colgroup>
+<col width="4%" />
+<col width="5%" />
+<col width="3%" />
+<col width="5%" />
+<col width="4%" />
+<col width="6%" />
+<col width="74%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Net</th>
+<th class="head">Loss</th>
+<th class="head">Mean AP</th>
+<th class="head">CMC allshots</th>
+<th class="head">CMC cuhk03</th>
+<th class="head">CMC market1501</th>
+<th class="head">Training Script</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>Inception</td>
+<td>Triplet</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+<tr class="row-odd"><td>Inception</td>
+<td>CrossEntropy</td>
+<td>34.0</td>
+<td>17.4</td>
+<td>39.2</td>
+<td>54.4</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-duke-xentropy</span></code></td>
+</tr>
+<tr class="row-even"><td>Inception</td>
+<td>OIM</td>
+<td>40.6</td>
+<td>22.4</td>
+<td>45.3</td>
+<td>61.7</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-duke-oim</span></code></td>
+</tr>
+<tr class="row-odd"><td>ResNet-50</td>
+<td>Triplet</td>
+<td>44.8</td>
+<td>26.4</td>
+<td>47.5</td>
+<td>64.8</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--num-instances</span> <span class="pre">4</span> <span class="pre">--dropout</span> <span class="pre">0</span> <span class="pre">--loss</span> <span class="pre">triplet</span> <span class="pre">--optimizer</span> <span class="pre">adam</span> <span class="pre">--lr</span> <span class="pre">0.0001</span> <span class="pre">--epochs</span> <span class="pre">150</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-duke-triplet</span></code></td>
+</tr>
+<tr class="row-even"><td>ResNet-50</td>
+<td>CrossEntropy</td>
+<td>40.7</td>
+<td>23.7</td>
+<td>44.3</td>
+<td>62.5</td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--lr</span> <span class="pre">0.1</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-duke-xentropy</span></code></td>
+</tr>
+<tr class="row-odd"><td>ResNet-50</td>
+<td>OIM</td>
+<td><strong>47.4</strong></td>
+<td><strong>29.2</strong></td>
+<td><strong>50.4</strong></td>
+<td><strong>68.1</strong></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-duke-oim</span></code></td>
+</tr>
+</tbody>
+</table>
+</div></blockquote>
+<div class="admonition attention">
+<p class="first admonition-title">Attention</p>
+<p class="last">We have not yet found the correct ways to train with Triplet loss on these
+datasets. ResNet-50 results are inferior than <a class="reference internal" href="training_id.html#hermans2017in" id="id1">[hermans2017in]</a> and Inception
+cannot converge properly. Any comments are welcome on updating these
+benchmarks.</p>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../trainers.html" class="btn btn-neutral float-right" title="reid.trainers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="training_id.html" class="btn btn-neutral" title="Training Identification Nets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Tong Xiao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

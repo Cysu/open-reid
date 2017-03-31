@@ -1,0 +1,368 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>reid.datasets.cuhk03 &mdash; Open-ReID  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" type="text/css" />
+  
+    <link rel="stylesheet" href="../../../_static/css/openreid_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../../genindex.html"/>
+        <link rel="search" title="Search" href="../../../search.html"/>
+    <link rel="top" title="Open-ReID  documentation" href="../../../index.html"/>
+        <link rel="up" title="reid.datasets" href="../datasets.html"/> 
+
+  
+  <script src="../../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> Open-ReID
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/overview.html">Overview of Open-ReID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notes/overview.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/data_modules.html">Data Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../notes/data_modules.html#unified-data-format">Unified Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../notes/data_modules.html#data-loading-system">Data Loading System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../notes/evaluation_metrics.html">Evaluation Metrics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/training_id.html">Training Identification Nets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/training_id.html#head-first-example">Head First Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/training_id.html#training-options">Training Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/training_id.html#datasets">Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/training_id.html#multi-gpu-and-batch-size">Multi-GPU and Batch Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/training_id.html#resume-from-checkpoints">Resume from Checkpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../../examples/training_id.html#evaluate-a-trained-model">Evaluate a Trained Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/training_id.html#tips-and-tricks">Tips and Tricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/training_id.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../examples/benchmarks.html">Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#cuhk03">CUHK03</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#market1501">Market1501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#duke">Duke</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">SDK Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../trainers.html">reid.trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../evaluators.html">reid.evaluators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../dist_metric.html">reid.dist_metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../datasets.html">reid.datasets</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">Open-ReID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+          <li><a href="../datasets.html">reid.datasets</a> &raquo;</li>
+        
+      <li>reid.datasets.cuhk03</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for reid.datasets.cuhk03</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..utils.data</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="kn">from</span> <span class="nn">..utils.osutils</span> <span class="k">import</span> <span class="n">mkdir_if_missing</span>
+<span class="kn">from</span> <span class="nn">..utils.serialization</span> <span class="k">import</span> <span class="n">write_json</span>
+
+
+<div class="viewcode-block" id="CUHK03"><a class="viewcode-back" href="../../../datasets.html#reid.datasets.CUHK03">[docs]</a><span class="k">class</span> <span class="nc">CUHK03</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://docs.google.com/spreadsheet/viewform?usp=drive_web&amp;formkey=dHRkMkFVSUFvbTJIRkRDLWRwZWpONnc6MA#gid=0&#39;</span>
+    <span class="n">md5</span> <span class="o">=</span> <span class="s1">&#39;728939e58ad9f0ff53e521857dd8fb43&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_val</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">CUHK03</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_integrity</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Dataset not found or corrupted. &quot;</span> <span class="o">+</span>
+                               <span class="s2">&quot;You can use download=True to download it.&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">num_val</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">download</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_integrity</span><span class="p">():</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Files already downloaded and verified&quot;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="kn">import</span> <span class="nn">h5py</span>
+        <span class="kn">import</span> <span class="nn">hashlib</span>
+        <span class="kn">from</span> <span class="nn">scipy.misc</span> <span class="k">import</span> <span class="n">imsave</span>
+        <span class="kn">from</span> <span class="nn">zipfile</span> <span class="k">import</span> <span class="n">ZipFile</span>
+
+        <span class="n">raw_dir</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;raw&#39;</span><span class="p">)</span>
+        <span class="n">mkdir_if_missing</span><span class="p">(</span><span class="n">raw_dir</span><span class="p">)</span>
+
+        <span class="c1"># Download the raw zip file</span>
+        <span class="n">fpath</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_dir</span><span class="p">,</span> <span class="s1">&#39;cuhk03_release.zip&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">osp</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="ow">and</span> \
+          <span class="n">hashlib</span><span class="o">.</span><span class="n">md5</span><span class="p">(</span><span class="nb">open</span><span class="p">(</span><span class="n">fpath</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">md5</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Using downloaded file: &quot;</span> <span class="o">+</span> <span class="n">fpath</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Please download the dataset manually from </span><span class="si">{}</span><span class="s2"> &quot;</span>
+                               <span class="s2">&quot;to </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">url</span><span class="p">,</span> <span class="n">fpath</span><span class="p">))</span>
+
+        <span class="c1"># Extract the file</span>
+        <span class="n">exdir</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">raw_dir</span><span class="p">,</span> <span class="s1">&#39;cuhk03_release&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">osp</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">exdir</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extracting zip file&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">fpath</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">raw_dir</span><span class="p">)</span>
+
+        <span class="c1"># Format</span>
+        <span class="n">images_dir</span> <span class="o">=</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;images&#39;</span><span class="p">)</span>
+        <span class="n">mkdir_if_missing</span><span class="p">(</span><span class="n">images_dir</span><span class="p">)</span>
+        <span class="n">matdata</span> <span class="o">=</span> <span class="n">h5py</span><span class="o">.</span><span class="n">File</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">exdir</span><span class="p">,</span> <span class="s1">&#39;cuhk-03.mat&#39;</span><span class="p">),</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">deref</span><span class="p">(</span><span class="n">ref</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">matdata</span><span class="p">[</span><span class="n">ref</span><span class="p">][:]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="k">def</span> <span class="nf">dump_</span><span class="p">(</span><span class="n">refs</span><span class="p">,</span> <span class="n">pid</span><span class="p">,</span> <span class="n">cam</span><span class="p">,</span> <span class="n">fnames</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">refs</span><span class="p">:</span>
+                <span class="n">img</span> <span class="o">=</span> <span class="n">deref</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">img</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">img</span><span class="o">.</span><span class="n">ndim</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span> <span class="k">break</span>
+                <span class="n">fname</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{:08d}</span><span class="s1">_</span><span class="si">{:02d}</span><span class="s1">_</span><span class="si">{:04d}</span><span class="s1">.jpg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pid</span><span class="p">,</span> <span class="n">cam</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">fnames</span><span class="p">))</span>
+                <span class="n">imsave</span><span class="p">(</span><span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">images_dir</span><span class="p">,</span> <span class="n">fname</span><span class="p">),</span> <span class="n">img</span><span class="p">)</span>
+                <span class="n">fnames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+
+        <span class="n">identities</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">labeled</span><span class="p">,</span> <span class="n">detected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+                <span class="n">matdata</span><span class="p">[</span><span class="s1">&#39;labeled&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">matdata</span><span class="p">[</span><span class="s1">&#39;detected&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="n">labeled</span><span class="p">,</span> <span class="n">detected</span> <span class="o">=</span> <span class="n">deref</span><span class="p">(</span><span class="n">labeled</span><span class="p">),</span> <span class="n">deref</span><span class="p">(</span><span class="n">detected</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">labeled</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">detected</span><span class="o">.</span><span class="n">shape</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labeled</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="n">pid</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">identities</span><span class="p">)</span>
+                <span class="n">images</span> <span class="o">=</span> <span class="p">[[],</span> <span class="p">[]]</span>
+                <span class="n">dump_</span><span class="p">(</span><span class="n">labeled</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="n">pid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">dump_</span><span class="p">(</span><span class="n">detected</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="n">pid</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">dump_</span><span class="p">(</span><span class="n">labeled</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">5</span><span class="p">:],</span> <span class="n">pid</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">dump_</span><span class="p">(</span><span class="n">detected</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">5</span><span class="p">:],</span> <span class="n">pid</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">images</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="n">identities</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">images</span><span class="p">)</span>
+
+        <span class="c1"># Save meta information into a json file</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;cuhk03&#39;</span><span class="p">,</span> <span class="s1">&#39;shot&#39;</span><span class="p">:</span> <span class="s1">&#39;multiple&#39;</span><span class="p">,</span> <span class="s1">&#39;num_cameras&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+                <span class="s1">&#39;identities&#39;</span><span class="p">:</span> <span class="n">identities</span><span class="p">}</span>
+        <span class="n">write_json</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;meta.json&#39;</span><span class="p">))</span>
+
+        <span class="c1"># Save training and test splits</span>
+        <span class="n">splits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">view_counts</span> <span class="o">=</span> <span class="p">[</span><span class="n">deref</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">matdata</span><span class="p">[</span><span class="s1">&#39;labeled&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="n">vid_offsets</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">r_</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">view_counts</span><span class="p">)]</span>
+        <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="n">matdata</span><span class="p">[</span><span class="s1">&#39;testsets&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="n">test_info</span> <span class="o">=</span> <span class="n">deref</span><span class="p">(</span><span class="n">ref</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+            <span class="n">test_pids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">vid_offsets</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">test_info</span><span class="p">])</span>
+            <span class="n">trainval_pids</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">vid_offsets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">test_pids</span><span class="p">))</span>
+            <span class="n">split</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;trainval&#39;</span><span class="p">:</span> <span class="n">trainval_pids</span><span class="p">,</span>
+                     <span class="s1">&#39;query&#39;</span><span class="p">:</span> <span class="n">test_pids</span><span class="p">,</span>
+                     <span class="s1">&#39;gallery&#39;</span><span class="p">:</span> <span class="n">test_pids</span><span class="p">}</span>
+            <span class="n">splits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">split</span><span class="p">)</span>
+        <span class="n">write_json</span><span class="p">(</span><span class="n">splits</span><span class="p">,</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;splits.json&#39;</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Tong Xiao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

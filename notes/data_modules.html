@@ -1,0 +1,339 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Data Modules &mdash; Open-ReID  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato" type="text/css" />
+  
+    <link rel="stylesheet" href="../_static/css/openreid_theme.css" type="text/css" />
+  
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Open-ReID  documentation" href="../index.html"/>
+        <link rel="next" title="Evaluation Metrics" href="evaluation_metrics.html"/>
+        <link rel="prev" title="Overview of Open-ReID" href="overview.html"/> 
+
+  
+  <script src="../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> Open-ReID
+          
+
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Notes</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview of Open-ReID</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#structure">Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Modules</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#unified-data-format">Unified Data Format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-loading-system">Data Loading System</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="evaluation_metrics.html">Evaluation Metrics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../examples/training_id.html">Training Identification Nets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/training_id.html#head-first-example">Head First Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/training_id.html#training-options">Training Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../examples/training_id.html#datasets">Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/training_id.html#multi-gpu-and-batch-size">Multi-GPU and Batch Size</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/training_id.html#resume-from-checkpoints">Resume from Checkpoints</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../examples/training_id.html#evaluate-a-trained-model">Evaluate a Trained Model</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/training_id.html#tips-and-tricks">Tips and Tricks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/training_id.html#references">References</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../examples/benchmarks.html">Benchmarks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#cuhk03">CUHK03</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#market1501">Market1501</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#duke">Duke</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">SDK Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../trainers.html">reid.trainers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../evaluators.html">reid.evaluators</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dist_metric.html">reid.dist_metric</a></li>
+</ul>
+<p class="caption"><span class="caption-text">API Level Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../datasets.html">reid.datasets</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Open-ReID</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Data Modules</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/notes/data_modules.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="data-modules">
+<span id="id1"></span><h1>Data Modules<a class="headerlink" href="#data-modules" title="Permalink to this headline">¶</a></h1>
+<p>This note will introduce the unified dataset interface defined by Open-ReID, and
+the whole data loader system that samples data efficiently.</p>
+<div class="section" id="unified-data-format">
+<span id="id2"></span><h2>Unified Data Format<a class="headerlink" href="#unified-data-format" title="Permalink to this headline">¶</a></h2>
+<p>There are many existing person re-identification datasets, each with its own
+data format and split protocols. This makes conducting experiments on these
+datasets a tedious and error-prone work. To solve this problem, Open-ReID
+defines a unified dataset interface. By converting the raw dataset into this
+unified format, we can significantly simplify the code for training and
+evaluation with the formatted data.</p>
+<p>Every dataset will be organized as a directory like</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>cuhk03
+├── raw/
+├── images/
+├── meta.json
+└── splits.json
+</pre></div>
+</div>
+<p>where <code class="docutils literal"><span class="pre">raw/</span></code> stores the original dataset files, <code class="docutils literal"><span class="pre">images/</span></code> contains all the
+renamed image files in the format of:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s1">&#39;</span><span class="si">{:08d}</span><span class="s1">_</span><span class="si">{:02d}</span><span class="s1">_</span><span class="si">{:04d}</span><span class="s1">.jpg&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">person_id</span><span class="p">,</span> <span class="n">camera_id</span><span class="p">,</span> <span class="n">image_id</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>where all the ids are indexed from 0.</p>
+<p><code class="docutils literal"><span class="pre">meta.json</span></code> contains all the person identities of the dataset, which is a list in the structure of:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="s2">&quot;identities&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">[</span>  <span class="c1"># the first identity, person_id = 0</span>
+        <span class="p">[</span>  <span class="c1"># camera_id = 0</span>
+            <span class="s2">&quot;00000000_00_0000.jpg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;00000000_00_0001.jpg&quot;</span>
+        <span class="p">],</span>
+        <span class="p">[</span>  <span class="c1"># camera_id = 1</span>
+            <span class="s2">&quot;00000000_01_0000.jpg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;00000000_01_0001.jpg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;00000000_01_0002.jpg&quot;</span>
+        <span class="p">]</span>
+    <span class="p">],</span>
+    <span class="p">[</span>  <span class="c1"># the second identity, person_id = 1</span>
+        <span class="p">[</span>  <span class="c1"># camera_id = 0</span>
+            <span class="s2">&quot;00000001_00_0000.jpg&quot;</span>
+        <span class="p">],</span>
+        <span class="p">[</span>  <span class="c1"># camera_id = 1</span>
+            <span class="s2">&quot;00000001_01_0000.jpg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;00000001_01_0001.jpg&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">],</span>
+    <span class="o">...</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Each dataset may define multiple training / test data splits. They are listed in
+<code class="docutils literal"><span class="pre">splits.json</span></code>, where each split defines three subsets of person identities:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">{</span>
+    <span class="s2">&quot;trainval&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>  <span class="c1"># person_ids for training and validation</span>
+    <span class="s2">&quot;gallery&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>   <span class="c1"># for test gallery, non-overlap with trainval</span>
+    <span class="s2">&quot;query&quot;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>        <span class="c1"># for test query, a subset of gallery</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="data-loading-system">
+<span id="id3"></span><h2>Data Loading System<a class="headerlink" href="#data-loading-system" title="Permalink to this headline">¶</a></h2>
+<p>The objective of the data loading system is to sample mini-batches efficiently from the dataset. In our design, it consists of four components, namely <code class="docutils literal"><span class="pre">Dataset</span></code>, <code class="docutils literal"><span class="pre">Sampler</span></code>, <code class="docutils literal"><span class="pre">Preprocessor</span></code>, and <code class="docutils literal"><span class="pre">Data</span> <span class="pre">Loader</span></code>. Their relations are depicted in the figure below.</p>
+<p>A <code class="docutils literal"><span class="pre">Dataset</span></code> is a list of items <code class="docutils literal"><span class="pre">(filename,</span> <span class="pre">person_id,</span> <span class="pre">camera_id)</span></code>. A <code class="docutils literal"><span class="pre">Sampler</span></code> is an iterator that each time provides an index. The <code class="docutils literal"><span class="pre">Preprocessor</span></code> takes the index as input, loading the image at the given index (with transformations), and returns a tuple of <code class="docutils literal"><span class="pre">(image,</span> <span class="pre">filename,</span> <span class="pre">person_id,</span> <span class="pre">camera_id)</span></code>. At the top, we adopt the <code class="docutils literal"><span class="pre">torch.utils.data.DataLoader</span></code> to load mini-batches using multi-processing, which is constructed with <code class="docutils literal"><span class="pre">Preprocessor</span></code> and <code class="docutils literal"><span class="pre">Sampler</span></code>.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="evaluation_metrics.html" class="btn btn-neutral float-right" title="Evaluation Metrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral" title="Overview of Open-ReID" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, Tong Xiao.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
