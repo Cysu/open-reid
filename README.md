@@ -22,5 +22,5 @@ python examples/resnet.py -d viper -b 64 -j 2 --loss oim --logs-dir logs/resnet-
 
 This is just a quick example. VIPeR dataset may not be large enough to train a deep neural network.
 
-Check about more details at [here](http://open-reid.readthedocs.io/en/latest/examples/training_id.html)
-and the [benchmarks](http://open-reid.readthedocs.io/en/latest/examples/benchmarks.html) page.
+Check about more [examples](https://cysu.github.io/open-reid/examples/training_id.html)
+and [benchmarks](https://cysu.github.io/open-reid/examples/benchmarks.html).
