@@ -19,9 +19,30 @@
 #
 import os
 import sys
+
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 
+# Mocking imports for readthedocs
+# https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
+try:
+    from unittest.mock import MagicMock
+except ImportError:
+    from mock import Mock as MagicMock
+
+
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+        return MagicMock()
+
+
+MOCK_MODULES = ['numpy', 'scipy', 'torch', 'torch.nn', 'torch.nn.functional',
+                'torch.nn.init', 'torch.autograd', 'torch.utils',
+                'torch.utils.data', 'torchvision', 'torchvision.models', 'h5py',
+                'PIL', 'sklearn.metrics', 'metric_learn',
+                'metric_learn.base_metric']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- General configuration ------------------------------------------------
 
@@ -98,6 +119,7 @@ todo_include_todos = True
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 if not on_rtd:  # only import and set the theme if we're building docs locally
     import sphinx_rtd_theme
+
     html_theme = 'sphinx_rtd_theme'
     html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
     css_files = [
