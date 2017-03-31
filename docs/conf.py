@@ -40,7 +40,7 @@ class Mock(MagicMock):
 MOCK_MODULES = ['numpy', 'scipy', 'torch', 'torch.nn', 'torch.nn.functional',
                 'torch.nn.init', 'torch.autograd', 'torch.utils',
                 'torch.utils.data', 'torchvision', 'torchvision.models', 'h5py',
-                'PIL', 'sklearn.metrics', 'metric_learn',
+                'PIL', 'sklearn', 'sklearn.metrics', 'metric_learn',
                 'metric_learn.base_metric']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
