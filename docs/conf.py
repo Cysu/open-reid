@@ -23,26 +23,7 @@ import sys
 sys.path.insert(0, os.path.abspath('.'))
 sys.path.insert(0, os.path.abspath('..'))
 
-# Mocking imports for readthedocs
-# https://docs.readthedocs.io/en/latest/faq.html#i-get-import-errors-on-libraries-that-depend-on-c-modules
-try:
-    from unittest.mock import MagicMock
-except ImportError:
-    from mock import Mock as MagicMock
-
-
-class Mock(MagicMock):
-    @classmethod
-    def __getattr__(cls, name):
-        return MagicMock()
-
-
-MOCK_MODULES = ['numpy', 'scipy', 'torch', 'torch.nn', 'torch.nn.functional',
-                'torch.nn.init', 'torch.autograd', 'torch.utils',
-                'torch.utils.data', 'torchvision', 'torchvision.models', 'h5py',
-                'PIL', 'sklearn', 'sklearn.metrics', 'metric_learn',
-                'metric_learn.base_metric']
-sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+import sphinx_rtd_theme
 
 # -- General configuration ------------------------------------------------
 
@@ -63,6 +44,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
 ]
 
 napoleon_use_ivar = True
@@ -116,26 +98,15 @@ todo_include_todos = True
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 # Use a custom css file. See https://blog.deimos.fr/2014/10/02/sphinxdoc-and-readthedocs-theme-tricks-2/
-on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
-if not on_rtd:  # only import and set the theme if we're building docs locally
-    import sphinx_rtd_theme
 
-    html_theme = 'sphinx_rtd_theme'
-    html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
-    css_files = [
-        'https://fonts.googleapis.com/css?family=Lato',
-        '_static/css/openreid_theme.css',
-    ]
-else:
-    css_files = [
-        'https://media.readthedocs.org/css/sphinx_rtd_theme.css',
-        'https://media.readthedocs.org/css/readthedocs-doc-embed.css',
-        'https://fonts.googleapis.com/css?family=Lato',
-        '_static/css/openreid_theme.css',
-    ]
+html_theme = 'sphinx_rtd_theme'
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 
 html_context = {
-    'css_files': css_files
+    'css_files': [
+        'https://fonts.googleapis.com/css?family=Lato',
+        '_static/css/openreid_theme.css',
+    ]
 }
 
 # Theme options are theme-specific and customize the look and feel of a theme
