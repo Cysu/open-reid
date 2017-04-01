@@ -69,6 +69,8 @@ class InceptionNet(nn.Module):
             self.dropout = dropout
             self.has_embedding = num_features > 0
 
+            self.avgpool = nn.AdaptiveAvgPool2d(1)
+
             if self.has_embedding:
                 self.feat = nn.Linear(self.in_planes, self.num_features)
                 self.feat_bn = nn.BatchNorm1d(self.num_features)
@@ -97,7 +99,7 @@ class InceptionNet(nn.Module):
         if self.cut_at_pooling:
             return x
 
-        x = F.avg_pool2d(x, x.size()[2:])
+        x = self.avgpool(x)
         x = x.view(x.size(0), -1)
 
         if self.has_embedding:
