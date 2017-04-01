@@ -2,7 +2,10 @@ from __future__ import absolute_import
 from collections import defaultdict
 
 import numpy as np
-from torch.utils.data.sampler import *
+import torch
+from torch.utils.data.sampler import (
+    Sampler, SequentialSampler, RandomSampler, SubsetRandomSampler,
+    WeightedRandomSampler)
 
 
 class RandomIdentitySampler(Sampler):
