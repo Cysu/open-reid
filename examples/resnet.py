@@ -46,11 +46,12 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
     if num_instances > 0:
         train_loader = DataLoader(
             train_processor, batch_size=batch_size, num_workers=workers,
-            sampler=RandomIdentitySampler(train_set, num_instances))
+            sampler=RandomIdentitySampler(train_set, num_instances),
+            pin_memory=True)
     else:
         train_loader = DataLoader(
             train_processor, batch_size=batch_size, num_workers=workers,
-            shuffle=True)
+            shuffle=True, pin_memory=True)
 
     val_loader = DataLoader(
         Preprocessor(dataset.val, root=dataset.images_dir,
@@ -60,7 +61,7 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
                          normalizer,
                      ])),
         batch_size=batch_size, num_workers=workers,
-        shuffle=False, pin_memory=False)
+        shuffle=False, pin_memory=True)
 
     test_loader = DataLoader(
         Preprocessor(list(set(dataset.query) | set(dataset.gallery)),
@@ -71,7 +72,7 @@ def get_data(dataset_name, split_id, data_dir, batch_size, workers,
                          normalizer,
                      ])),
         batch_size=batch_size, num_workers=workers,
-        shuffle=False, pin_memory=False)
+        shuffle=False, pin_memory=True)
 
     return dataset, num_classes, train_loader, val_loader, test_loader
 
