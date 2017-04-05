@@ -212,6 +212,25 @@
 
 
 <div class="viewcode-block" id="get_dataset"><a class="viewcode-back" href="../../datasets.html#reid.datasets.get_dataset">[docs]</a><span class="k">def</span> <span class="nf">get_dataset</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a dataset instance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        The dataset name. Can be one of &#39;viper&#39;, &#39;cuhk01&#39;, &#39;cuhk03&#39;,</span>
+<span class="sd">        &#39;market1501&#39;, and &#39;duke&#39;.</span>
+<span class="sd">    root : str</span>
+<span class="sd">        The path to the dataset directory.</span>
+<span class="sd">    split_id : int, optional</span>
+<span class="sd">        The index of data split. Default: 0</span>
+<span class="sd">    num_val : int or float, optional</span>
+<span class="sd">        When int, it means the number of validation identities. When float,</span>
+<span class="sd">        it means the proportion of validation to all the trainval.</span>
+<span class="sd">        Default: 100 for &#39;cuhk01&#39; and &#39;cuhk03&#39;, 0.3 for the others</span>
+<span class="sd">    download : bool, optional</span>
+<span class="sd">        If True, will download the dataset. Default: False</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">__factory</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Unknown dataset:&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">__factory</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="n">root</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
@@ -261,7 +280,7 @@
       <script type="text/javascript" src="../../_static/jquery.js"></script>
       <script type="text/javascript" src="../../_static/underscore.js"></script>
       <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 
