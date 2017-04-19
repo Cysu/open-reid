@@ -118,7 +118,7 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Benchmarks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#cuhk03">CUHK03</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#market1501">Market1501</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#duke">Duke</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dukemtmc">DukeMTMC</a></li>
 </ul>
 </li>
 </ul>
@@ -359,18 +359,18 @@
 </table>
 </div></blockquote>
 </div>
-<div class="section" id="duke">
-<span id="duke-benchmark"></span><h2>Duke<a class="headerlink" href="#duke" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="dukemtmc">
+<span id="dukemtmc-benchmark"></span><h2>DukeMTMC<a class="headerlink" href="#dukemtmc" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><table border="1" class="docutils">
 <colgroup>
-<col width="4%" />
+<col width="3%" />
 <col width="5%" />
 <col width="3%" />
 <col width="5%" />
 <col width="4%" />
-<col width="6%" />
-<col width="74%" />
+<col width="5%" />
+<col width="75%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head">Net</th>
@@ -397,7 +397,7 @@
 <td>17.4</td>
 <td>39.2</td>
 <td>54.4</td>
-<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-duke-xentropy</span></code></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">dukemtmc</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-dukemtmc-xentropy</span></code></td>
 </tr>
 <tr class="row-even"><td>Inception</td>
 <td>OIM</td>
@@ -405,7 +405,7 @@
 <td>22.4</td>
 <td>45.3</td>
 <td>61.7</td>
-<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-duke-oim</span></code></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-d</span> <span class="pre">dukemtmc</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/inception-dukemtmc-oim</span></code></td>
 </tr>
 <tr class="row-odd"><td>ResNet-50</td>
 <td>Triplet</td>
@@ -413,7 +413,7 @@
 <td>26.4</td>
 <td>47.5</td>
 <td>64.8</td>
-<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--num-instances</span> <span class="pre">4</span> <span class="pre">--dropout</span> <span class="pre">0</span> <span class="pre">--loss</span> <span class="pre">triplet</span> <span class="pre">--optimizer</span> <span class="pre">adam</span> <span class="pre">--lr</span> <span class="pre">0.0001</span> <span class="pre">--epochs</span> <span class="pre">150</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-duke-triplet</span></code></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">dukemtmc</span> <span class="pre">--combine-trainval</span> <span class="pre">--num-instances</span> <span class="pre">4</span> <span class="pre">--dropout</span> <span class="pre">0</span> <span class="pre">--loss</span> <span class="pre">triplet</span> <span class="pre">--optimizer</span> <span class="pre">adam</span> <span class="pre">--lr</span> <span class="pre">0.0001</span> <span class="pre">--epochs</span> <span class="pre">150</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-dukemtmc-triplet</span></code></td>
 </tr>
 <tr class="row-even"><td>ResNet-50</td>
 <td>CrossEntropy</td>
@@ -421,7 +421,7 @@
 <td>23.7</td>
 <td>44.3</td>
 <td>62.5</td>
-<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--lr</span> <span class="pre">0.1</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-duke-xentropy</span></code></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">dukemtmc</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">xentropy</span> <span class="pre">--lr</span> <span class="pre">0.1</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-dukemtmc-xentropy</span></code></td>
 </tr>
 <tr class="row-odd"><td>ResNet-50</td>
 <td>OIM</td>
@@ -429,7 +429,7 @@
 <td><strong>29.2</strong></td>
 <td><strong>50.4</strong></td>
 <td><strong>68.1</strong></td>
-<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">duke</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-duke-oim</span></code></td>
+<td><code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/resnet.py</span> <span class="pre">-d</span> <span class="pre">dukemtmc</span> <span class="pre">--combine-trainval</span> <span class="pre">--loss</span> <span class="pre">oim</span> <span class="pre">--oim-scalar</span> <span class="pre">30</span> <span class="pre">--logs-dir</span> <span class="pre">examples/logs/resnet-dukemtmc-oim</span></code></td>
 </tr>
 </tbody>
 </table>

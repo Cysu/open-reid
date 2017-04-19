@@ -118,7 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../examples/benchmarks.html">Benchmarks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#cuhk03">CUHK03</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#market1501">Market1501</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#duke">Duke</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples/benchmarks.html#dukemtmc">DukeMTMC</a></li>
 </ul>
 </li>
 </ul>
@@ -196,17 +196,39 @@
             
   <div class="section" id="evaluation-metrics">
 <span id="id1"></span><h1>Evaluation Metrics<a class="headerlink" href="#evaluation-metrics" title="Permalink to this headline">¶</a></h1>
-<p>Cumulative Matching Characteristics (CMC) curves are the most popular evaluation metrics for person re-identification methods. Consider a simple <em>single-gallery-shot</em> setting, where each gallery identity has only one instance. For each query, an algorithm will rank all the gallery samples according to their distances to the query from small to large, and the CMC top-k accuracy is</p>
+<p>Cumulative Matching Characteristics (CMC) curves are the most popular evaluation
+metrics for person re-identification methods. Consider a simple
+<em>single-gallery-shot</em> setting, where each gallery identity has only one
+instance. For each query, an algorithm will rank all the gallery samples
+according to their distances to the query from small to large, and the CMC top-k
+accuracy is</p>
 <div class="math">
 \[\begin{split}Acc_k = \begin{cases}
    1 &amp; \text{if top-$k$ ranked gallery samples contain the query identity} \\
    0 &amp; \text{otherwise}
 \end{cases},\end{split}\]</div>
-<p>which is a shifted <a class="reference external" href="https://en.wikipedia.org/wiki/Heaviside_step_function">step function</a>. The final CMC curve is computed by averaging the shifted step functions over all the queries.</p>
-<p>While the <em>single-gallery-shot</em> CMC is well defined, it does not have a common agreement when it comes to the <em>multi-gallery-shot</em> setting, where each gallery identity could have multiple instances. For example, <a class="reference external" href="www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Li_DeepReID_Deep_Filter_2014_CVPR_paper.pdf">CUHK03</a> and <a class="reference external" href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Zheng_Scalable_Person_Re-Identification_ICCV_2015_paper.pdf">Market-1501</a> calculated the CMC curves and CMC top-k accuracy quite differently. To be specific,</p>
+<p>which is a shifted <a class="reference external" href="https://en.wikipedia.org/wiki/Heaviside_step_function">step function</a>.
+The final CMC curve is computed by averaging the shifted step functions over all
+the queries.</p>
+<p>While the <em>single-gallery-shot</em> CMC is well defined, it does not have a common
+agreement when it comes to the <em>multi-gallery-shot</em> setting, where each gallery
+identity could have multiple instances. For example,
+<a class="reference external" href="www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Li_DeepReID_Deep_Filter_2014_CVPR_paper.pdf">CUHK03</a> and
+<a class="reference external" href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Zheng_Scalable_Person_Re-Identification_ICCV_2015_paper.pdf">Market-1501</a>
+calculated the CMC curves and CMC top-k accuracy quite differently. To be
+specific,</p>
 <ul class="simple">
-<li><a class="reference external" href="www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Li_DeepReID_Deep_Filter_2014_CVPR_paper.pdf">CUHK03</a>: Query and gallery sets are from different camera views. For each query, they randomly sample one instance for each gallery identity, and compute a CMC curve in the <em>single-gallery-shot</em> setting. The random sampling is repeated for <span class="math">\(N\)</span> times and the expected CMC curve is reported.</li>
-<li><a class="reference external" href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Zheng_Scalable_Person_Re-Identification_ICCV_2015_paper.pdf">Market-1501</a>: Query and gallery sets could have same camera views, but for each individual query identity, his/her gallery samples from the same camera are excluded. They do not randomly sample only one instance for each gallery identity. This means the query will always match the &#8220;easiest&#8221; positive sample in the gallery while does not care other harder positive samples when computing CMC.</li>
+<li><a class="reference external" href="www.cv-foundation.org/openaccess/content_cvpr_2014/papers/Li_DeepReID_Deep_Filter_2014_CVPR_paper.pdf">CUHK03</a>:
+Query and gallery sets are from different camera views. For each query, they
+randomly sample one instance for each gallery identity, and compute a CMC
+curve in the <em>single-gallery-shot</em> setting. The random sampling is repeated
+for <span class="math">\(N\)</span> times and the expected CMC curve is reported.</li>
+<li><a class="reference external" href="http://www.cv-foundation.org/openaccess/content_iccv_2015/papers/Zheng_Scalable_Person_Re-Identification_ICCV_2015_paper.pdf">Market-1501</a>:
+Query and gallery sets could have same camera views, but for each individual
+query identity, his/her gallery samples from the same camera are excluded.
+They do not randomly sample only one instance for each gallery identity. This
+means the query will always match the &#8220;easiest&#8221; positive sample in the gallery
+while does not care other harder positive samples when computing CMC.</li>
 </ul>
 </div>
 

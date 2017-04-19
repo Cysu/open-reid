@@ -55,10 +55,10 @@ Datasets
 ^^^^^^^^
 
 Specify the dataset by ``-d name``, where ``name`` can be one of ``cuhk03``,
-``market1501``, ``duke``, and ``viper`` currently. For some datasets that cannot
-be downloaded automatically, running the script will raise an error with a link
-to the dataset. One may need to manually download it and put it to the directory
-instructed also by the error message.
+``market1501``, ``dukemtmc``, and ``viper`` currently. For some datasets that
+cannot be downloaded automatically, running the script will raise an error with
+a link to the dataset. One may need to manually download it and put it to the
+directory instructed also by the error message.
 
 .. _gpu-options:
 

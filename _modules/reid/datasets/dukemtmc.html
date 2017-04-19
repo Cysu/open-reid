@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>reid.datasets.duke &mdash; Open-ReID  documentation</title>
+  <title>reid.datasets.dukemtmc &mdash; Open-ReID  documentation</title>
   
 
   
@@ -117,7 +117,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../examples/benchmarks.html">Benchmarks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#cuhk03">CUHK03</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#market1501">Market1501</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#duke">Duke</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../examples/benchmarks.html#dukemtmc">DukeMTMC</a></li>
 </ul>
 </li>
 </ul>
@@ -178,7 +178,7 @@
         
           <li><a href="../datasets.html">reid.datasets</a> &raquo;</li>
         
-      <li>reid.datasets.duke</li>
+      <li>reid.datasets.dukemtmc</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -195,7 +195,7 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for reid.datasets.duke</h1><div class="highlight"><pre>
+  <h1>Source code for reid.datasets.dukemtmc</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span><span class="p">,</span> <span class="n">absolute_import</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
@@ -205,12 +205,12 @@
 <span class="kn">from</span> <span class="nn">..utils.serialization</span> <span class="k">import</span> <span class="n">write_json</span>
 
 
-<div class="viewcode-block" id="Duke"><a class="viewcode-back" href="../../../datasets.html#reid.datasets.Duke">[docs]</a><span class="k">class</span> <span class="nc">Duke</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
+<div class="viewcode-block" id="DukeMTMC"><a class="viewcode-back" href="../../../datasets.html#reid.datasets.DukeMTMC">[docs]</a><span class="k">class</span> <span class="nc">DukeMTMC</span><span class="p">(</span><span class="n">Dataset</span><span class="p">):</span>
     <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/open?id=0B0VOCNYh8HeRSDRwczZIT0lZTG8&#39;</span>
     <span class="n">md5</span> <span class="o">=</span> <span class="s1">&#39;286aaef9ba5db58853d91b66a028923b&#39;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_val</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">Duke</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DukeMTMC</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">download</span><span class="p">()</span>
@@ -291,7 +291,7 @@
         <span class="k">assert</span> <span class="n">trainval_pids</span><span class="o">.</span><span class="n">isdisjoint</span><span class="p">(</span><span class="n">gallery_pids</span><span class="p">)</span>
 
         <span class="c1"># Save meta information into a json file</span>
-        <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;Duke&#39;</span><span class="p">,</span> <span class="s1">&#39;shot&#39;</span><span class="p">:</span> <span class="s1">&#39;multiple&#39;</span><span class="p">,</span> <span class="s1">&#39;num_cameras&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="n">meta</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;DukeMTMC&#39;</span><span class="p">,</span> <span class="s1">&#39;shot&#39;</span><span class="p">:</span> <span class="s1">&#39;multiple&#39;</span><span class="p">,</span> <span class="s1">&#39;num_cameras&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
                 <span class="s1">&#39;identities&#39;</span><span class="p">:</span> <span class="n">identities</span><span class="p">}</span>
         <span class="n">write_json</span><span class="p">(</span><span class="n">meta</span><span class="p">,</span> <span class="n">osp</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;meta.json&#39;</span><span class="p">))</span>
 

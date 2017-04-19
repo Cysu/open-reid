@@ -48,21 +48,21 @@ Market1501
    ResNet-50 OIM          **60.9** **37.3**     **63.6**   **82.1**       ``python examples/resnet.py -d market1501 --combine-trainval --loss oim --oim-scalar 20 --logs-dir examples/logs/resnet-market1501-oim``
    ========= ============ ======== ============ ========== ============== ===============
 
-.. _duke-benchmark:
+.. _dukemtmc-benchmark:
 
-^^^^
-Duke
-^^^^
+^^^^^^^^
+DukeMTMC
+^^^^^^^^
 
    ========= ============ ======== ============ ========== ============== ===============
    Net       Loss         Mean AP  CMC allshots CMC cuhk03 CMC market1501 Training Script
    ========= ============ ======== ============ ========== ============== ===============
    Inception Triplet      N/A      N/A          N/A        N/A            N/A
-   Inception CrossEntropy 34.0     17.4         39.2       54.4           ``python examples/inception.py -d duke --combine-trainval --loss xentropy --logs-dir examples/logs/inception-duke-xentropy``
-   Inception OIM          40.6     22.4         45.3       61.7           ``python examples/inception.py -d duke --combine-trainval --loss oim --oim-scalar 30 --logs-dir examples/logs/inception-duke-oim``
-   ResNet-50 Triplet      44.8     26.4         47.5       64.8           ``python examples/resnet.py -d duke --combine-trainval --num-instances 4 --dropout 0 --loss triplet --optimizer adam --lr 0.0001 --epochs 150 --logs-dir examples/logs/resnet-duke-triplet``
-   ResNet-50 CrossEntropy 40.7     23.7         44.3       62.5           ``python examples/resnet.py -d duke --combine-trainval --loss xentropy --lr 0.1 --logs-dir examples/logs/resnet-duke-xentropy``
-   ResNet-50 OIM          **47.4** **29.2**     **50.4**   **68.1**       ``python examples/resnet.py -d duke --combine-trainval --loss oim --oim-scalar 30 --logs-dir examples/logs/resnet-duke-oim``
+   Inception CrossEntropy 34.0     17.4         39.2       54.4           ``python examples/inception.py -d dukemtmc --combine-trainval --loss xentropy --logs-dir examples/logs/inception-dukemtmc-xentropy``
+   Inception OIM          40.6     22.4         45.3       61.7           ``python examples/inception.py -d dukemtmc --combine-trainval --loss oim --oim-scalar 30 --logs-dir examples/logs/inception-dukemtmc-oim``
+   ResNet-50 Triplet      44.8     26.4         47.5       64.8           ``python examples/resnet.py -d dukemtmc --combine-trainval --num-instances 4 --dropout 0 --loss triplet --optimizer adam --lr 0.0001 --epochs 150 --logs-dir examples/logs/resnet-dukemtmc-triplet``
+   ResNet-50 CrossEntropy 40.7     23.7         44.3       62.5           ``python examples/resnet.py -d dukemtmc --combine-trainval --loss xentropy --lr 0.1 --logs-dir examples/logs/resnet-dukemtmc-xentropy``
+   ResNet-50 OIM          **47.4** **29.2**     **50.4**   **68.1**       ``python examples/resnet.py -d dukemtmc --combine-trainval --loss oim --oim-scalar 30 --logs-dir examples/logs/resnet-dukemtmc-oim``
    ========= ============ ======== ============ ========== ============== ===============
 
 .. ATTENTION::
