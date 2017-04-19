@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 setup(name='open-reid',
@@ -15,7 +15,7 @@ setup(name='open-reid',
       extras_require={
           'docs': ['sphinx', 'sphinx_rtd_theme'],
       },
-      packages=['reid'],
+      packages=find_packages(),
       keywords=[
           'Person Re-identification',
           'Computer Vision',
