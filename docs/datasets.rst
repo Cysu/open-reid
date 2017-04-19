@@ -9,6 +9,6 @@ reid.datasets
 
 .. autoclass:: CUHK01
 .. autoclass:: CUHK03
-.. autoclass:: Duke
+.. autoclass:: DukeMTMC
 .. autoclass:: Market1501
 .. autoclass:: VIPeR
