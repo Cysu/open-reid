@@ -202,7 +202,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="ID Training Inception Model")
     # data
     parser.add_argument('-d', '--dataset', type=str, default='cuhk03',
-                        choices=['cuhk03', 'market1501', 'viper', 'duke'])
+                        choices=['cuhk03', 'market1501', 'viper', 'dukemtmc'])
     parser.add_argument('-b', '--batch-size', type=int, default=256)
     parser.add_argument('-j', '--workers', type=int, default=4)
     parser.add_argument('--split', type=int, default=0)

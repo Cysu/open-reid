@@ -7,12 +7,12 @@ from ..utils.osutils import mkdir_if_missing
 from ..utils.serialization import write_json
 
 
-class Duke(Dataset):
+class DukeMTMC(Dataset):
     url = 'https://drive.google.com/open?id=0B0VOCNYh8HeRSDRwczZIT0lZTG8'
     md5 = '286aaef9ba5db58853d91b66a028923b'
 
     def __init__(self, root, split_id=0, num_val=0.3, download=False):
-        super(Duke, self).__init__(root, split_id=split_id)
+        super(DukeMTMC, self).__init__(root, split_id=split_id)
 
         if download:
             self.download()
@@ -93,7 +93,7 @@ class Duke(Dataset):
         assert trainval_pids.isdisjoint(gallery_pids)
 
         # Save meta information into a json file
-        meta = {'name': 'Duke', 'shot': 'multiple', 'num_cameras': 8,
+        meta = {'name': 'DukeMTMC', 'shot': 'multiple', 'num_cameras': 8,
                 'identities': identities}
         write_json(meta, osp.join(self.root, 'meta.json'))
 
