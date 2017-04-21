@@ -41,8 +41,8 @@ def copy_state_dict(state_dict, model, strip=None):
     tgt_state = model.state_dict()
     copied_names = set()
     for name, param in state_dict.items():
-        if strip is not None:
-            name = name.strip(strip)
+        if strip is not None and name.startswith(strip):
+            name = name[len(strip):]
         if name not in tgt_state:
             continue
         if isinstance(param, Parameter):
