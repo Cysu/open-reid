@@ -6,7 +6,7 @@
 Open-ReID documentation
 =======================
 
-Open-ReID is a deep learning library for person re-identification based no PyTorch.
+Open-ReID is a deep learning library for person re-identification based on PyTorch.
 
 .. toctree::
    :glob:
