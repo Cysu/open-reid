@@ -107,8 +107,12 @@ def main(args):
         model = ResNet(args.depth, pretrained=True, num_features=args.features,
                        norm=True, dropout=args.dropout)
     elif args.loss == 'triplet':
+        # Hack for making the classifier the last feature embedding layer
+        # Net structure: avgpool -> FC(1024) -> FC(args.features)
         model = ResNet(args.depth, pretrained=True,
-                       num_features=args.features, dropout=args.dropout)
+                       num_features=1024,
+                       norm=False, dropout=args.dropout,
+                       num_classes=args.features)
     else:
         raise ValueError("Cannot recognize loss type:", args.loss)
     model = torch.nn.DataParallel(model).cuda()
@@ -178,7 +182,7 @@ def main(args):
             lr = args.lr * (0.1 ** (epoch // 40))
         elif args.optimizer == 'adam':
             lr = args.lr if epoch <= 100 else \
-                args.lr * (0.001 ** (epoch - 100) / 50)
+                args.lr * (0.001 ** ((epoch - 100) / 50))
         else:
             raise ValueError("Cannot recognize optimizer type:", args.optimizer)
         for g in optimizer.param_groups:
