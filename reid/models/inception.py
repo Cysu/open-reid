@@ -1,9 +1,12 @@
 from __future__ import absolute_import
 
 import torch
-import torch.nn.functional as F
-import torch.nn.init as init
 from torch import nn
+from torch.nn import functional as F
+from torch.nn import init
+
+
+__all__ = ['InceptionNet', 'inception']
 
 
 def _make_conv(in_planes, out_planes, kernel_size=3, stride=1, padding=1,
@@ -45,8 +48,8 @@ class Block(nn.Module):
 
 
 class InceptionNet(nn.Module):
-    def __init__(self, cut_at_pooling=False, num_classes=0, num_features=256,
-                 norm=False, dropout=0):
+    def __init__(self, cut_at_pooling=False, num_features=256, norm=False,
+                 dropout=0, num_classes=0):
         super(InceptionNet, self).__init__()
         self.cut_at_pooling = cut_at_pooling
 
@@ -63,11 +66,11 @@ class InceptionNet(nn.Module):
         self.inception6b = self._make_inception(256, 'Max', 2)
 
         if not self.cut_at_pooling:
-            self.num_classes = num_classes
             self.num_features = num_features
             self.norm = norm
             self.dropout = dropout
             self.has_embedding = num_features > 0
+            self.num_classes = num_classes
 
             self.avgpool = nn.AdaptiveAvgPool2d(1)
 
@@ -135,3 +138,6 @@ class InceptionNet(nn.Module):
                 if m.bias is not None:
                     init.constant(m.bias, 0)
 
+
+def inception(**kwargs):
+    return InceptionNet(**kwargs)

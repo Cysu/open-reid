@@ -1,23 +1,26 @@
 from __future__ import absolute_import
 
-import torch.nn.functional as F
-import torch.nn.init as init
 from torch import nn
-from torchvision.models import resnet18, resnet34, resnet50, resnet101, \
-    resnet152
+from torch.nn import functional as F
+from torch.nn import init
+import torchvision
+
+
+__all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
+           'resnet152']
 
 
 class ResNet(nn.Module):
     __factory = {
-        18: resnet18,
-        34: resnet34,
-        50: resnet50,
-        101: resnet101,
-        152: resnet152,
+        18: torchvision.models.resnet18,
+        34: torchvision.models.resnet34,
+        50: torchvision.models.resnet50,
+        101: torchvision.models.resnet101,
+        152: torchvision.models.resnet152,
     }
 
     def __init__(self, depth, pretrained=True, cut_at_pooling=False,
-                 num_classes=0, num_features=0, norm=False, dropout=0):
+                 num_features=0, norm=False, dropout=0, num_classes=0):
         super(ResNet, self).__init__()
 
         self.depth = depth
@@ -30,11 +33,11 @@ class ResNet(nn.Module):
         self.base = ResNet.__factory[depth](pretrained=pretrained)
 
         if not self.cut_at_pooling:
-            self.num_classes = num_classes
             self.num_features = num_features
             self.norm = norm
             self.dropout = dropout
             self.has_embedding = num_features > 0
+            self.num_classes = num_classes
 
             out_planes = self.base.fc.in_features
 
@@ -98,3 +101,22 @@ class ResNet(nn.Module):
                 if m.bias is not None:
                     init.constant(m.bias, 0)
 
+
+def resnet18(**kwargs):
+    return ResNet(18, **kwargs)
+
+
+def resnet34(**kwargs):
+    return ResNet(34, **kwargs)
+
+
+def resnet50(**kwargs):
+    return ResNet(50, **kwargs)
+
+
+def resnet101(**kwargs):
+    return ResNet(101, **kwargs)
+
+
+def resnet152(**kwargs):
+    return ResNet(152, **kwargs)
