@@ -12,7 +12,7 @@ class CUHK01(Dataset):
     url = 'https://docs.google.com/spreadsheet/viewform?formkey=dF9pZ1BFZkNiMG1oZUdtTjZPalR0MGc6MA'
     md5 = 'e6d55c0da26d80cda210a2edeb448e98'
 
-    def __init__(self, root, split_id=0, num_val=100, download=False):
+    def __init__(self, root, split_id=0, num_val=100, download=True):
         super(CUHK01, self).__init__(root, split_id=split_id)
 
         if download:

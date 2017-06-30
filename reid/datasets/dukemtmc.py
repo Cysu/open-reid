@@ -11,7 +11,7 @@ class DukeMTMC(Dataset):
     url = 'https://drive.google.com/open?id=0B0VOCNYh8HeRSDRwczZIT0lZTG8'
     md5 = '286aaef9ba5db58853d91b66a028923b'
 
-    def __init__(self, root, split_id=0, num_val=0.3, download=False):
+    def __init__(self, root, split_id=0, num_val=100, download=True):
         super(DukeMTMC, self).__init__(root, split_id=split_id)
 
         if download:
