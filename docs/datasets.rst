@@ -5,7 +5,7 @@ reid.datasets
 .. automodule:: reid.datasets
 .. currentmodule:: reid.datasets
 
-.. autofunction:: get_dataset
+.. autofunction:: create
 
 .. autoclass:: CUHK01
 .. autoclass:: CUHK03
