@@ -178,5 +178,5 @@ texinfo_documents = [
 intersphinx_mapping = {
     'python': ('https://docs.python.org/', None),
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-    'pytorch': ('http://pytorch.org/docs/', None),
+    'pytorch': ('http://pytorch.org/docs/master/', None),
 }
