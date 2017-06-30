@@ -130,6 +130,7 @@
 <p class="caption"><span class="caption-text">API Level Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../datasets.html">reid.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../models.html">reid.models</a></li>
 </ul>
 
             
@@ -208,7 +209,7 @@
     <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://drive.google.com/file/d/0B8-rUzbwVRk0c054eEozWG9COHM/view&#39;</span>
     <span class="n">md5</span> <span class="o">=</span> <span class="s1">&#39;65005ab7d12ec1c44de4eeafe813e68a&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_val</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">num_val</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Market1501</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">split_id</span><span class="o">=</span><span class="n">split_id</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">download</span><span class="p">:</span>

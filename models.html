@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>reid.datasets &mdash; Open-ReID  documentation</title>
+  <title>reid.models &mdash; Open-ReID  documentation</title>
   
 
   
@@ -40,8 +40,7 @@
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
     <link rel="top" title="Open-ReID  documentation" href="index.html"/>
-        <link rel="next" title="reid.models" href="models.html"/>
-        <link rel="prev" title="reid.dist_metric" href="dist_metric.html"/> 
+        <link rel="prev" title="reid.datasets" href="datasets.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -130,8 +129,8 @@
 </ul>
 <p class="caption"><span class="caption-text">API Level Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">reid.datasets</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">reid.models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="datasets.html">reid.datasets</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">reid.models</a></li>
 </ul>
 
             
@@ -176,13 +175,13 @@
     
       <li><a href="index.html">Docs</a> &raquo;</li>
         
-      <li>reid.datasets</li>
+      <li>reid.models</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="_sources/datasets.rst.txt" rel="nofollow"> View page source</a>
+            <a href="_sources/models.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -195,24 +194,34 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="module-reid.datasets">
-<span id="reid-datasets"></span><h1>reid.datasets<a class="headerlink" href="#module-reid.datasets" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-reid.models">
+<span id="reid-models"></span><h1>reid.models<a class="headerlink" href="#module-reid.models" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="reid.datasets.create">
-<code class="descclassname">reid.datasets.</code><code class="descname">create</code><span class="sig-paren">(</span><em>name</em>, <em>root</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/datasets.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.datasets.create" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a dataset instance.</p>
+<dt id="reid.models.create">
+<code class="descclassname">reid.models.</code><code class="descname">create</code><span class="sig-paren">(</span><em>name</em>, <em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models.html#create"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.create" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a model instance.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The dataset name. Can be one of ‘viper’, ‘cuhk01’, ‘cuhk03’,
-‘market1501’, and ‘dukemtmc’.</li>
-<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – The path to the dataset directory.</li>
-<li><strong>split_id</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>, </em><em>optional</em>) – The index of data split. Default: 0</li>
-<li><strong>num_val</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em>, </em><em>optional</em>) – When int, it means the number of validation identities. When float,
-it means the proportion of validation to all the trainval. Default: 100</li>
-<li><strong>download</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, will download the dataset. Default: False</li>
+<li><strong>name</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Model name. Can be one of ‘inception’, ‘resnet18’, ‘resnet34’,
+‘resnet50’, ‘resnet101’, and ‘resnet152’.</li>
+<li><strong>pretrained</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – Only applied for ‘resnet*’ models. If True, will use ImageNet pretrained
+model. Default: True</li>
+<li><strong>cut_at_pooling</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, will cut the model before the last global pooling layer and
+ignore the remaining kwargs. Default: False</li>
+<li><strong>num_features</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>, </em><em>optional</em>) – If positive, will append a Linear layer after the global pooling layer,
+with this number of output units, followed by a BatchNorm layer.
+Otherwise these layers will not be appended. Default: 256 for
+‘inception’, 0 for ‘resnet*’</li>
+<li><strong>norm</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a><em>, </em><em>optional</em>) – If True, will normalize the feature to be unit L2-norm for each sample.
+Otherwise will append a ReLU layer after the above Linear layer if
+num_features &gt; 0. Default: False</li>
+<li><strong>dropout</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a><em>, </em><em>optional</em>) – If positive, will append a Dropout layer with this dropout rate.
+Default: 0</li>
+<li><strong>num_classes</strong> (<a class="reference external" href="https://docs.python.org/2/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em>, </em><em>optional</em>) – If positive, will append a Linear layer at the end as the classifier
+with this number of output units. Default: 0</li>
 </ul>
 </td>
 </tr>
@@ -220,29 +229,44 @@ it means the proportion of validation to all the trainval. Default: 100</li>
 </table>
 </dd></dl>
 
-<dl class="class">
-<dt id="reid.datasets.CUHK01">
-<em class="property">class </em><code class="descclassname">reid.datasets.</code><code class="descname">CUHK01</code><span class="sig-paren">(</span><em>root</em>, <em>split_id=0</em>, <em>num_val=100</em>, <em>download=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/datasets/cuhk01.html#CUHK01"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.datasets.CUHK01" title="Permalink to this definition">¶</a></dt>
+<dl class="function">
+<dt id="reid.models.inception">
+<code class="descclassname">reid.models.</code><code class="descname">inception</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/inception.html#inception"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.inception" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="reid.models.resnet18">
+<code class="descclassname">reid.models.</code><code class="descname">resnet18</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/resnet.html#resnet18"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.resnet18" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="reid.models.resnet34">
+<code class="descclassname">reid.models.</code><code class="descname">resnet34</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/resnet.html#resnet34"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.resnet34" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="reid.models.resnet50">
+<code class="descclassname">reid.models.</code><code class="descname">resnet50</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/resnet.html#resnet50"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.resnet50" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="reid.models.resnet101">
+<code class="descclassname">reid.models.</code><code class="descname">resnet101</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/resnet.html#resnet101"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.resnet101" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="reid.models.resnet152">
+<code class="descclassname">reid.models.</code><code class="descname">resnet152</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/resnet.html#resnet152"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.resnet152" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
-<dt id="reid.datasets.CUHK03">
-<em class="property">class </em><code class="descclassname">reid.datasets.</code><code class="descname">CUHK03</code><span class="sig-paren">(</span><em>root</em>, <em>split_id=0</em>, <em>num_val=100</em>, <em>download=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/datasets/cuhk03.html#CUHK03"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.datasets.CUHK03" title="Permalink to this definition">¶</a></dt>
+<dt id="reid.models.InceptionNet">
+<em class="property">class </em><code class="descclassname">reid.models.</code><code class="descname">InceptionNet</code><span class="sig-paren">(</span><em>cut_at_pooling=False</em>, <em>num_features=256</em>, <em>norm=False</em>, <em>dropout=0</em>, <em>num_classes=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/inception.html#InceptionNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.InceptionNet" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
-<dt id="reid.datasets.DukeMTMC">
-<em class="property">class </em><code class="descclassname">reid.datasets.</code><code class="descname">DukeMTMC</code><span class="sig-paren">(</span><em>root</em>, <em>split_id=0</em>, <em>num_val=100</em>, <em>download=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/datasets/dukemtmc.html#DukeMTMC"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.datasets.DukeMTMC" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="reid.datasets.Market1501">
-<em class="property">class </em><code class="descclassname">reid.datasets.</code><code class="descname">Market1501</code><span class="sig-paren">(</span><em>root</em>, <em>split_id=0</em>, <em>num_val=100</em>, <em>download=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/datasets/market1501.html#Market1501"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.datasets.Market1501" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="class">
-<dt id="reid.datasets.VIPeR">
-<em class="property">class </em><code class="descclassname">reid.datasets.</code><code class="descname">VIPeR</code><span class="sig-paren">(</span><em>root</em>, <em>split_id=0</em>, <em>num_val=100</em>, <em>download=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/datasets/viper.html#VIPeR"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.datasets.VIPeR" title="Permalink to this definition">¶</a></dt>
+<dt id="reid.models.ResNet">
+<em class="property">class </em><code class="descclassname">reid.models.</code><code class="descname">ResNet</code><span class="sig-paren">(</span><em>depth</em>, <em>pretrained=True</em>, <em>cut_at_pooling=False</em>, <em>num_features=0</em>, <em>norm=False</em>, <em>dropout=0</em>, <em>num_classes=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/reid/models/resnet.html#ResNet"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#reid.models.ResNet" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -257,10 +281,8 @@ it means the proportion of validation to all the trainval. Default: 100</li>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="models.html" class="btn btn-neutral float-right" title="reid.models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="dist_metric.html" class="btn btn-neutral" title="reid.dist_metric" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="datasets.html" class="btn btn-neutral" title="reid.datasets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   

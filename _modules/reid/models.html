@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>reid.dist_metric &mdash; Open-ReID  documentation</title>
+  <title>reid.models &mdash; Open-ReID  documentation</title>
   
 
   
@@ -177,7 +177,7 @@
         
           <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>reid.dist_metric</li>
+      <li>reid.models</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -194,37 +194,61 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for reid.dist_metric</h1><div class="highlight"><pre>
+  <h1>Source code for reid.models</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">import</span> <span class="nn">torch</span>
-
-<span class="kn">from</span> <span class="nn">.evaluators</span> <span class="k">import</span> <span class="n">extract_features</span>
-<span class="kn">from</span> <span class="nn">.metric_learning</span> <span class="k">import</span> <span class="n">get_metric</span>
+<span class="kn">from</span> <span class="nn">.inception</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">.resnet</span> <span class="k">import</span> <span class="o">*</span>
 
 
-<div class="viewcode-block" id="DistanceMetric"><a class="viewcode-back" href="../../dist_metric.html#reid.dist_metric.DistanceMetric">[docs]</a><span class="k">class</span> <span class="nc">DistanceMetric</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">algorithm</span><span class="o">=</span><span class="s1">&#39;euclidean&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">(</span><span class="n">DistanceMetric</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">=</span> <span class="n">algorithm</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span> <span class="o">=</span> <span class="n">get_metric</span><span class="p">(</span><span class="n">algorithm</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+<span class="n">__factory</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;inception&#39;</span><span class="p">:</span> <span class="n">inception</span><span class="p">,</span>
+    <span class="s1">&#39;resnet18&#39;</span><span class="p">:</span> <span class="n">resnet18</span><span class="p">,</span>
+    <span class="s1">&#39;resnet34&#39;</span><span class="p">:</span> <span class="n">resnet34</span><span class="p">,</span>
+    <span class="s1">&#39;resnet50&#39;</span><span class="p">:</span> <span class="n">resnet50</span><span class="p">,</span>
+    <span class="s1">&#39;resnet101&#39;</span><span class="p">:</span> <span class="n">resnet101</span><span class="p">,</span>
+    <span class="s1">&#39;resnet152&#39;</span><span class="p">:</span> <span class="n">resnet152</span><span class="p">,</span>
+<span class="p">}</span>
 
-    <span class="k">def</span> <span class="nf">train</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">algorithm</span> <span class="o">==</span> <span class="s1">&#39;euclidean&#39;</span><span class="p">:</span> <span class="k">return</span>
-        <span class="n">features</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="n">extract_features</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">data_loader</span><span class="p">)</span>
-        <span class="n">features</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">Tensor</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">labels</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">is_tensor</span><span class="p">(</span><span class="n">X</span><span class="p">):</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">from_numpy</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">X</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">X</span></div>
+<span class="k">def</span> <span class="nf">names</span><span class="p">():</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">__factory</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
 
+
+<div class="viewcode-block" id="create"><a class="viewcode-back" href="../../models.html#reid.models.create">[docs]</a><span class="k">def</span> <span class="nf">create</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Create a model instance.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    name : str</span>
+<span class="sd">        Model name. Can be one of &#39;inception&#39;, &#39;resnet18&#39;, &#39;resnet34&#39;,</span>
+<span class="sd">        &#39;resnet50&#39;, &#39;resnet101&#39;, and &#39;resnet152&#39;.</span>
+<span class="sd">    pretrained : bool, optional</span>
+<span class="sd">        Only applied for &#39;resnet*&#39; models. If True, will use ImageNet pretrained</span>
+<span class="sd">        model. Default: True</span>
+<span class="sd">    cut_at_pooling : bool, optional</span>
+<span class="sd">        If True, will cut the model before the last global pooling layer and</span>
+<span class="sd">        ignore the remaining kwargs. Default: False</span>
+<span class="sd">    num_features : int, optional</span>
+<span class="sd">        If positive, will append a Linear layer after the global pooling layer,</span>
+<span class="sd">        with this number of output units, followed by a BatchNorm layer.</span>
+<span class="sd">        Otherwise these layers will not be appended. Default: 256 for</span>
+<span class="sd">        &#39;inception&#39;, 0 for &#39;resnet*&#39;</span>
+<span class="sd">    norm : bool, optional</span>
+<span class="sd">        If True, will normalize the feature to be unit L2-norm for each sample.</span>
+<span class="sd">        Otherwise will append a ReLU layer after the above Linear layer if</span>
+<span class="sd">        num_features &gt; 0. Default: False</span>
+<span class="sd">    dropout : float, optional</span>
+<span class="sd">        If positive, will append a Dropout layer with this dropout rate.</span>
+<span class="sd">        Default: 0</span>
+<span class="sd">    num_classes : int, optional</span>
+<span class="sd">        If positive, will append a Linear layer at the end as the classifier</span>
+<span class="sd">        with this number of output units. Default: 0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">__factory</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;Unknown model:&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">__factory</span><span class="p">[</span><span class="n">name</span><span class="p">](</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
 </pre></div>
 
            </div>
