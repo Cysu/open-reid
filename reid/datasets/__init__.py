@@ -46,6 +46,5 @@ def create(name, root, *args, **kwargs):
 
 
 def get_dataset(name, root, *args, **kwargs):
-    warnings.warn("get_dataset is deprecated and will be removed in 0.3. "
-                  "Use create instead.", category=DeprecationWarning)
-    create(name, root, *args, **kwargs)
+    warnings.warn("get_dataset is deprecated. Use create instead.")
+    return create(name, root, *args, **kwargs)
