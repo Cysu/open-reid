@@ -106,6 +106,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#head-first-example">Head First Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#training-options">Training Options</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#datasets">Datasets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#model-architectures">Model Architectures</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multi-gpu-and-batch-size">Multi-GPU and Batch Size</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#resume-from-checkpoints">Resume from Checkpoints</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#evaluate-a-trained-model">Evaluate a Trained Model</a></li>
@@ -131,6 +132,7 @@
 <p class="caption"><span class="caption-text">API Level Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../datasets.html">reid.datasets</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models.html">reid.models</a></li>
 </ul>
 
             
@@ -211,29 +213,37 @@ person from a gallery database would become easy.</p>
 <div class="section" id="head-first-example">
 <span id="id5"></span><h2>Head First Example<a class="headerlink" href="#head-first-example" title="Permalink to this headline">¶</a></h2>
 <p>After cloning the repository, we can start with training an Inception net on
-VIPeR from scratch</p>
-<div class="highlight-shell"><div class="highlight"><pre><span></span>python examples/inception.py -d viper -b <span class="m">64</span> -j <span class="m">2</span> --loss xentropy --logs-dir logs/inception-viper-xentropy
+VIPeR with Softmax loss from scratch</p>
+<div class="highlight-shell"><div class="highlight"><pre><span></span>python examples/softmax_loss.py -d viper -b <span class="m">64</span> -j <span class="m">2</span> -a inception --logs-dir logs/softmax-loss/viper-inception
 </pre></div>
 </div>
 <p>This script automatically downloads the VIPeR dataset and starts training, with
 batch size of 64 and two processes for data loading. Softmax cross entropy is
 used as the loss function. The training log should be print to screen as well as
-saved to <code class="docutils literal"><span class="pre">logs/inception-viper-xentropy/log.txt</span></code>. When training ends, it will
-evaluate the best model (the one with best validation performance) on the test
-set, and report several commonly used metrics.</p>
+saved to <code class="docutils literal"><span class="pre">logs/softmax-loss/viper-inception/log.txt</span></code>. When training ends, it
+will evaluate the best model (the one with best validation performance) on the
+test set, and report several commonly used metrics.</p>
 </div>
 <div class="section" id="training-options">
 <span id="id6"></span><h2>Training Options<a class="headerlink" href="#training-options" title="Permalink to this headline">¶</a></h2>
 <p>Many training options are available through command line arguments. See all the
-options by <code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/inception.py</span> <span class="pre">-h</span></code>. Here we elaborate on several
+options by <code class="docutils literal"><span class="pre">python</span> <span class="pre">examples/softmax_loss.py</span> <span class="pre">-h</span></code>. Here we elaborate on several
 commonly used options.</p>
 <div class="section" id="datasets">
 <span id="data-options"></span><h3>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h3>
 <p>Specify the dataset by <code class="docutils literal"><span class="pre">-d</span> <span class="pre">name</span></code>, where <code class="docutils literal"><span class="pre">name</span></code> can be one of <code class="docutils literal"><span class="pre">cuhk03</span></code>,
-<code class="docutils literal"><span class="pre">market1501</span></code>, <code class="docutils literal"><span class="pre">dukemtmc</span></code>, and <code class="docutils literal"><span class="pre">viper</span></code> currently. For some datasets that
-cannot be downloaded automatically, running the script will raise an error with
-a link to the dataset. One may need to manually download it and put it to the
-directory instructed also by the error message.</p>
+<code class="docutils literal"><span class="pre">cuhk01</span></code>, <code class="docutils literal"><span class="pre">market1501</span></code>, <code class="docutils literal"><span class="pre">dukemtmc</span></code>, and <code class="docutils literal"><span class="pre">viper</span></code> currently. For some
+datasets that cannot be downloaded automatically, running the script will raise
+an error with a link to the dataset. One may need to manually download it and
+put it to the directory instructed by the error message.</p>
+</div>
+<div class="section" id="model-architectures">
+<span id="model-options"></span><h3>Model Architectures<a class="headerlink" href="#model-architectures" title="Permalink to this headline">¶</a></h3>
+<p>Specify the model architecture by <code class="docutils literal"><span class="pre">-a</span> <span class="pre">name</span></code>, where <code class="docutils literal"><span class="pre">name</span></code> can be one of
+<code class="docutils literal"><span class="pre">resnet18</span></code>, <code class="docutils literal"><span class="pre">resnet34</span></code>, <code class="docutils literal"><span class="pre">resnet50</span></code>, <code class="docutils literal"><span class="pre">resnet101</span></code>, <code class="docutils literal"><span class="pre">resnet152</span></code>, and
+<code class="docutils literal"><span class="pre">inception</span></code> currently. For <code class="docutils literal"><span class="pre">resnet*</span></code>, running the scripts will download an
+ImageNet pretrained model automatically, and then finetune from it. For
+<code class="docutils literal"><span class="pre">inception</span></code>, the scripts just train the net from scratch.</p>
 </div>
 <div class="section" id="multi-gpu-and-batch-size">
 <span id="gpu-options"></span><h3>Multi-GPU and Batch Size<a class="headerlink" href="#multi-gpu-and-batch-size" title="Permalink to this headline">¶</a></h3>
@@ -242,15 +252,15 @@ the program will use all the GPUs listed in <code class="docutils literal"><span
 GPUs to be used, one need to specify the environment variable
 <code class="docutils literal"><span class="pre">CUDA_VISIBLE_DEVICES</span></code> before running the python script. For example,</p>
 <div class="highlight-shell"><div class="highlight"><pre><span></span><span class="c1"># 4 GPUs, with effective batch size of 256</span>
-<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3 python examples/inception.py -d viper -b <span class="m">256</span> --lr <span class="m">0</span>.1
+<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span>,1,2,3 python examples/softmax_loss.py -d viper -b <span class="m">256</span> --lr <span class="m">0</span>.1 ...
 
 <span class="c1"># 1 GPU, reduce the batch size to 64, lr to 0.025</span>
-<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span> python examples/inception.py -d viper -b <span class="m">64</span> --lr <span class="m">0</span>.025
+<span class="nv">CUDA_VISIBLE_DEVICES</span><span class="o">=</span><span class="m">0</span> python examples/softmax_loss.py -d viper -b <span class="m">64</span> --lr <span class="m">0</span>.025 ...
 </pre></div>
 </div>
 <p>Note that the effective batch size specified by the <code class="docutils literal"><span class="pre">-b</span></code> option will be
-divided automatically by the number of GPUs. For example, 4 GPUs with <code class="docutils literal"><span class="pre">-b</span> <span class="pre">256</span></code>
-will have 64 minibatch samples on each GPU.</p>
+divided by the number of GPUs automatically for each GPU. For example, 4 GPUs
+with <code class="docutils literal"><span class="pre">-b</span> <span class="pre">256</span></code> will have 64 minibatch samples on each one.</p>
 <p>In the second command above, we reduce the batch size and initial learning rate
 to 1/4, in order to adapt the original 4 GPUs setting to only 1 GPU.</p>
 </div>
@@ -277,16 +287,17 @@ and tricks for experiments.</p>
 <dl class="docutils">
 <dt>Combine train and val</dt>
 <dd>One can first use separate training and validation set to tune the
-hyperparameters, then fix the hyperparameters and combine both sets togehter
+hyperparameters, then fix the hyperparameters and combine both sets together
 to train a final model. This can be done by appending an option
 <code class="docutils literal"><span class="pre">--combine-trainval</span></code>, and could lead to much better performance on the
 test set.</dd>
 <dt>Input size</dt>
-<dd>Larger input image size could benefit the performance. But it depends on the
-network architecture.</dd>
+<dd>Larger input image size could benefit the performance. It depends on the
+network architecture. You may specify it by <code class="docutils literal"><span class="pre">--height</span></code> and <code class="docutils literal"><span class="pre">--width</span></code>. By
+default, we use <code class="docutils literal"><span class="pre">256x128</span></code> for <code class="docutils literal"><span class="pre">resnet*</span></code> and <code class="docutils literal"><span class="pre">144x56</span></code> for <code class="docutils literal"><span class="pre">inception</span></code>.</dd>
 <dt>Multi-scale multi-crop test</dt>
 <dd>Using multi-scale multi-crop for test normally guarantees performance gain.
-However, it sacrifies the running speed significantly. We have not
+However, it sacrifices the running speed significantly. We have not
 implemented this yet.</dd>
 <dt>Classifier initialization for softmax cross entropy loss</dt>
 <dd>We found that initializing the softmax classifier weight with normal
@@ -390,7 +401,7 @@ already pretrained.</dd>
       <script type="text/javascript" src="../_static/jquery.js"></script>
       <script type="text/javascript" src="../_static/underscore.js"></script>
       <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 
   
 

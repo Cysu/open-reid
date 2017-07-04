@@ -24,18 +24,18 @@ Head First Example
 ------------------
 
 After cloning the repository, we can start with training an Inception net on
-VIPeR from scratch
+VIPeR with Softmax loss from scratch
 
 .. code-block:: shell
 
-   python examples/inception.py -d viper -b 64 -j 2 --loss xentropy --logs-dir logs/inception-viper-xentropy
+   python examples/softmax_loss.py -d viper -b 64 -j 2 -a inception --logs-dir logs/softmax-loss/viper-inception
 
 This script automatically downloads the VIPeR dataset and starts training, with
 batch size of 64 and two processes for data loading. Softmax cross entropy is
 used as the loss function. The training log should be print to screen as well as
-saved to ``logs/inception-viper-xentropy/log.txt``. When training ends, it will
-evaluate the best model (the one with best validation performance) on the test
-set, and report several commonly used metrics.
+saved to ``logs/softmax-loss/viper-inception/log.txt``. When training ends, it
+will evaluate the best model (the one with best validation performance) on the
+test set, and report several commonly used metrics.
 
 
 .. _training-options:
@@ -45,7 +45,7 @@ Training Options
 ----------------
 
 Many training options are available through command line arguments. See all the
-options by ``python examples/inception.py -h``. Here we elaborate on several
+options by ``python examples/softmax_loss.py -h``. Here we elaborate on several
 commonly used options.
 
 .. _data-options:
@@ -55,10 +55,22 @@ Datasets
 ^^^^^^^^
 
 Specify the dataset by ``-d name``, where ``name`` can be one of ``cuhk03``,
-``market1501``, ``dukemtmc``, and ``viper`` currently. For some datasets that
-cannot be downloaded automatically, running the script will raise an error with
-a link to the dataset. One may need to manually download it and put it to the
-directory instructed also by the error message.
+``cuhk01``, ``market1501``, ``dukemtmc``, and ``viper`` currently. For some
+datasets that cannot be downloaded automatically, running the script will raise
+an error with a link to the dataset. One may need to manually download it and
+put it to the directory instructed by the error message.
+
+.. _model-options:
+
+^^^^^^^^^^^^^^^^^^^
+Model Architectures
+^^^^^^^^^^^^^^^^^^^
+
+Specify the model architecture by ``-a name``, where ``name`` can be one of
+``resnet18``, ``resnet34``, ``resnet50``, ``resnet101``, ``resnet152``, and
+``inception`` currently. For ``resnet*``, running the scripts will download an
+ImageNet pretrained model automatically, and then finetune from it. For
+``inception``, the scripts just train the net from scratch.
 
 .. _gpu-options:
 
@@ -74,14 +86,14 @@ GPUs to be used, one need to specify the environment variable
 .. code-block:: shell
 
    # 4 GPUs, with effective batch size of 256
-   CUDA_VISIBLE_DEVICES=0,1,2,3 python examples/inception.py -d viper -b 256 --lr 0.1
+   CUDA_VISIBLE_DEVICES=0,1,2,3 python examples/softmax_loss.py -d viper -b 256 --lr 0.1 ...
 
    # 1 GPU, reduce the batch size to 64, lr to 0.025
-   CUDA_VISIBLE_DEVICES=0 python examples/inception.py -d viper -b 64 --lr 0.025
+   CUDA_VISIBLE_DEVICES=0 python examples/softmax_loss.py -d viper -b 64 --lr 0.025 ...
 
 Note that the effective batch size specified by the ``-b`` option will be
-divided automatically by the number of GPUs. For example, 4 GPUs with ``-b 256``
-will have 64 minibatch samples on each GPU.
+divided by the number of GPUs automatically for each GPU. For example, 4 GPUs
+with ``-b 256`` will have 64 minibatch samples on each one.
 
 In the second command above, we reduce the batch size and initial learning rate
 to 1/4, in order to adapt the original 4 GPUs setting to only 1 GPU.
@@ -121,18 +133,19 @@ and tricks for experiments.
 
 Combine train and val
    One can first use separate training and validation set to tune the
-   hyperparameters, then fix the hyperparameters and combine both sets togehter
+   hyperparameters, then fix the hyperparameters and combine both sets together
    to train a final model. This can be done by appending an option
    ``--combine-trainval``, and could lead to much better performance on the
    test set.
 
 Input size
-   Larger input image size could benefit the performance. But it depends on the
-   network architecture.
+   Larger input image size could benefit the performance. It depends on the
+   network architecture. You may specify it by ``--height`` and ``--width``. By
+   default, we use ``256x128`` for ``resnet*`` and ``144x56`` for ``inception``.
 
 Multi-scale multi-crop test
    Using multi-scale multi-crop for test normally guarantees performance gain.
-   However, it sacrifies the running speed significantly. We have not
+   However, it sacrifices the running speed significantly. We have not
    implemented this yet.
 
 Classifier initialization for softmax cross entropy loss
