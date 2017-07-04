@@ -19,7 +19,7 @@ python setup.py install
 ## Examples
 
 ```shell
-python examples/resnet.py -d viper -b 64 -j 2 --loss oim --logs-dir logs/resnet-viper-oim
+python examples/softmax_loss.py -d viper -b 64 -j 2 -a resnet50 --logs-dir logs/softmax-loss/viper-resnet50
 ```
 
 This is just a quick example. VIPeR dataset may not be large enough to train a deep neural network.
