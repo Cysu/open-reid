@@ -1,5 +1,4 @@
 from __future__ import print_function, absolute_import
-import os
 import os.path as osp
 
 from ..utils.data import Dataset
@@ -8,8 +7,8 @@ from ..utils.serialization import write_json
 
 
 class DukeMTMC(Dataset):
-    url = 'https://drive.google.com/open?id=0B0VOCNYh8HeRSDRwczZIT0lZTG8'
-    md5 = '286aaef9ba5db58853d91b66a028923b'
+    url = 'https://drive.google.com/uc?id=0B0VOCNYh8HeRdnBPa2ZWaVBYSVk'
+    md5 = '2f93496f9b516d1ee5ef51c1d5e7d601'
 
     def __init__(self, root, split_id=0, num_val=100, download=True):
         super(DukeMTMC, self).__init__(root, split_id=split_id)
@@ -31,14 +30,14 @@ class DukeMTMC(Dataset):
         import re
         import hashlib
         import shutil
-        import tarfile
         from glob import glob
+        from zipfile import ZipFile
 
         raw_dir = osp.join(self.root, 'raw')
         mkdir_if_missing(raw_dir)
 
         # Download the raw zip file
-        fpath = osp.join(raw_dir, 'Duke.tar.gz')
+        fpath = osp.join(raw_dir, 'DukeMTMC-reID.zip')
         if osp.isfile(fpath) and \
           hashlib.md5(open(fpath, 'rb').read()).hexdigest() == self.md5:
             print("Using downloaded file: " + fpath)
@@ -47,16 +46,11 @@ class DukeMTMC(Dataset):
                                "to {}".format(self.url, fpath))
 
         # Extract the file
-        exdir = osp.join(raw_dir, 'Duke')
+        exdir = osp.join(raw_dir, 'DukeMTMC-reID')
         if not osp.isdir(exdir):
-            mkdir_if_missing(exdir)
-            print("Extracting tar file")
-            cwd = os.getcwd()
-            tar = tarfile.open(fpath, 'r:gz')
-            os.chdir(exdir)
-            tar.extractall()
-            tar.close()
-            os.chdir(cwd)
+            print("Extracting zip file")
+            with ZipFile(fpath) as z:
+                z.extractall(path=raw_dir)
 
         # Format
         images_dir = osp.join(self.root, 'images')
