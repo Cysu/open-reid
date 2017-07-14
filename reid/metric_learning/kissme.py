@@ -4,13 +4,22 @@ import numpy as np
 from metric_learn.base_metric import BaseMetricLearner
 
 
-def validate_cov_matrix(M, threshold=1e-10, eps=1e-6):
-    try:
-        _ = np.linalg.cholesky(M)
-    except np.linalg.LinAlgError:
-        w, v = np.linalg.eig(M)
-        w[w <= threshold] = eps
-        M = (v * w).dot(v.T)
+def validate_cov_matrix(M):
+    M = (M + M.T) * 0.5
+    k = 0
+    I = np.eye(M.shape[0])
+    while True:
+        try:
+            _ = np.linalg.cholesky(M)
+            break
+        except np.linalg.LinAlgError:
+            # Find the nearest positive definite matrix for M. Modified from
+            # http://www.mathworks.com/matlabcentral/fileexchange/42885-nearestspd
+            # Might take several minutes
+            k += 1
+            w, v = np.linalg.eig(M)
+            min_eig = v.min()
+            M += (-min_eig * k * k + np.spacing(min_eig)) * I
     return M
 
 
