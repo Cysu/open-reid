@@ -135,7 +135,7 @@ def main(args):
     # Schedule learning rate
     def adjust_lr(epoch):
         lr = args.lr if epoch <= 100 else \
-            args.lr * (0.001 ** ((epoch - 100) / 50))
+            args.lr * (0.001 ** ((epoch - 100) / 50.0))
         for g in optimizer.param_groups:
             g['lr'] = lr * g.get('lr_mult', 1)
 
