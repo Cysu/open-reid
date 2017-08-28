@@ -7,7 +7,7 @@ state-of-the-art results.
 
 ## Installation
 
-Install [PyTorch](http://pytorch.org/) (version >= 0.1.11). Although we support
+Install [PyTorch](http://pytorch.org/) (version >= 0.2.0). Although we support
 both python2 and python3, we recommend python3 for better performance.
 
 ```shell
