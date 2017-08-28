@@ -73,7 +73,6 @@ def get_data(name, split_id, data_dir, height, width, batch_size, num_instances,
 def main(args):
     np.random.seed(args.seed)
     torch.manual_seed(args.seed)
-    torch.cuda.manual_seed_all(args.seed)
     cudnn.benchmark = True
 
     # Redirect print to both console and log file
