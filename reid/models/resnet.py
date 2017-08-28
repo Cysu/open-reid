@@ -78,7 +78,7 @@ class ResNet(nn.Module):
             x = self.feat(x)
             x = self.feat_bn(x)
         if self.norm:
-            x = x / x.norm(2, 1).expand_as(x)
+            x = x / x.norm(p=2, dim=1, keepdim=True).expand_as(x)
         elif self.has_embedding:
             x = F.relu(x)
         if self.dropout > 0:
