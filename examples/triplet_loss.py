@@ -164,7 +164,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="Softmax loss classification")
+    parser = argparse.ArgumentParser(description="Triplet loss classification")
     # data
     parser.add_argument('-d', '--dataset', type=str, default='cuhk03',
                         choices=datasets.names())
