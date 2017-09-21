@@ -205,7 +205,7 @@ if __name__ == '__main__':
                         help="evaluation only")
     parser.add_argument('--epochs', type=int, default=150)
     parser.add_argument('--start_save', type=int, default=0,
-                        help="save checkpoints at specific epoch")
+                        help="start saving checkpoints after specific epoch")
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
     # metric learning
