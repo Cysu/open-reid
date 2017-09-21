@@ -142,6 +142,8 @@ def main(args):
     for epoch in range(start_epoch, args.epochs):
         adjust_lr(epoch)
         trainer.train(epoch, train_loader, optimizer)
+        if epoch < args.start_save:
+            continue
         top1 = evaluator.evaluate(val_loader, dataset.val, dataset.val)
 
         is_best = top1 > best_top1
@@ -202,6 +204,8 @@ if __name__ == '__main__':
     parser.add_argument('--evaluate', action='store_true',
                         help="evaluation only")
     parser.add_argument('--epochs', type=int, default=150)
+    parser.add_argument('--start_save', type=int, default=0,
+                        help="start saving checkpoints after specific epoch")
     parser.add_argument('--seed', type=int, default=1)
     parser.add_argument('--print-freq', type=int, default=1)
     # metric learning
