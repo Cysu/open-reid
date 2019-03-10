@@ -3,7 +3,7 @@ from __future__ import absolute_import
 import torch
 from torch import nn
 from torch.autograd import Variable
-
+version =  torch.__version__
 
 class TripletLoss(nn.Module):
     def __init__(self, margin=0):
@@ -21,11 +21,18 @@ class TripletLoss(nn.Module):
         # For each anchor, find the hardest positive and negative
         mask = targets.expand(n, n).eq(targets.expand(n, n).t())
         dist_ap, dist_an = [], []
-        for i in range(n):
-            dist_ap.append(dist[i][mask[i]].max())
-            dist_an.append(dist[i][mask[i] == 0].min())
-        dist_ap = torch.cat(dist_ap)
-        dist_an = torch.cat(dist_an)
+        if int(version[2]) ==3:
+            for i in range(n):
+                dist_ap.append(dist[i][mask[i]].max())
+                dist_an.append(dist[i][mask[i] == 0].min())
+            dist_ap = torch.cat(dist_ap)
+            dist_an = torch.cat(dist_an)
+        else:
+            for i in range(n):
+                dist_ap.append(dist[i][mask[i]].max().unsqueeze(0))
+                dist_an.append(dist[i][mask[i] == 0].min().unsqueeze(0))
+            dist_ap = torch.cat(dist_ap)
+            dist_an = torch.cat(dist_an)
         # Compute ranking hinge loss
         y = dist_an.data.new()
         y.resize_as_(dist_an.data)
