@@ -30,7 +30,7 @@ class BaseTrainer(object):
             inputs, targets = self._parse_data(inputs)
             loss, prec1 = self._forward(inputs, targets)
 
-            losses.update(loss.data[0], targets.size(0))
+            losses.update(loss.item(), targets.size(0))
             precisions.update(prec1, targets.size(0))
 
             optimizer.zero_grad()
